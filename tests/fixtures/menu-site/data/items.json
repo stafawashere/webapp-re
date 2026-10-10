@@ -1,0 +1,5 @@
+[
+   {"slug": "alpha", "title": "Alpha item", "rank": 2},
+   {"slug": "beta", "title": "Beta item", "rank": 1},
+   {"slug": "gamma", "title": "Gamma item"}
+]

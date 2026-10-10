@@ -1,0 +1,10 @@
+{
+   "site": "menusite",
+   "commands": [
+      {"name": "help", "purpose": "List commands", "kind": "read", "input_schema": {"type": "object", "properties": {}}, "requests": 0, "pagination": "none", "depends_on": []},
+      {"name": "list-items", "purpose": "List items", "kind": "read", "input_schema": {"type": "object", "properties": {"limit": {"type": "integer"}}}, "requests": 1, "pagination": "none (whole list, cached for 24 h)", "depends_on": [{"endpoint": "ep-list", "state": "verified"}]},
+      {"name": "get-item", "purpose": "Return one item", "kind": "read", "input_schema": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"]}, "requests": 1, "pagination": "none", "depends_on": [{"endpoint": "ep-list", "state": "verified"}], "open_steps": [{"step": "replay get-item twice", "budget": 2}]},
+      {"name": "save-item", "purpose": "Save an item", "kind": "write", "input_schema": {"type": "object", "properties": {"id": {"type": "string"}, "dry_run": {"type": "boolean"}, "yes": {"type": "boolean"}}, "required": ["id"]}, "requests": 2, "pagination": "none", "depends_on": [{"endpoint": "ep-save", "state": "hypothesis"}], "confirmation": "Ask before --yes. Spends credits."},
+      {"name": "old-planned", "purpose": "A write that is not built", "kind": "write", "input_schema": {"type": "object", "properties": {"target": {"type": "string"}, "yes": {"type": "boolean"}}, "required": ["target"]}, "requests": 1, "pagination": "none", "depends_on": [{"endpoint": "ep-save", "state": "unknown"}], "open_steps": [{"step": "one approved capture", "budget": 1}], "confirmation": "Ask before --yes."}
+   ]
+}

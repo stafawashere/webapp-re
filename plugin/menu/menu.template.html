@@ -1,0 +1,487 @@
+<h2 class="sr-only" id="menu-title">Command menu for a webapp-re site skill</h2>
+<style>
+   .wm-head{background:var(--surface-2);border:0.5px solid var(--border);border-radius:12px;padding:1rem 1.25rem}
+   .wm-tile{width:40px;height:40px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex:none}
+   .wm-met{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:8px;margin:12px 0 0}
+   .wm-met div{background:var(--surface-1);border-radius:var(--radius);padding:8px 10px}
+   .wm-met span{display:block;font-size:12px;color:var(--text-secondary)}
+   .wm-met b{font-size:20px;font-weight:500}
+   .wm-muted{font-size:12px;color:var(--text-muted);margin:10px 0 0}
+   .pill{font-size:11px;padding:2px 8px;border-radius:var(--radius);white-space:nowrap}
+   .chip{font-size:12px;padding:4px 10px;height:auto}
+   .chip.on{background:var(--bg-accent);color:var(--text-accent);border-color:var(--border-accent)}
+   .grp{font-size:13px;color:var(--text-secondary);margin:18px 0 4px;display:flex;align-items:center;gap:6px}
+   .cmd{border-top:0.5px solid var(--border)}
+   .head{display:grid;grid-template-columns:16px minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 2px;cursor:pointer}
+   .head code{font-family:var(--font-mono);font-size:13px}
+   .body{padding:2px 0 14px 26px;font-size:13px;line-height:1.6}
+   .sec{color:var(--text-muted);font-size:12px;margin:10px 0 2px}
+   .tag{font-family:var(--font-mono);font-size:11px;background:var(--surface-1);border-radius:4px;padding:1px 6px;margin:0 4px 4px 0;display:inline-block}
+   .form{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px 12px;background:var(--surface-1);border-radius:var(--radius);padding:12px;margin-top:6px}
+   .form label{display:block;font-size:12px;color:var(--text-secondary);margin-bottom:3px}
+   .form select,.form input[type=text],.form input[type=date],.form input[type=number]{width:100%}
+   .tog{display:flex!important;gap:8px;align-items:center;font-size:13px!important;color:var(--text-primary)!important;margin-top:20px}
+   .hint{font-size:11px;color:var(--text-muted);margin-top:3px;line-height:1.4}
+   .link{background:none;border:none;padding:0;height:auto;font-size:11px;color:var(--text-accent);cursor:pointer;margin-top:3px}
+   .pv{display:flex;gap:8px;align-items:center;margin-top:10px}
+   .pv code{flex:1;min-width:0;font-family:var(--font-mono);font-size:12px;background:var(--surface-1);border-radius:var(--radius);padding:7px 10px;overflow-wrap:anywhere}
+   .act{font-size:12px;padding:4px 10px;height:auto;white-space:nowrap}
+   .act.done{color:var(--text-success);border-color:var(--border-success)}
+   .note{font-size:12px;border-radius:var(--radius);padding:8px 10px;margin:6px 0 8px 26px;line-height:1.5;background:var(--bg-warning);color:var(--text-warning)}
+   .note code{font-family:var(--font-mono);font-size:12px;user-select:all;overflow-wrap:anywhere}
+</style>
+
+<div class="wm-head">
+   <div style="display:flex;align-items:center;gap:12px">
+      <div class="wm-tile" id="wm-tile"><i class="ti" id="wm-icon" style="font-size:20px" aria-hidden="true"></i></div>
+      <div style="flex:1;min-width:0">
+         <p style="margin:0;font-weight:500;font-size:16px" id="wm-name"></p>
+         <p style="margin:0;font-size:13px;color:var(--text-secondary)" id="wm-subtitle"></p>
+      </div>
+      <button type="button" id="wm-eng-all" class="act"><i class="ti ti-copy" aria-hidden="true" style="margin-right:6px"></i>Copy engineer command</button>
+   </div>
+   <div id="note-all"></div>
+   <div class="wm-met" id="wm-metrics"></div>
+   <p class="wm-muted" id="wm-footnote"></p>
+</div>
+
+<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:14px 0 0">
+   <input id="q" type="search" placeholder="Filter commands" style="flex:1;min-width:160px" aria-label="Filter commands">
+   <button type="button" class="chip on" data-f="all">All</button>
+   <button type="button" class="chip" data-f="run">Ready to run</button>
+   <button type="button" class="chip" data-f="work">Needs engineering</button>
+   <button type="button" class="chip" data-f="write">Writes</button>
+</div>
+
+<div id="wm-lists"></div>
+<div id="list"></div>
+
+<script type="application/json" id="menu-data">__MENU_DATA__</script>
+<script>
+   const MENU = JSON.parse(document.getElementById("menu-data").textContent);
+   const SLUG = MENU.site.slug;
+   const CONTRACT = 2;
+
+   const STATUS = {
+      local: ["Local", "var(--surface-1)", "var(--text-secondary)"],
+      verified: ["Verified live", "var(--bg-success)", "var(--text-success)"],
+      unverified: ["Built, unverified", "var(--bg-warning)", "var(--text-warning)"],
+      blocked: ["Blocked", "var(--bg-danger)", "var(--text-danger)"],
+      planned: ["Planned", "var(--bg-accent)", "var(--text-accent)"]
+   };
+   const RUNNABLE = new Set(["local", "verified"]);
+
+   const openRows = new Set();
+   const values = {};
+   const errors = {};
+   let filter = "all";
+   let notice = null;
+
+   function esc(text) {
+      const raw = text === null || text === undefined ? "" : String(text);
+      return raw.replace(/&/g, "&amp;").replace(/"/g, "&quot;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+   }
+
+   function flag(key) {
+      return "--" + key.replace(/_/g, "-");
+   }
+
+   function pill(text, bg, fg) {
+      return `<span class="pill" style="background:${bg};color:${fg}">${esc(text)}</span>`;
+   }
+
+   function engineerLine(name) {
+      return name ? `/webapp-re:engineer ${SLUG} ${name}` : `/webapp-re:engineer ${SLUG}`;
+   }
+
+   function renderHeader() {
+      const accent = MENU.site.accent || "blue";
+      const tile = document.getElementById("wm-tile");
+      tile.style.background = `var(--bg-tint-${accent})`;
+      tile.style.color = `var(--text-tint-${accent})`;
+      document.getElementById("wm-icon").classList.add(MENU.site.icon || "ti-world");
+      document.getElementById("wm-name").textContent = "/" + SLUG;
+      document.getElementById("wm-subtitle").textContent = MENU.site.subtitle || "";
+      document.getElementById("menu-title").textContent = `Command menu for the ${SLUG} skill`;
+      document.getElementById("wm-eng-all").title = engineerLine("");
+
+      const counts = MENU.counts;
+      const metrics = [
+         ["Ready to run", counts.ready],
+         ["Verified live", counts.verified],
+         ["Built, unverified", counts.unverified],
+         ["Planned", counts.planned],
+         ["KB endpoints verified", counts.endpoints_verified + " / " + counts.endpoints]
+      ];
+      if (counts.blocked) metrics.splice(3, 0, ["Blocked", counts.blocked]);
+      document.getElementById("wm-metrics").innerHTML = metrics.map(([label, value]) => `<div><span>${esc(label)}</span><b>${esc(value)}</b></div>`).join("");
+
+      const synced = "Synced from the program, plan and knowledge base at " + MENU.generated;
+      document.getElementById("wm-footnote").textContent = MENU.site.footnote ? MENU.site.footnote + ". " + synced : synced;
+
+      document.getElementById("wm-lists").innerHTML = Object.entries(MENU.lists || {}).map(([name, options]) => {
+         const optionTags = options.map(([value, label]) => `<option value="${esc(value)}">${esc(label)}</option>`).join("");
+         return `<datalist id="list-${esc(name)}">${optionTags}</datalist>`;
+      }).join("");
+   }
+
+   function execCopy(text) {
+      const scratch = document.createElement("textarea");
+      scratch.value = text;
+      scratch.setAttribute("readonly", "");
+      scratch.style.position = "absolute";
+      scratch.style.left = "-9999px";
+      document.body.appendChild(scratch);
+      scratch.select();
+
+      let copied = false;
+      try {
+         copied = document.execCommand("copy");
+      } catch (error) {
+         copied = false;
+      }
+
+      scratch.remove();
+      return copied;
+   }
+
+   function flashCopied(button) {
+      const original = button.innerHTML;
+      button.innerHTML = `<i class="ti ti-check" aria-hidden="true" style="margin-right:4px"></i>Copied`;
+      button.classList.add("done");
+
+      setTimeout(() => {
+         if (!button.isConnected) return;
+         button.innerHTML = original;
+         button.classList.remove("done");
+      }, 1500);
+   }
+
+   function noticeHtml(entry, flush) {
+      const margin = flush ? "margin-left:0" : "";
+      return `<div class="note" style="${margin}"><i class="ti ti-clipboard" aria-hidden="true" style="margin-right:6px"></i>Your browser blocked copying. Select this and copy it: <code>${esc(entry.text)}</code></div>`;
+   }
+
+   function clearNotice() {
+      notice = null;
+      document.querySelectorAll(".note").forEach(note => note.remove());
+   }
+
+   function showManualCopy(where, text) {
+      notice = { where, text };
+
+      if (where === "all") {
+         document.getElementById("note-all").innerHTML = noticeHtml(notice, true);
+         return;
+      }
+
+      document.getElementById("note-all").innerHTML = "";
+      render();
+   }
+
+   function copyCommand(text, button, where) {
+      if (execCopy(text)) {
+         clearNotice();
+         flashCopied(button);
+         return;
+      }
+
+      const hasClipboardApi = navigator.clipboard && typeof navigator.clipboard.writeText === "function";
+      if (!hasClipboardApi) {
+         showManualCopy(where, text);
+         return;
+      }
+
+      navigator.clipboard.writeText(text)
+         .then(() => { clearNotice(); flashCopied(button); })
+         .catch(() => showManualCopy(where, text));
+   }
+
+   function fieldsOf(cmd) {
+      const filled = values[cmd.n] || {};
+      const own = (cmd.f || []).filter(field => !field.when || filled[field.when[0]] === field.when[1]);
+      const ownKeys = new Set((cmd.f || []).map(field => field.k));
+      const shared = (MENU.global || []).filter(field => !ownKeys.has(field.k));
+      return own.concat(shared);
+   }
+
+   function quote(text) {
+      const needsQuotes = /\s|"/.test(text);
+      return needsQuotes ? `"${text.replace(/"/g, '\\"')}"` : text;
+   }
+
+   function commandLine(cmd) {
+      const filled = values[cmd.n] || {};
+      const parts = ["/" + SLUG, cmd.n];
+
+      fieldsOf(cmd).forEach(field => {
+         const value = filled[field.k];
+         if (field.t === "toggle") {
+            if (value) parts.push(flag(field.k));
+            return;
+         }
+         const text = String(value || "").trim();
+         if (text) parts.push(flag(field.k), quote(text));
+      });
+
+      return parts.join(" ");
+   }
+
+   function missingFields(cmd) {
+      const filled = values[cmd.n] || {};
+      return fieldsOf(cmd).filter(field => field.r && !String(filled[field.k] || "").trim());
+   }
+
+   function fieldHtml(cmd, field) {
+      const id = `f-${cmd.n}-${field.k}`;
+      const value = (values[cmd.n] || {})[field.k] || "";
+      const data = `data-cmd="${esc(cmd.n)}" data-k="${esc(field.k)}"`;
+      const required = field.r ? ` <span style="color:var(--text-danger)">required</span>` : "";
+      const hint = field.h ? `<div class="hint" style="${field.warn ? "color:var(--text-warning)" : ""}">${esc(field.h)}</div>` : "";
+      const picker = field.pick ? `<button type="button" class="link pick" data-cmd="${esc(cmd.n)}" data-run="${esc(field.pick)}"><i class="ti ti-copy" aria-hidden="true" style="margin-right:3px"></i>Copy /${esc(SLUG)} ${esc(field.pick)} to find values</button>` : "";
+      const placeholder = esc(field.ph || "");
+
+      if (field.t === "toggle") {
+         return `<div><label class="tog" for="${id}"><input type="checkbox" id="${id}" ${data} ${value ? "checked" : ""}>${esc(field.l)}</label>${hint}</div>`;
+      }
+
+      let control;
+      if (field.t === "select") {
+         const choices = typeof field.o === "string" ? (MENU.opts || {})[field.o] || [] : field.o;
+         const options = choices.map(([optionValue, optionLabel]) => `<option value="${esc(optionValue)}" ${optionValue === value ? "selected" : ""}>${esc(optionLabel)}</option>`).join("");
+         control = `<select id="${id}" ${data}>${options}</select>`;
+      } else if (field.t === "datalist") {
+         control = `<input type="text" id="${id}" ${data} list="list-${esc(field.list)}" value="${esc(value)}" placeholder="${placeholder}" autocomplete="off">`;
+      } else if (field.t === "date") {
+         control = `<input type="date" id="${id}" ${data} value="${esc(value)}">`;
+      } else if (field.t === "number") {
+         control = `<input type="number" step="any" id="${id}" ${data} value="${esc(value)}" placeholder="${placeholder}">`;
+      } else {
+         control = `<input type="text" id="${id}" ${data} value="${esc(value)}" placeholder="${placeholder}">`;
+      }
+
+      return `<div><label for="${id}">${esc(field.l)}${required}</label>${control}${hint}${picker}</div>`;
+   }
+
+   function tags(items, styleFor) {
+      return items.map(item => {
+         const style = styleFor ? styleFor(item) : "";
+         return `<span class="tag" style="${style}">${esc(item)}</span>`;
+      }).join("");
+   }
+
+   function infoHtml(cmd) {
+      const isRunnable = RUNNABLE.has(cmd.s);
+      const returns = (cmd.ret || []).length ? tags(cmd.ret) : `<span style="color:var(--text-muted)">not described</span>`;
+      const endpoints = (cmd.ep || []).length
+         ? cmd.ep.map(([name, isVerified]) => `<span class="tag" style="${isVerified ? "" : "color:var(--text-warning)"}">${esc(name)}${isVerified ? "" : " not captured"}</span>`).join("")
+         : `<span style="color:var(--text-muted)">none recorded</span>`;
+      const status = cmd.st ? `<div class="sec">Status</div><div style="color:var(--text-secondary)">${esc(cmd.st)}</div>` : "";
+      const note = cmd.note ? `<div class="sec">Good to know</div><div style="color:var(--text-secondary)">${esc(cmd.note)}</div>` : "";
+      const cost = cmd.cost ? `<div class="sec">Cost</div><div>${esc(cmd.cost)}${cmd.spends ? " · spends energy or credits" : ""}</div>` : "";
+
+      const returnsBlock = MENU.lite ? "" : `<div class="sec">${isRunnable ? "You get" : "Would return"}</div><div>${returns}</div>`;
+      const endpointsBlock = MENU.lite ? "" : `<div class="sec">Endpoints</div><div>${endpoints}</div>`;
+
+      return `${status}${returnsBlock}
+         ${cost}${note}
+         ${endpointsBlock}`;
+   }
+
+   function bodyHtml(cmd) {
+      if (RUNNABLE.has(cmd.s)) {
+         const fields = fieldsOf(cmd).map(field => fieldHtml(cmd, field)).join("");
+         const error = errors[cmd.n] ? `<p id="err-${esc(cmd.n)}" style="font-size:13px;color:var(--text-danger);margin:6px 0 0">${esc(errors[cmd.n])}</p>` : "";
+         return `<div class="body">
+            <div class="form">${fields}</div>
+            ${error}
+            <div class="pv"><code id="pv-${esc(cmd.n)}">${esc(commandLine(cmd))}</code><button type="button" class="act copy" data-name="${esc(cmd.n)}"><i class="ti ti-copy" aria-hidden="true" style="margin-right:4px"></i>Copy</button></div>
+            ${infoHtml(cmd)}
+         </div>`;
+      }
+
+      const inputs = (cmd.ins || []).length
+         ? tags(cmd.ins, item => item.endsWith(" required") ? "color:var(--text-accent)" : "")
+         : `<span style="color:var(--text-muted)">none</span>`;
+      const safety = cmd.safety ? `<div class="sec">Safety</div><div>${esc(cmd.safety)}</div>` : "";
+      const steps = (cmd.steps || []).length
+         ? `<div class="sec">Missing before it can run</div><ul style="margin:2px 0 0;padding-left:18px">${cmd.steps.map(step => `<li>${esc(step)}</li>`).join("")}</ul>`
+         : "";
+
+      return `<div class="body">
+         <div class="pv" style="margin-top:4px"><code>${esc(engineerLine(cmd.n))}</code><button type="button" class="act copy" data-name="${esc(cmd.n)}"><i class="ti ti-copy" aria-hidden="true" style="margin-right:4px"></i>Copy</button></div>
+         <div class="sec">Inputs</div><div>${inputs}</div>
+         ${infoHtml(cmd)}
+         ${safety}
+         ${steps}
+      </div>`;
+   }
+
+   function matches(cmd, query) {
+      const isRunnable = RUNNABLE.has(cmd.s);
+      const passesFilter =
+         filter === "all" ||
+         (filter === "run" && isRunnable) ||
+         (filter === "work" && !isRunnable) ||
+         (filter === "write" && cmd.k === "write");
+      const haystack = (cmd.n + " " + cmd.d).toLowerCase();
+      return passesFilter && (!query || haystack.includes(query));
+   }
+
+   function commandFor(element) {
+      return MENU.commands.find(entry => entry.n === element.dataset.name || entry.n === element.dataset.cmd);
+   }
+
+   function tryCopy(cmd, button) {
+      if (!RUNNABLE.has(cmd.s)) {
+         copyCommand(engineerLine(cmd.n), button, cmd.n);
+         return;
+      }
+
+      const missing = missingFields(cmd);
+
+      if (missing.length) {
+         errors[cmd.n] = "Fill in " + missing.map(field => field.l.toLowerCase()).join(", ") + " first";
+         openRows.add(cmd.n);
+         render();
+         const firstField = document.getElementById(`f-${cmd.n}-${missing[0].k}`);
+         if (firstField) firstField.focus();
+         return;
+      }
+
+      copyCommand(commandLine(cmd), button, cmd.n);
+   }
+
+   function rowHtml(cmd) {
+      const [label, bg, fg] = STATUS[cmd.s] || STATUS.unverified;
+      const isOpen = openRows.has(cmd.n);
+      const isRunnable = RUNNABLE.has(cmd.s);
+      const writePill = cmd.k === "write" ? pill("write", "var(--bg-danger)", "var(--text-danger)") : "";
+      const spendPill = cmd.spends ? pill("spends", "var(--bg-warning)", "var(--text-warning)") : "";
+      const copyTitle = isRunnable ? `Copy the configured /${SLUG} command` : "Copy " + engineerLine(cmd.n);
+      const rowNotice = notice && notice.where === cmd.n ? noticeHtml(notice) : "";
+
+      return `<div class="cmd">
+         <div class="head" data-name="${esc(cmd.n)}" role="button" tabindex="0" aria-expanded="${isOpen}">
+            <i class="ti ${isOpen ? "ti-chevron-down" : "ti-chevron-right"}" style="font-size:14px;color:var(--text-muted)" aria-hidden="true"></i>
+            <div style="min-width:0">
+               <div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center"><code>${esc(cmd.n)}</code>${pill(label, bg, fg)}${writePill}${spendPill}</div>
+               <div style="font-size:13px;color:var(--text-secondary);line-height:1.5;margin-top:2px">${esc(cmd.d)}</div>
+            </div>
+            <button type="button" class="act copy" data-name="${esc(cmd.n)}" title="${esc(copyTitle)}"><i class="ti ti-copy" aria-hidden="true" style="margin-right:4px"></i>Copy</button>
+         </div>
+         ${rowNotice}
+         ${isOpen ? bodyHtml(cmd) : ""}
+      </div>`;
+   }
+
+   function render() {
+      const query = document.getElementById("q").value.trim().toLowerCase();
+      let html = "";
+
+      MENU.groups.forEach(group => {
+         const rows = MENU.commands.filter(cmd => cmd.g === group.key && matches(cmd, query));
+         if (!rows.length) return;
+
+         html += `<div class="grp"><i class="ti ${esc(group.icon || "ti-folder")}" style="font-size:16px" aria-hidden="true"></i>${esc(group.title)}<span style="color:var(--text-muted)">${rows.length}</span></div>`;
+         html += rows.map(rowHtml).join("");
+      });
+
+      document.getElementById("list").innerHTML = html || `<p style="font-size:13px;color:var(--text-muted);margin:16px 0">No command matches that filter.</p>`;
+   }
+
+   function toggleRow(name) {
+      if (openRows.has(name)) openRows.delete(name); else openRows.add(name);
+      render();
+   }
+
+   function storeField(event) {
+      const control = event.target.closest("[data-k]");
+      if (!control) return;
+
+      const cmd = commandFor(control);
+      values[cmd.n] = values[cmd.n] || {};
+      values[cmd.n][control.dataset.k] = control.type === "checkbox" ? control.checked : control.value;
+
+      if (errors[cmd.n]) {
+         delete errors[cmd.n];
+         const errorLine = document.getElementById("err-" + cmd.n);
+         if (errorLine) errorLine.remove();
+      }
+
+      const hasConditionalFields = (cmd.f || []).some(field => field.when && field.when[0] === control.dataset.k);
+      if (hasConditionalFields) {
+         render();
+         return;
+      }
+
+      const preview = document.getElementById("pv-" + cmd.n);
+      if (preview) preview.textContent = commandLine(cmd);
+   }
+
+   const list = document.getElementById("list");
+
+   list.addEventListener("click", event => {
+      const copyButton = event.target.closest(".copy");
+      const pickButton = event.target.closest(".pick");
+      const head = event.target.closest(".head");
+
+      if (copyButton) {
+         event.preventDefault();
+         tryCopy(commandFor(copyButton), copyButton);
+         return;
+      }
+
+      if (pickButton) {
+         event.preventDefault();
+         copyCommand(`/${SLUG} ${pickButton.dataset.run}`, pickButton, pickButton.dataset.cmd);
+         return;
+      }
+
+      if (head) toggleRow(head.dataset.name);
+   });
+
+   list.addEventListener("keydown", event => {
+      const head = event.target.closest(".head");
+      const isActivateKey = event.key === "Enter" || event.key === " ";
+      const isOnHead = head && event.target === head;
+
+      if (isActivateKey && isOnHead) {
+         event.preventDefault();
+         toggleRow(head.dataset.name);
+         return;
+      }
+
+      const control = event.target.closest("[data-k]");
+      const isSubmit = control && event.key === "Enter" && control.tagName === "INPUT" && control.type !== "checkbox";
+      if (isSubmit) {
+         event.preventDefault();
+         const cmd = commandFor(control);
+         tryCopy(cmd, document.querySelector(`.body .copy[data-name="${cmd.n}"]`));
+      }
+   });
+
+   list.addEventListener("input", storeField);
+   list.addEventListener("change", storeField);
+
+   document.getElementById("q").addEventListener("input", render);
+
+   document.querySelectorAll(".chip").forEach(chip => {
+      chip.addEventListener("click", () => {
+         filter = chip.dataset.f;
+         document.querySelectorAll(".chip").forEach(other => other.classList.toggle("on", other === chip));
+         render();
+      });
+   });
+
+   document.getElementById("wm-eng-all").addEventListener("click", event => copyCommand(engineerLine(""), event.currentTarget, "all"));
+
+   const contractMatches = MENU.v === CONTRACT;
+
+   if (contractMatches) {
+      renderHeader();
+      render();
+   } else {
+      document.getElementById("list").textContent = `This menu holds data version ${MENU.v}, but the page reads version ${CONTRACT}. Run /${SLUG} menu again.`;
+   }
+</script>

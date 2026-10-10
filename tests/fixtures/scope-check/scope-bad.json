@@ -1,0 +1,6 @@
+{"site":{"slug":"demo","name":"Demo","origins":["https://demo.test"]},"generated":"2026-10-09","summary":"x",
+"pages":[{"id":"home","url_pattern":"/","purpose":"landing","endpoints":["ghost"],"capabilities":["list"]}],
+"capabilities":[{"id":"list","name":"List items","user_action":"open home","mutates":false,"exercised":true,"endpoints":["list-items"]}],
+"endpoints":[{"id":"list-items","method":"GET","url_pattern":"/api/items","surface":"rest","observed":true,"pagination":"nope"}],
+"entities":[{"id":"item","fields":["id","name"]}],"auth":{"mechanism":"cookie-session","cookie_names":["sid"],"header_names":["Bearer abcdefghijklmnopqrstuvwxyz"]},
+"pagination":[{"id":"cur","kind":"cursor"}],"caveats":[{"kind":"csrf","detail":"meta tag","severity":"low"}],"open_questions":[]}

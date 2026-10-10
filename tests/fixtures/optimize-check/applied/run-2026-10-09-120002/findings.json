@@ -1,0 +1,57 @@
+{
+   "format": 1,
+   "site": "fixture",
+   "run_id": "run-2026-10-09-120002",
+   "created": "2026-10-09T12:00:00",
+   "targets": {
+      "skills": [
+         "fixture"
+      ],
+      "commands": [],
+      "program": "none"
+   },
+   "live_budget": 20,
+   "live_requests_spent": 0,
+   "findings": [
+      {
+         "id": "F01",
+         "dimension": "speed",
+         "target": "fetch-members",
+         "title": "Members fetched one by one",
+         "file": "tests/fixtures/optimize-check/target.py",
+         "line": 4,
+         "anchor": "for member_id in sorted(member_ids):",
+         "evidence": "One request per member id in the loop at line 4.",
+         "severity": "high",
+         "verdict": "confirmed",
+         "verify_note": "Read the loop; each iteration calls get_member.",
+         "proposed_fix": "Fetch all members in one batch call.",
+         "expected_effect": "N requests become 1.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tests/fixtures/optimize-check/target.py"
+         ],
+         "outcome": "fixed",
+         "outcome_reason": "Batched into one request; the loop is gone"
+      },
+      {
+         "id": "F02",
+         "dimension": "speed",
+         "target": "fetch-members",
+         "title": "Members fetched one by one",
+         "file": "tests/fixtures/optimize-check/target.py",
+         "line": 4,
+         "anchor": "for member_id in member_ids:",
+         "evidence": "One request per member id in the loop at line 4.",
+         "severity": "high",
+         "verdict": "confirmed",
+         "verify_note": "Read the loop; each iteration calls get_member.",
+         "proposed_fix": "Fetch all members in one batch call.",
+         "expected_effect": "N requests become 1.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tests/fixtures/optimize-check/target.py"
+         ]
+      }
+   ]
+}

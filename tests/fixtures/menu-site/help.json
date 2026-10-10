@@ -1,0 +1,10 @@
+{
+   "commands": [
+      {"name": "help", "purpose": "List commands", "kind": "read", "readiness": "ready to build", "built": true, "inputs": {}},
+      {"name": "list-items", "purpose": "List items </script><script>alert(1)</script> <!-- x", "kind": "read", "readiness": "ready to build", "built": true, "inputs": {"limit": {"type": "integer", "description": "Stop after this many items"}}},
+      {"name": "get-item", "purpose": "Return one item", "kind": "read", "readiness": "ready to build", "built": true, "input_schema": {"type": "object", "properties": {"id": {"type": "string"}}, "required": ["id"]}},
+      {"name": "save-item", "purpose": "Save an item", "kind": "write", "readiness": "ready to build", "built": true, "input_schema": {"type": "object", "properties": {"id": {"type": "string"}, "dry_run": {"type": "boolean"}, "yes": {"type": "boolean"}}, "required": ["id"]}},
+      {"name": "brand-new", "purpose": "A command added after the hints were written", "kind": "read", "readiness": "verified live", "built": true, "input_schema": {"type": "object", "properties": {"color": {"enum": ["red", "blue", null], "default": "red"}, "loud": {"type": "boolean"}, "name": {"type": "string"}}, "required": ["name"]}},
+      {"name": "old-planned", "purpose": "A write that is not built", "kind": "write", "readiness": "open: needs an approved capture", "built": false, "inputs": {"target": {"type": "string"}, "yes": {"type": "boolean"}}}
+   ]
+}

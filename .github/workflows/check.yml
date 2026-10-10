@@ -1,0 +1,33 @@
+name: Check
+
+on:
+   push:
+   pull_request:
+
+permissions:
+   contents: read
+
+jobs:
+   check:
+      runs-on: ubuntu-24.04
+      steps:
+         - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+         - uses: astral-sh/setup-uv@c18668ad3cf93ea998bef934396af7bb5c839dc7 # v10.2.0
+
+         - name: Menu tests
+           run: uv run --script tests/test_build_menu.py
+
+         - name: Scope checker
+           run: |
+              uv run --script plugin/scripts/check_scope.py tests/fixtures/scope-check/scope-good.json
+              if uv run --script plugin/scripts/check_scope.py tests/fixtures/scope-check/scope-bad.json; then exit 1; fi
+
+         - name: Plan checker
+           run: if uv run --script plugin/scripts/check_plan.py tests/fixtures/plan-check; then exit 1; fi
+
+         - name: Optimize findings validator
+           run: |
+              uv run --script plugin/scripts/optimize_run.py validate tests/fixtures/optimize-check/good/run-2026-10-09-120000/findings.json
+              uv run --script plugin/scripts/optimize_run.py validate tests/fixtures/optimize-check/applied/run-2026-10-09-120002/findings.json
+              if uv run --script plugin/scripts/optimize_run.py validate tests/fixtures/optimize-check/bad/run-2026-10-09-120001/findings.json; then exit 1; fi

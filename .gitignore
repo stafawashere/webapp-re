@@ -1,0 +1,33 @@
+# agent and editor files that never belong in a public repo
+CLAUDE.md
+CLAUDE.local.md
+AGENTS.md
+GEMINI.md
+.claude/
+.cursor/
+.codex/
+opencode.json
+.aider*
+docs/prompts/
+*handoff*.md
+*.session.json
+.source-commit
+.tasks/
+
+# local state
+.env
+.env.*
+!.env.example
+*.log
+.DS_Store
+Thumbs.db
+__pycache__/
+*.pyc
+node_modules/
+.venv/
+dist/
+
+# pipeline output that belongs in site workspaces, never here
+var/
+apps/
+.pytest_cache/

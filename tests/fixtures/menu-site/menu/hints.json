@@ -1,0 +1,22 @@
+{
+   "subtitle": "menusite.test fixture",
+   "groups": [
+      {"key": "main", "title": "Main", "icon": "ti-box", "commands": ["help", "list-items", "get-item", "save-item", "old-planned", "removed-command"]}
+   ],
+   "datalists": {
+      "items": {"source": "data/items.json", "value": "slug", "label": "title", "require": "rank", "sort": "rank", "include": ["gamma"]}
+   },
+   "commands": {
+      "removed-command": {"summary": "This command was deleted from the program"},
+      "get-item": {
+         "fields": {
+            "gone_field": {"label": "A field the command no longer takes"}
+         }
+      },
+      "save-item": {
+         "fields": {
+            "id": {"list": "items", "label": "Item", "pick": "list-items"}
+         }
+      }
+   }
+}

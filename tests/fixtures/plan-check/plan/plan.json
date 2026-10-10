@@ -1,0 +1,3 @@
+{"commands":[{"name":"help","kind":"read","input_schema":{},"output_schema":{},"depends_on":[]},
+{"name":"Add_Item","kind":"write","input_schema":{},"output_schema":{},"depends_on":[{"endpoint":"ghost"}],"open_steps":[{"step":"replay","budget":2}]}],
+"build_order":[{"step":1,"commands":["help"]},{"step":2,"commands":[]}]}

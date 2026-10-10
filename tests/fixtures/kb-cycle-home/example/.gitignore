@@ -1,0 +1,15 @@
+.env
+.env.*
+!.env.example
+var/
+*.session.json
+.session.json
+optimize/*/before/
+.claude/
+plugin/
+.venv/
+node_modules/
+__pycache__/
+*.pyc
+.pytest_cache/
+.DS_Store

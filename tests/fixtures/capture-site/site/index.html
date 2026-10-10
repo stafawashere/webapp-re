@@ -1,0 +1,3 @@
+<html><body><script>
+fetch("/api/data.json?x=1", {method: "POST", headers: {"x-csrf-token": "fake-csrf-value-123", "content-type": "application/x-www-form-urlencoded"}, body: "csrftoken=fake-token-1&q=hello"}).then(r => r.text());
+</script></body></html>

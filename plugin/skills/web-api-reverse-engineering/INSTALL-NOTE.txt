@@ -1,0 +1,2 @@
+Vendored from github.com/vicentereig/engineering at commit 9d8f564, path plugins/engineering-skills/skills/web-api-reverse-engineering, MIT (see LICENSE in this folder). SKILL.md is unmodified.
+The bd (beads) commands it suggests are optional. Skip those steps when beads is not installed.

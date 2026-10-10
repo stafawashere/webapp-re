@@ -1,0 +1,134 @@
+{
+   "$schema": "https://json-schema.org/draft/2020-12/schema",
+   "title": "Web app automation scope",
+   "type": "object",
+   "required": ["site", "generated", "summary", "pages", "capabilities", "endpoints", "entities", "auth", "pagination", "caveats", "open_questions"],
+   "properties": {
+      "site": {
+         "type": "object",
+         "required": ["slug", "origins", "name"],
+         "properties": {
+            "slug": { "type": "string" },
+            "name": { "type": "string" },
+            "origins": { "type": "array", "items": { "type": "string" } },
+            "framework": { "type": "string", "description": "react, next, vue, nuxt, angular, svelte, server-rendered, unknown" },
+            "bundler": { "type": "string" },
+            "source_maps": { "type": "boolean" }
+         }
+      },
+      "generated": { "type": "string", "description": "ISO date of the walk" },
+      "summary": { "type": "string" },
+      "pages": {
+         "type": "array",
+         "items": {
+            "type": "object",
+            "required": ["id", "url_pattern", "purpose"],
+            "properties": {
+               "id": { "type": "string" },
+               "url_pattern": { "type": "string" },
+               "purpose": { "type": "string" },
+               "requires_auth": { "type": "boolean" },
+               "capabilities": { "type": "array", "items": { "type": "string" } },
+               "endpoints": { "type": "array", "items": { "type": "string" } },
+               "visited": { "type": "boolean" }
+            }
+         }
+      },
+      "capabilities": {
+         "type": "array",
+         "items": {
+            "type": "object",
+            "required": ["id", "name", "user_action", "mutates", "exercised", "endpoints"],
+            "properties": {
+               "id": { "type": "string" },
+               "name": { "type": "string" },
+               "user_action": { "type": "string", "description": "The click sequence a person performs" },
+               "mutates": { "type": "boolean" },
+               "visible_to_others": { "type": "boolean" },
+               "exercised": { "type": "boolean", "description": "False for anything the read-only walk did not press" },
+               "endpoints": { "type": "array", "items": { "type": "string" } },
+               "entities": { "type": "array", "items": { "type": "string" } },
+               "notes": { "type": "string" }
+            }
+         }
+      },
+      "endpoints": {
+         "type": "array",
+         "items": {
+            "type": "object",
+            "required": ["id", "method", "url_pattern", "surface", "observed"],
+            "properties": {
+               "id": { "type": "string" },
+               "method": { "type": "string" },
+               "url_pattern": { "type": "string" },
+               "surface": { "type": "string", "enum": ["rest", "graphql", "rpc", "websocket", "sse", "html", "unknown"] },
+               "operation": { "type": "string" },
+               "operation_id": { "type": "string" },
+               "query_keys": { "type": "array", "items": { "type": "string" } },
+               "request_header_names": { "type": "array", "items": { "type": "string" } },
+               "body_fields": { "type": "array", "items": { "type": "string" } },
+               "response_shape": { "type": "object" },
+               "pagination": { "type": "string", "description": "id of a pagination scheme, or empty" },
+               "observed": { "type": "boolean", "description": "False when inferred from bundles or validation calls without a live request" },
+               "noise": { "type": "boolean" }
+            }
+         }
+      },
+      "entities": {
+         "type": "array",
+         "items": {
+            "type": "object",
+            "required": ["id", "fields"],
+            "properties": {
+               "id": { "type": "string" },
+               "description": { "type": "string" },
+               "fields": { "type": "array", "items": { "type": "string" } },
+               "id_fields": { "type": "array", "items": { "type": "string" } },
+               "source_endpoints": { "type": "array", "items": { "type": "string" } }
+            }
+         }
+      },
+      "auth": {
+         "type": "object",
+         "required": ["mechanism", "cookie_names", "header_names"],
+         "properties": {
+            "mechanism": { "type": "string", "description": "cookie-session, bearer, oauth, sso, api-key, mixed" },
+            "cookie_names": { "type": "array", "items": { "type": "string" } },
+            "header_names": { "type": "array", "items": { "type": "string" } },
+            "csrf": { "type": "string", "description": "Where the CSRF value comes from, never the value" },
+            "login_flow": { "type": "string" },
+            "session_lifetime": { "type": "string" },
+            "refresh": { "type": "string" }
+         }
+      },
+      "pagination": {
+         "type": "array",
+         "items": {
+            "type": "object",
+            "required": ["id", "kind"],
+            "properties": {
+               "id": { "type": "string" },
+               "kind": { "type": "string", "enum": ["page-number", "offset-limit", "cursor", "link-header", "infinite-scroll", "none", "unknown"] },
+               "request_keys": { "type": "array", "items": { "type": "string" } },
+               "response_keys": { "type": "array", "items": { "type": "string" } },
+               "terminator": { "type": "string" },
+               "page_size": { "type": ["integer", "null"] }
+            }
+         }
+      },
+      "caveats": {
+         "type": "array",
+         "items": {
+            "type": "object",
+            "required": ["kind", "detail", "severity"],
+            "properties": {
+               "kind": { "type": "string", "enum": ["rate-limit", "anti-bot", "csrf", "signing", "obfuscation", "realtime", "viewport", "feature-flag", "terms", "other"] },
+               "detail": { "type": "string" },
+               "severity": { "type": "string", "enum": ["blocker", "high", "medium", "low"] },
+               "evidence": { "type": "string" }
+            }
+         }
+      },
+      "open_questions": { "type": "array", "items": { "type": "string" } }
+   }
+}
