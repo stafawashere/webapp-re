@@ -1,0 +1,3326 @@
+{
+   "site": {
+      "slug": "citymapper",
+      "name": "Citymapper",
+      "origins": [
+         "https://citymapper.com",
+         "https://global-api.citymapper.com",
+         "https://turnstile-api.citymapper.com"
+      ],
+      "framework": "react (react-router SPA bundle /static/components/bundle-<hash>.js inside server-rendered Django pages; landing page is a separate React bundle; some routes are Next.js SSR)",
+      "bundler": "webpack (module ids, __REACT_HOT_LOADER__ source paths /__w/web/web/src/...)",
+      "source_maps": false
+   },
+   "generated": "2026-10-10",
+   "summary": "Citymapper's website is a public transit journey planner for 115 regions (252 cities) worldwide. Everything a visitor can do without an account goes through unsigned same-origin JSON calls under https://citymapper.com/api/<version>/: journey planning (transit, walk, cycle, cab and on-demand) between coordinates with depart-at or arrive-by times, live journey times, place search and autocomplete, nearby stops, stations, piers and bike docks per mode, stop details with live departures (bus, metro and rail feeds), line pages with stops, patterns and service status, region-wide line status with disruption texts, and line search. The city is always an explicit region_id parameter; the list of regions and cities, each region's modes, brands, bounding box and timezone are inlined into every server-rendered page as window.citymapper. A web account exists (sign in by e-mail magic link, Google or Facebook) and adds saved places (home, work, others), favourite stops and lines, and 'send to phone' saved journeys, all under /api/1/identity/. You are signed out on citymapper.com, so the account surface was mapped from the bundle and was not exercised; Citymapper Club and Pass payments are app-only. No request signing, nonce, captcha or bot challenge appeared; the site sits behind Cloudflare (__cf_bm) and served 200 to a separate CDP browser and to curl.",
+   "pages": [
+      {
+         "id": "page-home",
+         "url_pattern": "/",
+         "purpose": "Landing page: Get Me Somewhere form, city switcher, news teasers; fetches the current region's info and the brand directory",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-city-info",
+            "cap-brand-directory",
+            "cap-plan-journey"
+         ],
+         "endpoints": [
+            "resource-region-info",
+            "resource-brand-directory",
+            "identity-user-data",
+            "message"
+         ]
+      },
+      {
+         "id": "page-webapp",
+         "url_pattern": "/webapp, /{region_slug}/webapp",
+         "purpose": "Journey planner shell: start and end search boxes, Now, Arrive, Leave time selector, map",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-search-places",
+            "cap-plan-journey",
+            "cap-reverse-geocode"
+         ],
+         "endpoints": [
+            "searchpost",
+            "geocode",
+            "identity-user-data",
+            "message"
+         ]
+      },
+      {
+         "id": "page-directions",
+         "url_pattern": "/directions?startcoord={lat,lng}&endcoord={lat,lng}&startname=&endname=&startaddress=&endaddress=&departure_time={iso}|arrival_time={iso}",
+         "purpose": "Journey results: walk, cycle and cab summary row, Suggested and other sections of transit journeys with price, duration and live next departures",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-plan-journey",
+            "cap-plan-walk",
+            "cap-plan-cycle",
+            "cap-plan-cab",
+            "cap-journey-times"
+         ],
+         "endpoints": [
+            "journeys",
+            "walk7",
+            "cycle",
+            "taxi",
+            "journeytimes",
+            "searchpost"
+         ]
+      },
+      {
+         "id": "page-trip-signature",
+         "url_pattern": "/trip/signature?signature={deflated base64 journey signature}",
+         "purpose": "Journey detail: legs, stops, exits, live times; share and send-to-phone buttons",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-journey-detail",
+            "cap-journey-times",
+            "cap-share-trip",
+            "cap-save-journey"
+         ],
+         "endpoints": [
+            "trip-meta",
+            "journeytimes",
+            "refreshjourneys",
+            "createtripurl",
+            "identity-save-journey"
+         ]
+      },
+      {
+         "id": "page-trip-slug",
+         "url_pattern": "/trip/{slug}",
+         "purpose": "Shared trip link: resolves a slug to a journey signature, then shows the journey detail",
+         "requires_auth": false,
+         "visited": false,
+         "capabilities": [
+            "cap-open-shared-trip"
+         ],
+         "endpoints": [
+            "gettrip",
+            "refreshjourneys"
+         ]
+      },
+      {
+         "id": "page-go",
+         "url_pattern": "/go/{slug}, /widget/{slug}",
+         "purpose": "Meet Me Somewhere link: destination card that plans a journey to a saved place",
+         "requires_auth": false,
+         "visited": false,
+         "capabilities": [
+            "cap-open-go-link"
+         ],
+         "endpoints": [
+            "getshorturl"
+         ]
+      },
+      {
+         "id": "page-meet",
+         "url_pattern": "/meet",
+         "purpose": "Meet Me Somewhere marketing page and place box that creates a go link",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-create-go-link"
+         ],
+         "endpoints": [
+            "createshorturl"
+         ]
+      },
+      {
+         "id": "page-city",
+         "url_pattern": "/{region_slug}",
+         "purpose": "City home: journey form, account box, nearby mode tiles, lines card with status, Meet Me Somewhere box, strike map",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-city-info",
+            "cap-line-status",
+            "cap-lines-info",
+            "cap-find-line",
+            "cap-message"
+         ],
+         "endpoints": [
+            "city-html",
+            "routestatus",
+            "routeinfo2",
+            "findtransport",
+            "message",
+            "identity-user-data"
+         ]
+      },
+      {
+         "id": "page-status",
+         "url_pattern": "/{region_slug}/status",
+         "purpose": "All lines status for the region grouped by mode, with disruption details and partner status",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-line-status",
+            "cap-disruptions"
+         ],
+         "endpoints": [
+            "routestatus",
+            "routeinfo2"
+         ]
+      },
+      {
+         "id": "page-nearby",
+         "url_pattern": "/{region_slug}/{mode_slug}/{stop_type}?name=&coords={lat,lng}",
+         "purpose": "Nearby list and map for one mode (stations, stops, docks, piers) around a point",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-nearby"
+         ],
+         "endpoints": [
+            "nearby3",
+            "routeinfo2"
+         ]
+      },
+      {
+         "id": "page-stop",
+         "url_pattern": "/{region_slug}/{mode_slug}/{stop_type}/{alias}",
+         "purpose": "Stop or station: routes, exits, live departures by platform or direction, nearby stops; favourite star",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-stop-info",
+            "cap-live-departures",
+            "cap-favourite-stop"
+         ],
+         "endpoints": [
+            "stopinfo",
+            "departures-bus",
+            "departures-metro",
+            "departures-rail",
+            "nearby2"
+         ]
+      },
+      {
+         "id": "page-line",
+         "url_pattern": "/{region_slug}/{mode_slug}/{line_alias} (also /{region_slug}/l/{line_alias}, which redirects)",
+         "purpose": "Line: branches (patterns), ordered stops, map path, status; favourite star and share",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-line-info",
+            "cap-vehicle-locations",
+            "cap-favourite-line"
+         ],
+         "endpoints": [
+            "routeinfo1",
+            "vehiclelocations"
+         ]
+      },
+      {
+         "id": "page-planner",
+         "url_pattern": "/{region_slug}/planner/{brand}",
+         "purpose": "Brand-only journey planner for a partner network (journeys sent with partner=)",
+         "requires_auth": false,
+         "visited": false,
+         "capabilities": [
+            "cap-plan-journey"
+         ],
+         "endpoints": [
+            "routestatus",
+            "routeinfo1",
+            "nearby3",
+            "journeys"
+         ]
+      },
+      {
+         "id": "page-cities",
+         "url_pattern": "/cities",
+         "purpose": "All cities; picking one writes the cm_region cookie and reloads",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-list-cities",
+            "cap-switch-city"
+         ],
+         "endpoints": [
+            "cities-html"
+         ]
+      },
+      {
+         "id": "page-news",
+         "url_pattern": "/news, /news/{id}/{slug}, /i/{id}/{slug}",
+         "purpose": "Company news posts (server rendered)",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-news"
+         ],
+         "endpoints": [
+            "news-html",
+            "blog"
+         ]
+      },
+      {
+         "id": "page-login-dialog",
+         "url_pattern": "/{region_slug}#login (modal)",
+         "purpose": "Sign up or log in: e-mail magic link, Facebook, Google",
+         "requires_auth": false,
+         "visited": true,
+         "capabilities": [
+            "cap-sign-in"
+         ],
+         "endpoints": [
+            "identity-magiclink",
+            "identity-sessions-create"
+         ]
+      },
+      {
+         "id": "page-legal",
+         "url_pattern": "/api/1/resources?id=citymapper-terms-of-service|citymapper-privacy-policy",
+         "purpose": "Terms of service and privacy policy documents",
+         "requires_auth": false,
+         "visited": false,
+         "capabilities": [
+            "cap-legal"
+         ],
+         "endpoints": [
+            "resources"
+         ]
+      },
+      {
+         "id": "page-server-only",
+         "url_pattern": "/eta/{slug}, /pass, /pass/{slug}, /ride, /authorise/{reference}, /signup/{token}/confirm, /reset/{token}/continue, /p/reset_password, /account-deletion/{token}",
+         "purpose": "Server-rendered pages for shared ETAs, Citymapper Pass, payments authorisation and account e-mail flows; no caller in the web bundles",
+         "requires_auth": false,
+         "visited": false,
+         "capabilities": [
+            "cap-shared-eta",
+            "cap-pass-payments",
+            "cap-password-reset"
+         ],
+         "endpoints": [
+            "eta",
+            "turnstile-userinfo",
+            "identity-password-reset"
+         ]
+      }
+   ],
+   "capabilities": [
+      {
+         "id": "cap-plan-journey",
+         "name": "Plan a transit journey",
+         "user_action": "Type a start and an end (or click the map), pick Now, Arrive or Leave, press GO",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "journeys",
+            "searchpost"
+         ],
+         "entities": [
+            "journey",
+            "leg",
+            "place"
+         ],
+         "notes": "Inputs: start and end coordinates (names and addresses optional), region_id, departure_time or arrival_time as ISO UTC, step-free and microtransit flags. Returns sections (Suggested, others) and journeys with legs, live departure hints, price and duration. Exercised in NYC (now and arrive-by) and London (now), Paris (depart-at)."
+      },
+      {
+         "id": "cap-plan-walk",
+         "name": "Plan a walking route",
+         "user_action": "Same form; the walk tile in the summary row",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "walk7",
+            "walk1"
+         ],
+         "entities": [
+            "journey"
+         ],
+         "notes": "limit=2 profiles (fast, and a second)."
+      },
+      {
+         "id": "cap-plan-cycle",
+         "name": "Plan a cycling route (own bike or bike share)",
+         "user_action": "Same form; the cycle tile",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "cycle"
+         ],
+         "entities": [
+            "journey"
+         ],
+         "notes": "Profiles quiet, regular, fast; bike share journeys carry price and brand (CitiBike, Santander, Velib); shared.cycle_docks."
+      },
+      {
+         "id": "cap-plan-cab",
+         "name": "Estimate a cab or on-demand ride",
+         "user_action": "Same form; the cab tile",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "taxi"
+         ],
+         "entities": [
+            "journey"
+         ],
+         "notes": "routes[] with duration and length, on_demand_model.categories (Uber, Lyft and local services) where the region has them."
+      },
+      {
+         "id": "cap-plan-vehicle-hire",
+         "name": "Plan with scooters or hire vehicles",
+         "user_action": "No web UI caller; bundle method getVehicleHireJourneys",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "vehiclehire"
+         ],
+         "entities": [
+            "journey"
+         ],
+         "notes": "Defined in the bundle; observed false."
+      },
+      {
+         "id": "cap-journey-times",
+         "name": "Refresh live times of planned journeys",
+         "user_action": "Automatic every 30 s on results and detail pages",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "journeytimes"
+         ],
+         "entities": [
+            "journey-time"
+         ],
+         "notes": "POST body signatures[] (journey signature JSON strings). Up to 10 polls in the UI."
+      },
+      {
+         "id": "cap-journey-detail",
+         "name": "Open a journey's detail",
+         "user_action": "Click a journey in the results",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "refreshjourneys",
+            "trip-meta",
+            "journeytimes"
+         ],
+         "entities": [
+            "journey",
+            "leg"
+         ],
+         "notes": "Navigates to /trip/signature?signature=<deflated base64>; a direct load calls POST /api/1/refreshjourneys (exercised only as an in-app navigation, which reused the stored journey)."
+      },
+      {
+         "id": "cap-open-shared-trip",
+         "name": "Open a shared trip link",
+         "user_action": "Open /trip/{slug}",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "gettrip",
+            "refreshjourneys"
+         ],
+         "entities": [
+            "journey"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-share-trip",
+         "name": "Create a share link for a journey",
+         "user_action": "Journey detail, share icon",
+         "mutates": true,
+         "visible_to_others": true,
+         "exercised": false,
+         "endpoints": [
+            "createtripurl"
+         ],
+         "entities": [
+            "journey"
+         ],
+         "notes": "Creates a public short URL. Not pressed."
+      },
+      {
+         "id": "cap-save-journey",
+         "name": "Send a journey to your phone (save it to the account)",
+         "user_action": "Journey detail, send-to-phone icon (needs sign-in)",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-save-journey",
+            "identity-delete-journey"
+         ],
+         "entities": [
+            "saved-journey"
+         ],
+         "notes": "POST /api/1/identity/documents/SavedJourney {document_data}; delete by document_id. No list endpoint on the web."
+      },
+      {
+         "id": "cap-search-places",
+         "name": "Search places, addresses, stations and stops",
+         "user_action": "Type in the Start or End box",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "searchpost"
+         ],
+         "entities": [
+            "place"
+         ],
+         "notes": "POST form body: query, region_id, location (optional bias), is_refinement, refinement_data, powersearch. Results mix Citymapper stations and Google places with coords."
+      },
+      {
+         "id": "cap-resolve-place",
+         "name": "Resolve a place result without coordinates",
+         "user_action": "Pick a search result whose coords are missing",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "placeresolve"
+         ],
+         "entities": [
+            "place"
+         ],
+         "notes": "Google results observed carry coords, so no call was made."
+      },
+      {
+         "id": "cap-reverse-geocode",
+         "name": "Name a point clicked on the map",
+         "user_action": "Click the map to set Start or End",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "geocode"
+         ],
+         "entities": [
+            "place"
+         ],
+         "notes": "GET /geocode?lat=&lng= (same origin, outside /api). The map click observed hit a Google POI, which carries its own name."
+      },
+      {
+         "id": "cap-nearby",
+         "name": "List nearby stops, stations, piers or bike docks for one mode",
+         "user_action": "City page Nearby tile, or /{city}/{mode}/{stop_type}?coords=",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "nearby3",
+            "nearby2"
+         ],
+         "entities": [
+            "nearby-element"
+         ],
+         "notes": "Per mode: brand_ids or kinds, mode_id, location, limit 50, extended=1. Bike docks carry cycles_available, spaces, electric and manual counts."
+      },
+      {
+         "id": "cap-stop-info",
+         "name": "Get a stop or station's details",
+         "user_action": "Open a stop page",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "stopinfo"
+         ],
+         "entities": [
+            "stop",
+            "route"
+         ],
+         "notes": "ids accepts the alias or the id. Returns routes, exits, sharing_urls with the departure API to use."
+      },
+      {
+         "id": "cap-live-departures",
+         "name": "Get live departures at a stop or station",
+         "user_action": "Open a stop page; refreshes every 30 s",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "departures-bus",
+            "departures-metro",
+            "departures-rail"
+         ],
+         "entities": [
+            "departure"
+         ],
+         "notes": "The brand's departure_apis picks the endpoint: departures (bus, ferry), metrodepartures (subway, metro, tube), raildepartures (commuter rail). Live seconds mixed with scheduled ISO times."
+      },
+      {
+         "id": "cap-stop-schedule",
+         "name": "Get a stop's timetable",
+         "user_action": "No web UI caller; bundle getSchedules",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "schedules"
+         ],
+         "entities": [
+            "departure"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-line-info",
+         "name": "Get a line's branches, stops, path and status",
+         "user_action": "Open a line page",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "routeinfo1"
+         ],
+         "entities": [
+            "route",
+            "pattern",
+            "stop"
+         ],
+         "notes": "route=<alias>, extended=1 adds patterns with stop_points and paths."
+      },
+      {
+         "id": "cap-lines-info",
+         "name": "Get several lines at once",
+         "user_action": "City page lines card and strike map",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "routeinfo2"
+         ],
+         "entities": [
+            "route"
+         ],
+         "notes": "route_ids=comma list; weekend=1; status_format=rich."
+      },
+      {
+         "id": "cap-line-status",
+         "name": "Get the status of every line in a city",
+         "user_action": "City page lines card, /{city}/status",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "routestatus"
+         ],
+         "entities": [
+            "route-status"
+         ],
+         "notes": "groupings by mode with routes[].status level, summary, description and disruptions; partners (scooters, bikes, cabs)."
+      },
+      {
+         "id": "cap-disruptions",
+         "name": "Read disruption details for a line or region",
+         "user_action": "Status page, expand a line",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "routestatus",
+            "routeinfo2"
+         ],
+         "entities": [
+            "disruption"
+         ],
+         "notes": "status.disruptions[] with level, summary, description template, replacements and affected stops."
+      },
+      {
+         "id": "cap-find-line",
+         "name": "Find a bus or line by name or number",
+         "user_action": "City page Lines card, type in Find a bus or line",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "findtransport"
+         ],
+         "entities": [
+            "route"
+         ],
+         "notes": "GET /api/2/findtransport?query=&region_id= as you type."
+      },
+      {
+         "id": "cap-vehicle-locations",
+         "name": "Get live vehicle positions on a line",
+         "user_action": "Line page with live_line_code; 10 s timer",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "vehiclelocations"
+         ],
+         "entities": [
+            "vehicle"
+         ],
+         "notes": "Not fired on the NYC 6, M15 or London Bakerloo pages (live_availability 0)."
+      },
+      {
+         "id": "cap-route-paths",
+         "name": "Get line paths for a map",
+         "user_action": "No web UI caller; bundle getRoutePaths",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "routepaths"
+         ],
+         "entities": [
+            "route"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-everything-map",
+         "name": "Get everything on the map around a point",
+         "user_action": "No web UI caller; bundle getEverything",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "everythingmap"
+         ],
+         "entities": [
+            "nearby-element"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-list-cities",
+         "name": "List every supported city and region",
+         "user_action": "Open /cities or the Switch City menu",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "cities-html",
+            "city-html"
+         ],
+         "entities": [
+            "region",
+            "city"
+         ],
+         "notes": "115 regions and 252 cities inlined in page HTML; 8 regions have api_enabled false."
+      },
+      {
+         "id": "cap-city-info",
+         "name": "Get one city's configuration (modes, brands, bounding box, timezone)",
+         "user_action": "Open a city page or the home page",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "city-html",
+            "resource-region-info"
+         ],
+         "entities": [
+            "region",
+            "brand"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-switch-city",
+         "name": "Switch the current city",
+         "user_action": "Switch City, pick a city",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "cities-html"
+         ],
+         "entities": [
+            "region"
+         ],
+         "notes": "Client side: sets the cm_region cookie and reloads; the program passes region_id explicitly instead."
+      },
+      {
+         "id": "cap-brand-directory",
+         "name": "List transport brands (operators) worldwide",
+         "user_action": "Home page loads it",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "resource-brand-directory"
+         ],
+         "entities": [
+            "brand"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-message",
+         "name": "Read the site-wide service message",
+         "user_action": "Every page load",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "message"
+         ],
+         "entities": [
+            "message"
+         ],
+         "notes": "messages[] is usually empty."
+      },
+      {
+         "id": "cap-weather",
+         "name": "Get the weather at a point",
+         "user_action": "No web UI caller; bundle getWeather",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "weather"
+         ],
+         "entities": [],
+         "notes": ""
+      },
+      {
+         "id": "cap-transit-score",
+         "name": "Get a transit score for a point",
+         "user_action": "No web UI caller; bundle getTransitScore",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "transitscore"
+         ],
+         "entities": [],
+         "notes": ""
+      },
+      {
+         "id": "cap-travel-time",
+         "name": "Get the travel time between two points",
+         "user_action": "No web UI caller; place.js makeTravelTimeRequest",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "traveltime"
+         ],
+         "entities": [],
+         "notes": ""
+      },
+      {
+         "id": "cap-shared-eta",
+         "name": "Read a shared ETA",
+         "user_action": "Open /eta/{slug} (server rendered); bundle getETA",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "eta"
+         ],
+         "entities": [],
+         "notes": ""
+      },
+      {
+         "id": "cap-open-go-link",
+         "name": "Open a Meet Me Somewhere link",
+         "user_action": "Open /go/{slug}",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "getshorturl"
+         ],
+         "entities": [
+            "go-link"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-create-go-link",
+         "name": "Create a Meet Me Somewhere link",
+         "user_action": "City page or /meet: type a place and press the arrow",
+         "mutates": true,
+         "visible_to_others": true,
+         "exercised": false,
+         "endpoints": [
+            "createshorturl"
+         ],
+         "entities": [
+            "go-link"
+         ],
+         "notes": "Creates a public short URL with a title and message. Not pressed."
+      },
+      {
+         "id": "cap-news",
+         "name": "Read Citymapper news posts",
+         "user_action": "Footer News, or /news",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "news-html",
+            "blog"
+         ],
+         "entities": [
+            "news-post"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-legal",
+         "name": "Read the terms of service or privacy policy",
+         "user_action": "Footer Terms or Privacy",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "resources"
+         ],
+         "entities": [],
+         "notes": ""
+      },
+      {
+         "id": "cap-sign-in",
+         "name": "Sign up or log in",
+         "user_action": "Account box, Sign up or log in: e-mail, Facebook or Google",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-magiclink",
+            "identity-sessions-create"
+         ],
+         "entities": [
+            "user"
+         ],
+         "notes": "Dialog opened, nothing submitted. Signing in can create an account, so the program will not automate it; you sign in yourself."
+      },
+      {
+         "id": "cap-sign-out",
+         "name": "Log out",
+         "user_action": "Account menu, log out",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-sessions-delete"
+         ],
+         "entities": [
+            "user"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-user-data",
+         "name": "Read the signed-in user",
+         "user_action": "Every page load",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "identity-user-data"
+         ],
+         "entities": [
+            "user"
+         ],
+         "notes": "403 while signed out (observed)."
+      },
+      {
+         "id": "cap-update-user",
+         "name": "Update your name, mobile or Pass interest",
+         "user_action": "No web UI caller; bundle updateUser",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-update-user"
+         ],
+         "entities": [
+            "user"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-saved-places",
+         "name": "List your saved places (home, work, others)",
+         "user_action": "Search box Saved Places section (signed in)",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-places-list"
+         ],
+         "entities": [
+            "saved-place"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-save-place",
+         "name": "Save a place",
+         "user_action": "Star a place (signed in)",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-places-create"
+         ],
+         "entities": [
+            "saved-place"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-update-place",
+         "name": "Edit a saved place",
+         "user_action": "No web UI caller; bundle updateUserPlace",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-places-update"
+         ],
+         "entities": [
+            "saved-place"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-remove-place",
+         "name": "Remove a saved place",
+         "user_action": "Unstar a saved place (signed in)",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-places-delete"
+         ],
+         "entities": [
+            "saved-place"
+         ],
+         "notes": "The web client passes placeId where place_id is required, so the web UI throws before sending (bundle reading)."
+      },
+      {
+         "id": "cap-favourites",
+         "name": "List your favourite stops, stations and lines",
+         "user_action": "Lines card and stop pages (signed in)",
+         "mutates": false,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-favorites-list"
+         ],
+         "entities": [
+            "favourite"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-favourite-stop",
+         "name": "Favourite or unfavourite a stop or station",
+         "user_action": "Star on a stop page (signed in)",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-favorites-create",
+            "identity-favorites-delete"
+         ],
+         "entities": [
+            "favourite"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-favourite-line",
+         "name": "Favourite or unfavourite a line",
+         "user_action": "Star on a line page (signed in)",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-favorites-create",
+            "identity-favorites-delete"
+         ],
+         "entities": [
+            "favourite"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-password-reset",
+         "name": "Reset a password or confirm an e-mail",
+         "user_action": "Server pages /p/reset_password, /signup/{token}/confirm; no web UI caller",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "identity-password-reset",
+            "identity-confirm-signup"
+         ],
+         "entities": [
+            "user"
+         ],
+         "notes": ""
+      },
+      {
+         "id": "cap-pass-payments",
+         "name": "Manage Citymapper Pass payment methods",
+         "user_action": "Server pages /pass and /authorise; no web UI caller",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "turnstile-userinfo",
+            "turnstile-addpaymentmethod",
+            "turnstile-setdefaultpaymentmethod",
+            "turnstile-deletepaymentmethod",
+            "turnstile-deleteallpaymentmethods",
+            "turnstile-sessionttl"
+         ],
+         "entities": [
+            "payment-method"
+         ],
+         "notes": "Paid product on turnstile-api.citymapper.com; needs a Session-Id and User-Device. Out of reach without the app and an account."
+      },
+      {
+         "id": "cap-city-vote",
+         "name": "Vote for a new city",
+         "user_action": "No web UI caller; POST /cities/vote_submit/ with X-CSRFToken",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": false,
+         "endpoints": [
+            "city-vote"
+         ],
+         "entities": [],
+         "notes": ""
+      },
+      {
+         "id": "cap-telemetry",
+         "name": "Analytics events",
+         "user_action": "Every page",
+         "mutates": true,
+         "visible_to_others": false,
+         "exercised": true,
+         "endpoints": [
+            "logevents"
+         ],
+         "entities": [],
+         "notes": "Noise, never called by the program."
+      }
+   ],
+   "endpoints": [
+      {
+         "id": "journeys",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/7/journeys",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "start",
+            "end",
+            "saddr",
+            "eaddr",
+            "sname",
+            "ename",
+            "region_id",
+            "departure_time",
+            "arrival_time",
+            "include_stepfree",
+            "include_networks",
+            "include_floating",
+            "include_via_microtransit",
+            "limit",
+            "context",
+            "partner",
+            "cycle",
+            "status_format"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "sections[]": "id, name, journeys[] (indexes), ad_may_follow",
+            "journeys[]": "start, end, legs[], duration_seconds, walk_seconds, distance_meters, calories, signature, journey_equivalence_hash, formatted_price, price_amount, currency_code, step_free, trip_curation_url_ids, log",
+            "journeys[].legs[]": "mode (walk, transit, cycle, ...), routes[], stops[] (id, name, coords, duration_seconds_to_here), shape[[lat,lng]], frequency, departure_time, arrival_time, pattern_ids, boarding_info",
+            "shared": "station_exits[], trip_curation_urls[]",
+            "routing_request_id": "str"
+         },
+         "pagination": "time-window-journeys",
+         "notes": "Transit journeys. start and end are 'lat,lng'. Observed keys: start, end, sname, ename, saddr, region_id, include_stepfree=1, include_via_microtransit=1, status_format=html, arrival_time or departure_time ISO UTC. 97 KB for NYC, 166 KB for London."
+      },
+      {
+         "id": "walk7",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/7/walk",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "start",
+            "end",
+            "saddr",
+            "eaddr",
+            "sname",
+            "ename",
+            "region_id",
+            "departure_time",
+            "arrival_time",
+            "include_stepfree",
+            "include_networks",
+            "include_floating",
+            "include_via_microtransit",
+            "limit",
+            "context",
+            "partner",
+            "cycle",
+            "status_format"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "journeys[]": "duration_seconds, distance_meters, calories, legs[], signature, profile_id, profile_localized_name",
+            "shared.station_exits[]": "..."
+         },
+         "pagination": "time-window-journeys",
+         "notes": "limit=2 in the UI."
+      },
+      {
+         "id": "walk1",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/walk",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "start",
+            "end",
+            "saddr",
+            "eaddr",
+            "sname",
+            "ename",
+            "region_id",
+            "departure_time",
+            "arrival_time",
+            "include_stepfree",
+            "include_networks",
+            "include_floating",
+            "include_via_microtransit",
+            "limit",
+            "context",
+            "partner",
+            "cycle",
+            "status_format"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Older walk endpoint; bundle only."
+      },
+      {
+         "id": "cycle",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/6/cycle",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "start",
+            "end",
+            "saddr",
+            "eaddr",
+            "sname",
+            "ename",
+            "region_id",
+            "departure_time",
+            "arrival_time",
+            "include_stepfree",
+            "include_networks",
+            "include_floating",
+            "include_via_microtransit",
+            "limit",
+            "context",
+            "partner",
+            "cycle",
+            "status_format"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "journeys[]": "journey_kind (cycle_personal, cycle_hire), profile_id, journey_profile, duration_seconds, distance_meters, legs[], signature, formatted_price, representative_brand_id",
+            "shared.cycle_docks[]": "dock ids and availability"
+         },
+         "pagination": "time-window-journeys",
+         "notes": ""
+      },
+      {
+         "id": "taxi",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/2/taxi",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "start",
+            "end",
+            "saddr",
+            "eaddr",
+            "sname",
+            "ename",
+            "region_id",
+            "departure_time",
+            "arrival_time",
+            "include_stepfree",
+            "include_networks",
+            "include_floating",
+            "include_via_microtransit",
+            "limit",
+            "context",
+            "partner",
+            "cycle",
+            "status_format"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "routes[]": "mode taxi, length_meters, duration_seconds, legs[]",
+            "on_demand_model": "title, categories[]",
+            "status": "int"
+         },
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "vehiclehire",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/7/vehiclehire",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "start",
+            "end",
+            "saddr",
+            "eaddr",
+            "sname",
+            "ename",
+            "region_id",
+            "departure_time",
+            "arrival_time",
+            "include_stepfree",
+            "include_networks",
+            "include_floating",
+            "include_via_microtransit",
+            "limit",
+            "context",
+            "partner",
+            "cycle",
+            "status_format"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Bundle only, no caller."
+      },
+      {
+         "id": "journeytimes",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/journeytimes?region_id={region_id}",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "origin",
+            "referer"
+         ],
+         "body_fields": [
+            "signatures",
+            "partner"
+         ],
+         "response_shape": {
+            "journey_times[]": "time (ISO with offset), time_mode (NOWISH, ...), formatted_price, leg_times[], request_signature, traffic_level"
+         },
+         "pagination": "poll-30s",
+         "notes": "Body {signatures: [<journey signature JSON string>]}; response order follows the request."
+      },
+      {
+         "id": "refreshjourneys",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/refreshjourneys?region_id={region_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "signatures",
+            "time_mode",
+            "region_id",
+            "partner",
+            "use_departures",
+            "status_format"
+         ],
+         "response_shape": {
+            "refreshed_journeys[]": "journey, error",
+            "shared": "..."
+         },
+         "pagination": "",
+         "notes": "time_mode SIGNATURE_EXACT or SIGNATURE; bundle and route table, not fired by in-app navigation."
+      },
+      {
+         "id": "trip-meta",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/trip/signature?signature={deflated base64}&meta_only=true",
+         "surface": "html",
+         "observed": true,
+         "query_keys": [
+            "signature",
+            "meta_only"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Head-tag refresh on client navigation (hackyReplacePageMeta). The signature param is the journey signature, pako-deflated and base64 encoded."
+      },
+      {
+         "id": "gettrip",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/gettrip?slug={slug}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "slug"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "signature": "str"
+         },
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "createtripurl",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/createtripurl?signature={signature}&trip_region_id={region_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "signature",
+            "trip_region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "url": "str"
+         },
+         "pagination": "",
+         "notes": "Write despite GET: creates a public short link."
+      },
+      {
+         "id": "createshorturl",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/createshorturl?endcoord=&endaddress=&endname=&title=&message=&place_id=",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "endcoord",
+            "endaddress",
+            "endname",
+            "title",
+            "message",
+            "place_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "url": "str"
+         },
+         "pagination": "",
+         "notes": "Write despite GET: creates a public Meet Me Somewhere link."
+      },
+      {
+         "id": "getshorturl",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/getshorturl?slug={slug}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "slug"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "eta",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/eta?region_id={region_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "signature"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "searchpost",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/4/searchpost",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "citymapper-client",
+            "citymapper-region",
+            "content-type",
+            "origin",
+            "referer"
+         ],
+         "body_fields": [
+            "query",
+            "region_id",
+            "location",
+            "is_refinement",
+            "refinement_data",
+            "search_providers",
+            "powersearch",
+            "partner"
+         ],
+         "response_shape": {
+            "results[]": "id, name, result_type (heading or item), type (station, place, ...), coords, address, brands, lines, route_icon_names, source, place_details_available, search_providers",
+            "included_search_providers[]": "id, name",
+            "query": "str"
+         },
+         "pagination": "",
+         "notes": "Content-Type application/x-www-form-urlencoded with a JSON body; Citymapper-Client: Web Search; Citymapper-Region: <region_id>."
+      },
+      {
+         "id": "placeresolve",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/placeresolve?id={id}&region_id={region_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "id",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "geocode",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/geocode?lat={lat}&lng={lng}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "lat",
+            "lng"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "results[]": "address_components[], formatted_address (Google geocoder shape)"
+         },
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "nearby3",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/3/nearby",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "brand_ids",
+            "kinds",
+            "mode_id",
+            "location",
+            "viewspan",
+            "region_id",
+            "limit",
+            "extended"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "elements[]": "id, name, coords, kind (transitstop, cycledock, ...), brand_ids, route_ids, route_names, route_icon_names, alias, bearing, walk_time_seconds; docks add cycles_available, cycles_spaces, cycles_total, cycles_electric_available, cycles_manual_available",
+            "bounding_box": "southwest_corner_coords, northeast_corner_coords",
+            "last_updated_time": "str"
+         },
+         "pagination": "limit-50",
+         "notes": "brand_ids and mode_id come from the region's nearby_modes."
+      },
+      {
+         "id": "nearby2",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/2/nearby",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "brand_ids",
+            "kinds",
+            "location",
+            "viewspan",
+            "limit",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "accept",
+            "referer",
+            "x-requested-with"
+         ],
+         "response_shape": {
+            "elements[]": "same element shape as nearby3",
+            "bounding_box": "..."
+         },
+         "pagination": "limit-50",
+         "notes": "jQuery call on stop pages."
+      },
+      {
+         "id": "everythingmap",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/everythingmap?location={lat,lng}&size={size}&region_id={region_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "location",
+            "size",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "stopinfo",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/3/stopinfo?ids={alias or id}&region_id={region_id}",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "ids",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "stops[]": "id, requested_id, alias, name, coords, route_ids, brand_ids, url, sharing_urls[{departure_api, url}], exits[], stop_curation_url_ids",
+            "routes[]": "id, name, brand_id, icon_name, color"
+         },
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "departures-bus",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/departures?headways=1&ids={stop_id}&region_id={region_id}",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "headways",
+            "ids",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "stops[]": "id, name, coords, bearing, region_id, routes[], services[{route_id, headsign, live_departures_seconds[], representative_pattern_id}]"
+         },
+         "pagination": "poll-30s",
+         "notes": "Bus and ferry stops."
+      },
+      {
+         "id": "departures-metro",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/2/metrodepartures?headways=1&ids={station_id}&region_id={region_id}",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "headways",
+            "ids",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "stations[]": "station{name, coords, live_code, status}, sections[{id, name, departure_types, departure_groupings[{grouping_id, departures[{route_id, destination_name, time_seconds | scheduled_time, pattern_id, direction_id, is_advisory_message}]}]}], routes[], messages[]",
+            "last_updated_time": "str"
+         },
+         "pagination": "poll-30s",
+         "notes": "Observed in NYC and Paris."
+      },
+      {
+         "id": "departures-rail",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/raildepartures?headways=1&ids={station_id}&region_id={region_id}",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "headways",
+            "ids",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "stations[]": "station{...}, can_have_departures, departures[{destination, route_id, brand_id, pattern_id, scheduled_time, expected_departure_time, time_seconds, is_live, status, platform_number, trip_short_name, stops[]}]"
+         },
+         "pagination": "poll-30s",
+         "notes": ""
+      },
+      {
+         "id": "schedules",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/schedules?id={stop_id}&region_id={region_id}&time={time}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "id",
+            "region_id",
+            "time"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "routeinfo1",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/routeinfo?route={alias}&region_id={region_id}&weekend=1&status_format=rich&extended=1",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "route",
+            "region_id",
+            "weekend",
+            "status_format",
+            "extended"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "routes[]": "id, name, long_name, brand, mode, color, live_line_code, live_availability, url, aliases, status{level, summary, description, replacements}, patterns[{id, name, pattern_type, path, stop_points}]",
+            "stops": "{stop_id: {name, coords, routes, brands, live_code, status}}",
+            "feeds[]": "...",
+            "status": "int"
+         },
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "routeinfo2",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/2/routeinfo?route_ids={id,id}&region_id={region_id}&weekend=1&status_format=rich",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "route_ids",
+            "region_id",
+            "weekend",
+            "status_format",
+            "extended"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "routes[]": "same route shape as routeinfo1",
+            "stops": "{stop_id: {...}}"
+         },
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "routepaths",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/routepaths?route_ids={ids}&region_id={region_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "route_ids",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "routestatus",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/routestatus?region_id={region_id}&format=rich",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "region_id",
+            "format"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "accept",
+            "citymapper-region",
+            "content-type",
+            "referer"
+         ],
+         "response_shape": {
+            "groupings[]": "id, name, include_in_disruption_count, routes[{name, long_name, brand, aliases, status{level, summary, description, replacements, disruptions[{level, summary, description, replacements, stops}]}}], partners[]",
+            "last_updated_time": "str",
+            "referenced_routes[]": "..."
+         },
+         "pagination": "poll-2min",
+         "notes": ""
+      },
+      {
+         "id": "findtransport",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/2/findtransport?query={text}&region_id={region_id}",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "query",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Observed in your browser (URL only, body not captured)."
+      },
+      {
+         "id": "vehiclelocations",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/vehiclelocations?route={route}&region_id={region_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "route",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "poll-10s",
+         "notes": ""
+      },
+      {
+         "id": "message",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/2/message?had_previous_versions=0",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "had_previous_versions"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "accept",
+            "citymapper-region",
+            "content-type",
+            "referer"
+         ],
+         "response_shape": {
+            "messages[]": "..."
+         },
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "weather",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/weather?location={lat,lng}&units={c|f}&term=now",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "location",
+            "units",
+            "term"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "transitscore",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/transitscore?startcoord={lat,lng}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "startcoord"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "traveltime",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/traveltime?startcoord={lat,lng}&endcoord={lat,lng}&region_id={region_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "startcoord",
+            "endcoord",
+            "region_id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "blog",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/blog[?id={id}]",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [
+            "id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "resources",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/resources?id={resource_id}",
+         "surface": "html",
+         "observed": false,
+         "query_keys": [
+            "id"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Linked from the footer for the terms and privacy policy."
+      },
+      {
+         "id": "city-html",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/{region_slug}",
+         "surface": "html",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "window.citymapper.region": "region_id, region_name, region_slug, bounding_box, default_place, nearby_modes[], timezone, core_brand_ids, distance_units, feature flags",
+            "window.citymapper.regions": "[[region, distance_km]] x115",
+            "window.citymapper.citiesInRegions": "{city_slug: {city_name, city_id, region_id, default_place, show_in_city_switcher}} x252",
+            "window.citymapper.brands": "{brand_id: {..., departure_apis}}",
+            "window.citymapper.apiUrl": "/api/"
+         },
+         "pagination": "",
+         "notes": "2 MB to 15 MB of HTML; the one source of the region list."
+      },
+      {
+         "id": "cities-html",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/cities",
+         "surface": "html",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Same window.citymapper globals; city tiles link to /{region_slug}."
+      },
+      {
+         "id": "news-html",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/news",
+         "surface": "html",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "resource-region-info",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/resource/region-info/{region_id}",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {
+            "$": "region_id, region_name, region_slug, bounding_box, default_place, nearby_modes[], offline_maps[], timezone, region_is_launched, web_enabled, api_enabled, core_brand_ids, default_cycle_brand_id, distance_units, clock, ondemand"
+         },
+         "pagination": "",
+         "notes": "JSON region config; landing.js calls it with the cm_region cookie value."
+      },
+      {
+         "id": "resource-brand-directory",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/resource/brand-directory",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "445 KB JSON brand catalogue."
+      },
+      {
+         "id": "identity-user-data",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/identity/user_data",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "403 with an empty body while signed out (observed); user object when signed in."
+      },
+      {
+         "id": "identity-sessions-create",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/identity/sessions",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "auth_provider",
+            "email",
+            "password",
+            "access_token",
+            "source_page",
+            "has_seen_marketing_opt_out",
+            "has_opted_out_of_marketing",
+            "is_interested_in_pass"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-sessions-delete",
+         "method": "DELETE",
+         "url_pattern": "https://citymapper.com/api/1/identity/sessions",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-magiclink",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/identity/magiclink/create",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "email",
+            "force_prototype",
+            "source_page",
+            "has_seen_marketing_opt_out",
+            "has_opted_out_of_marketing",
+            "is_interested_in_pass",
+            "redirect_path"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-update-user",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/identity/update_user",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "first_name",
+            "last_name",
+            "mobile",
+            "is_interested_in_pass"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-password-reset",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/identity/password_reset[/{token}]",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "email",
+            "new_password"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-confirm-signup",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/identity/confirm_sign_up/{token}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-places-list",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/identity/places",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-places-create",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/identity/places",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "name",
+            "address",
+            "coords",
+            "role",
+            "place_id"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Body is the place object; role home or work for those slots (bundle)."
+      },
+      {
+         "id": "identity-places-update",
+         "method": "PUT",
+         "url_pattern": "https://citymapper.com/api/1/identity/places/{place_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "name",
+            "address",
+            "coords",
+            "role"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-places-delete",
+         "method": "DELETE",
+         "url_pattern": "https://citymapper.com/api/1/identity/places/{place_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-favorites-list",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/api/1/identity/favorites",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-favorites-create",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/identity/favorites",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "target_type",
+            "target_id",
+            "region_id"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "target_type 1 bus stop, 2 station, 3 transit line (bundle)."
+      },
+      {
+         "id": "identity-favorites-delete",
+         "method": "DELETE",
+         "url_pattern": "https://citymapper.com/api/1/identity/favorites/{favourite_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-save-journey",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/1/identity/documents/SavedJourney",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [
+            "document_data"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "identity-delete-journey",
+         "method": "DELETE",
+         "url_pattern": "https://citymapper.com/api/1/identity/documents/SavedJourney/{document_id}",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "turnstile-userinfo",
+         "method": "POST",
+         "url_pattern": "https://turnstile-api.citymapper.com/web/1/userinfo",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "user-device",
+            "session-id",
+            "content-type"
+         ],
+         "body_fields": [
+            "payment_provider_id"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "turnstile-addpaymentmethod",
+         "method": "POST",
+         "url_pattern": "https://turnstile-api.citymapper.com/web/1/addpaymentmethod",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "user-device",
+            "session-id",
+            "content-type"
+         ],
+         "body_fields": [
+            "payment_method_id",
+            "payment_provider_id"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "turnstile-setdefaultpaymentmethod",
+         "method": "POST",
+         "url_pattern": "https://turnstile-api.citymapper.com/web/1/setdefaultpaymentmethod",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "user-device",
+            "session-id",
+            "content-type"
+         ],
+         "body_fields": [
+            "payment_method_id",
+            "payment_provider_id"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "turnstile-deletepaymentmethod",
+         "method": "POST",
+         "url_pattern": "https://turnstile-api.citymapper.com/web/1/deletepaymentmethod",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "user-device",
+            "session-id",
+            "content-type"
+         ],
+         "body_fields": [
+            "payment_method_id",
+            "payment_provider_id"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "turnstile-deleteallpaymentmethods",
+         "method": "POST",
+         "url_pattern": "https://turnstile-api.citymapper.com/web/1/deleteallpaymentmethods",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "user-device",
+            "session-id",
+            "content-type"
+         ],
+         "body_fields": [
+            "payment_provider_id"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "turnstile-sessionttl",
+         "method": "GET",
+         "url_pattern": "https://turnstile-api.citymapper.com/web/1/sessionttl",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "user-device",
+            "session-id"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "city-vote",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/cities/vote_submit/",
+         "surface": "rest",
+         "observed": false,
+         "query_keys": [],
+         "request_header_names": [
+            "x-csrftoken",
+            "content-type"
+         ],
+         "body_fields": [
+            "city_slug",
+            "email"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": ""
+      },
+      {
+         "id": "logevents",
+         "method": "POST",
+         "url_pattern": "https://citymapper.com/api/2/logevents",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "citymapper-client",
+            "citymapper-region",
+            "user-device",
+            "content-type"
+         ],
+         "body_fields": [
+            "text/plain event lines"
+         ],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Analytics.",
+         "noise": true
+      },
+      {
+         "id": "resourceproxy-images",
+         "method": "GET",
+         "url_pattern": "https://global-api.citymapper.com/resourceproxy/{name}.png",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "City illustrations on /cities.",
+         "noise": true
+      },
+      {
+         "id": "static-img",
+         "method": "GET",
+         "url_pattern": "https://citymapper.com/static-img?src={icon names}",
+         "surface": "rest",
+         "observed": true,
+         "query_keys": [],
+         "request_header_names": [
+            "accept",
+            "content-type",
+            "referer"
+         ],
+         "body_fields": [],
+         "response_shape": {},
+         "pagination": "",
+         "notes": "Route icons.",
+         "noise": true
+      }
+   ],
+   "entities": [
+      {
+         "id": "region",
+         "description": "A supported metro area; the unit every API call is scoped by",
+         "fields": [
+            "region_id",
+            "region_name",
+            "region_slug",
+            "region_name_aliases",
+            "bounding_box",
+            "default_place",
+            "timezone",
+            "web_enabled",
+            "api_enabled",
+            "nearby_modes",
+            "core_brand_ids",
+            "distance_units"
+         ],
+         "id_fields": [
+            "region_id",
+            "region_slug"
+         ],
+         "source_endpoints": [
+            "city-html",
+            "resource-region-info"
+         ]
+      },
+      {
+         "id": "city",
+         "description": "A city inside a region (252)",
+         "fields": [
+            "city_id",
+            "city_name",
+            "city_slug",
+            "region_id",
+            "default_place",
+            "show_in_city_switcher"
+         ],
+         "id_fields": [
+            "city_id",
+            "city_slug"
+         ],
+         "source_endpoints": [
+            "city-html"
+         ]
+      },
+      {
+         "id": "nearby-mode",
+         "description": "A mode tile for nearby searches in a region",
+         "fields": [
+            "mode_id",
+            "mode_slug",
+            "short_title",
+            "kind_ids",
+            "request_brand_ids",
+            "priority_brand_ids",
+            "mode_type"
+         ],
+         "id_fields": [
+            "mode_id"
+         ],
+         "source_endpoints": [
+            "city-html",
+            "resource-region-info"
+         ]
+      },
+      {
+         "id": "brand",
+         "description": "A transport operator or network",
+         "fields": [
+            "brand_id",
+            "name",
+            "departure_apis",
+            "affinities"
+         ],
+         "id_fields": [
+            "brand_id"
+         ],
+         "source_endpoints": [
+            "city-html",
+            "resource-brand-directory"
+         ]
+      },
+      {
+         "id": "place",
+         "description": "A search result: station, stop, address or Google place",
+         "fields": [
+            "id",
+            "name",
+            "address",
+            "coords",
+            "type",
+            "result_type",
+            "source",
+            "brands",
+            "lines"
+         ],
+         "id_fields": [
+            "id"
+         ],
+         "source_endpoints": [
+            "searchpost",
+            "placeresolve",
+            "geocode"
+         ]
+      },
+      {
+         "id": "journey",
+         "description": "One planned option",
+         "fields": [
+            "duration_seconds",
+            "walk_seconds",
+            "distance_meters",
+            "calories",
+            "legs",
+            "signature",
+            "formatted_price",
+            "price_amount",
+            "currency_code",
+            "journey_equivalence_hash",
+            "profile_id",
+            "journey_kind"
+         ],
+         "id_fields": [
+            "signature",
+            "journey_equivalence_hash"
+         ],
+         "source_endpoints": [
+            "journeys",
+            "walk7",
+            "cycle",
+            "taxi",
+            "refreshjourneys"
+         ]
+      },
+      {
+         "id": "leg",
+         "description": "A part of a journey",
+         "fields": [
+            "mode",
+            "routes",
+            "stops",
+            "shape",
+            "frequency",
+            "departure_time",
+            "arrival_time",
+            "pattern_ids",
+            "distance",
+            "duration"
+         ],
+         "id_fields": [],
+         "source_endpoints": [
+            "journeys"
+         ]
+      },
+      {
+         "id": "journey-time",
+         "description": "Live timing for a journey signature",
+         "fields": [
+            "time",
+            "time_mode",
+            "leg_times",
+            "formatted_price",
+            "traffic_level",
+            "request_signature"
+         ],
+         "id_fields": [
+            "request_signature"
+         ],
+         "source_endpoints": [
+            "journeytimes"
+         ]
+      },
+      {
+         "id": "nearby-element",
+         "description": "A stop, station, pier or dock near a point",
+         "fields": [
+            "id",
+            "name",
+            "coords",
+            "kind",
+            "alias",
+            "brand_ids",
+            "route_ids",
+            "route_names",
+            "bearing",
+            "walk_time_seconds",
+            "cycles_available",
+            "cycles_spaces",
+            "cycles_electric_available"
+         ],
+         "id_fields": [
+            "id",
+            "alias"
+         ],
+         "source_endpoints": [
+            "nearby3",
+            "nearby2"
+         ]
+      },
+      {
+         "id": "stop",
+         "description": "A stop or station with routes and exits",
+         "fields": [
+            "id",
+            "alias",
+            "name",
+            "coords",
+            "route_ids",
+            "brand_ids",
+            "exits",
+            "sharing_urls"
+         ],
+         "id_fields": [
+            "id",
+            "alias"
+         ],
+         "source_endpoints": [
+            "stopinfo"
+         ]
+      },
+      {
+         "id": "departure",
+         "description": "A live or scheduled departure",
+         "fields": [
+            "route_id",
+            "destination_name",
+            "headsign",
+            "time_seconds",
+            "scheduled_time",
+            "expected_departure_time",
+            "live_departures_seconds",
+            "is_live",
+            "platform_number",
+            "pattern_id",
+            "direction_id"
+         ],
+         "id_fields": [],
+         "source_endpoints": [
+            "departures-bus",
+            "departures-metro",
+            "departures-rail"
+         ]
+      },
+      {
+         "id": "route",
+         "description": "A line",
+         "fields": [
+            "id",
+            "name",
+            "long_name",
+            "brand",
+            "mode",
+            "color",
+            "aliases",
+            "live_line_code",
+            "status",
+            "patterns",
+            "url"
+         ],
+         "id_fields": [
+            "id",
+            "aliases"
+         ],
+         "source_endpoints": [
+            "routeinfo1",
+            "routeinfo2",
+            "routestatus",
+            "findtransport"
+         ]
+      },
+      {
+         "id": "pattern",
+         "description": "A branch or direction of a line",
+         "fields": [
+            "id",
+            "name",
+            "pattern_type",
+            "path",
+            "stop_points"
+         ],
+         "id_fields": [
+            "id"
+         ],
+         "source_endpoints": [
+            "routeinfo1"
+         ]
+      },
+      {
+         "id": "route-status",
+         "description": "A line's current service level",
+         "fields": [
+            "level",
+            "summary",
+            "description",
+            "replacements",
+            "disruptions"
+         ],
+         "id_fields": [],
+         "source_endpoints": [
+            "routestatus",
+            "routeinfo1",
+            "routeinfo2"
+         ]
+      },
+      {
+         "id": "disruption",
+         "description": "One disruption on a line",
+         "fields": [
+            "level",
+            "summary",
+            "description",
+            "replacements",
+            "stops"
+         ],
+         "id_fields": [],
+         "source_endpoints": [
+            "routestatus"
+         ]
+      },
+      {
+         "id": "vehicle",
+         "description": "A live vehicle position on a line (bundle)",
+         "fields": [
+            "inferred"
+         ],
+         "id_fields": [],
+         "source_endpoints": [
+            "vehiclelocations"
+         ]
+      },
+      {
+         "id": "message",
+         "description": "Site-wide notice",
+         "fields": [
+            "messages"
+         ],
+         "id_fields": [],
+         "source_endpoints": [
+            "message"
+         ]
+      },
+      {
+         "id": "go-link",
+         "description": "A Meet Me Somewhere short link",
+         "fields": [
+            "url",
+            "endcoord",
+            "endname",
+            "endaddress",
+            "title",
+            "message"
+         ],
+         "id_fields": [
+            "slug"
+         ],
+         "source_endpoints": [
+            "createshorturl",
+            "getshorturl"
+         ]
+      },
+      {
+         "id": "news-post",
+         "description": "A news article",
+         "fields": [
+            "id",
+            "slug",
+            "title"
+         ],
+         "id_fields": [
+            "id"
+         ],
+         "source_endpoints": [
+            "news-html",
+            "blog"
+         ]
+      },
+      {
+         "id": "user",
+         "description": "The signed-in user (bundle)",
+         "fields": [
+            "id",
+            "email",
+            "first_name",
+            "last_name",
+            "mobile",
+            "is_interested_in_pass",
+            "has_seen_marketing_opt_out",
+            "has_opted_out_of_marketing"
+         ],
+         "id_fields": [
+            "id"
+         ],
+         "source_endpoints": [
+            "identity-user-data"
+         ]
+      },
+      {
+         "id": "saved-place",
+         "description": "A saved place (bundle)",
+         "fields": [
+            "place_id",
+            "name",
+            "address",
+            "coords",
+            "role"
+         ],
+         "id_fields": [
+            "place_id"
+         ],
+         "source_endpoints": [
+            "identity-places-list"
+         ]
+      },
+      {
+         "id": "favourite",
+         "description": "A favourite stop, station or line (bundle)",
+         "fields": [
+            "id",
+            "target_type",
+            "target_id",
+            "region_id"
+         ],
+         "id_fields": [
+            "id"
+         ],
+         "source_endpoints": [
+            "identity-favorites-list"
+         ]
+      },
+      {
+         "id": "saved-journey",
+         "description": "A journey sent to the phone (bundle)",
+         "fields": [
+            "document_id",
+            "document_data"
+         ],
+         "id_fields": [
+            "document_id"
+         ],
+         "source_endpoints": [
+            "identity-save-journey"
+         ]
+      },
+      {
+         "id": "payment-method",
+         "description": "A Citymapper Pass payment method (bundle)",
+         "fields": [
+            "payment_method_id",
+            "payment_provider_id"
+         ],
+         "id_fields": [
+            "payment_method_id"
+         ],
+         "source_endpoints": [
+            "turnstile-userinfo"
+         ]
+      }
+   ],
+   "auth": {
+      "mechanism": "cookie-session (Django sessionid), optional; every public read works signed out",
+      "cookie_names": [
+         "sessionid",
+         "csrftoken",
+         "uid",
+         "uid_set",
+         "cm_region",
+         "_locale",
+         "__cf_bm"
+      ],
+      "header_names": [
+         "Citymapper-Region",
+         "Citymapper-Client",
+         "User-Device",
+         "Session-Id (turnstile only)",
+         "X-CSRFToken (city vote only)"
+      ],
+      "csrf": "A csrftoken cookie is set on first visit, but the bundle sends X-CSRFToken only on the uncalled city vote; identity writes send none (unknown whether the server enforces it)",
+      "login_flow": "E-mail magic link (POST identity/magiclink/create), Google Identity Services access token or Facebook SDK token posted to identity/sessions; no password form in the UI; no Apple sign-in",
+      "session_lifetime": "unknown; you are signed out",
+      "refresh": "none observed; a signed-out session answers 403 on identity/user_data"
+   },
+   "pagination": [
+      {
+         "id": "time-window-journeys",
+         "kind": "none",
+         "request_keys": [
+            "departure_time",
+            "arrival_time",
+            "limit"
+         ],
+         "response_keys": [
+            "sections",
+            "journeys"
+         ],
+         "terminator": "one response per query; a later window is a new query with a later departure_time",
+         "page_size": null
+      },
+      {
+         "id": "poll-30s",
+         "kind": "none",
+         "request_keys": [
+            "ids",
+            "headways"
+         ],
+         "response_keys": [
+            "time_seconds",
+            "scheduled_time",
+            "live_departures_seconds",
+            "last_updated_time"
+         ],
+         "terminator": "the response is the next departures window (about 30 to 60 minutes); the UI re-polls every 30 s",
+         "page_size": null
+      },
+      {
+         "id": "poll-2min",
+         "kind": "none",
+         "request_keys": [
+            "region_id"
+         ],
+         "response_keys": [
+            "last_updated_time"
+         ],
+         "terminator": "single snapshot; the UI refetches every 2 minutes",
+         "page_size": null
+      },
+      {
+         "id": "poll-10s",
+         "kind": "none",
+         "request_keys": [
+            "route"
+         ],
+         "response_keys": [],
+         "terminator": "single snapshot; the UI refetches every 10 s (bundle)",
+         "page_size": null
+      },
+      {
+         "id": "limit-50",
+         "kind": "offset-limit",
+         "request_keys": [
+            "limit",
+            "location",
+            "viewspan"
+         ],
+         "response_keys": [
+            "elements",
+            "bounding_box"
+         ],
+         "terminator": "fewer than limit elements, or move the location; no offset or cursor exists",
+         "page_size": 50
+      }
+   ],
+   "caveats": [
+      {
+         "kind": "anti-bot",
+         "detail": "Cloudflare fronts the site and sets __cf_bm. No challenge appeared for your browser, a separate CDP Brave profile or plain curl; behaviour at higher rates is untested.",
+         "severity": "medium",
+         "evidence": "response headers server: cloudflare, cf-ray, set-cookie __cf_bm (curl and CDP captures 2026-10-10)"
+      },
+      {
+         "kind": "rate-limit",
+         "detail": "No rate-limit headers (x-ratelimit-*, retry-after) on any API response; thresholds unknown. Pace at 3 s or more per request.",
+         "severity": "medium",
+         "evidence": "response headers in var/captures/run-2026-10-10-082844-*.jsonl list only cf-cache-status and x-version"
+      },
+      {
+         "kind": "signing",
+         "detail": "No request signing or nonce. The journey 'signature' is a JSON journey descriptor returned by the planner; /trip/signature?signature= carries it pako-deflated and base64 encoded.",
+         "severity": "low",
+         "evidence": "journeys[].signature is a 900-character JSON string; bundle route table (research/bundle/api-inventory.md)"
+      },
+      {
+         "kind": "csrf",
+         "detail": "Identity writes (places, favourites, saved journeys) send no CSRF header from the web client; whether the server enforces csrftoken is unknown until a signed-in write is tried.",
+         "severity": "medium",
+         "evidence": "api-inventory.md section (b) Auth"
+      },
+      {
+         "kind": "other",
+         "detail": "Web account exists but you are signed out on citymapper.com, and signing in may create an account (magic link, Google or Facebook). Account reads and writes cannot be verified until you sign in yourself.",
+         "severity": "high",
+         "evidence": "GET /api/1/identity/user_data 403 in your browser; login dialog shows e-mail, Facebook, Google"
+      },
+      {
+         "kind": "other",
+         "detail": "Citymapper Club and Pass are paid features; Pass payment methods live on turnstile-api.citymapper.com and need a Session-Id the web pages never expose. App-only on the web.",
+         "severity": "high",
+         "evidence": "bundle turnstile methods with no caller; news posts on Club features"
+      },
+      {
+         "kind": "other",
+         "detail": "Share and Meet Me Somewhere links (createtripurl, createshorturl) are GET requests that create public URLs; they are writes visible to others.",
+         "severity": "medium",
+         "evidence": "bundle create-links.js; trip-share.js calls it on mount of the share block"
+      },
+      {
+         "kind": "feature-flag",
+         "detail": "8 regions have api_enabled false (fr-nantes, fr-bordeaux, fr-toulouse, fr-strasbourg, fr-marseille, ch-ch, mc-monaco, at-vienna); routing there may be absent or partial. Coordinates outside a region's bounding box are rejected client side as out of bounds.",
+         "severity": "medium",
+         "evidence": "window.citymapper.regions in the /nyc HTML; journey-results toggleOutOfBounds"
+      },
+      {
+         "kind": "realtime",
+         "detail": "No websockets or SSE. Live data is polled: departures and journey times every 30 s, line status every 2 minutes, vehicles every 10 s.",
+         "severity": "low",
+         "evidence": "CDP captures report 0 websocket frames; bundle timers"
+      },
+      {
+         "kind": "other",
+         "detail": "Region config and the city list exist only inside 2 to 15 MB server-rendered HTML pages (or /resource/region-info per region); reading the city list costs one large page load, so it should be cached.",
+         "severity": "medium",
+         "evidence": "city-paris 4.8 MB, nearby-paris-metro 15 MB, city-london 8 MB in capture logs"
+      },
+      {
+         "kind": "other",
+         "detail": "Embedded Google Maps browser key (39 characters) and Google and Facebook client ids in the bundle; only used for map tiles and social sign-in, never needed by the program.",
+         "severity": "low",
+         "evidence": "bundle constants GOOGLE_MAPS_API_KEY, GOOGLE_KEY, FACEBOOK_APP_ID (names and lengths only)"
+      },
+      {
+         "kind": "terms",
+         "detail": "This is the website's private API, not the official developer API; the terms of service link is /api/1/resources?id=citymapper-terms-of-service.",
+         "severity": "medium",
+         "evidence": "footer link"
+      },
+      {
+         "kind": "other",
+         "detail": "Bike docks have no detail page (404); dock availability comes from nearby results only.",
+         "severity": "low",
+         "evidence": "GET /nyc/bike/docks/CitiBike_904930bd-... 404 (capture stop-nyc-bike)"
+      },
+      {
+         "kind": "other",
+         "detail": "The web client's delete-place call passes placeId where place_id is required, so the web UI cannot remove a saved place; the program must send place_id itself.",
+         "severity": "low",
+         "evidence": "bundle user-actions.js removePlace (api-inventory.md)"
+      }
+   ],
+   "open_questions": [
+      "Account surface (user_data, places, favourites, saved journeys, update_user) is mapped from the bundle only: response shapes and CSRF enforcement need one signed-in session, which only you can create.",
+      "vehiclelocations was not fired on any line page walked (live_availability 0 on NYC 6, M15, London Bakerloo); which regions have live vehicles is unknown.",
+      "refreshjourneys, gettrip, getshorturl, eta, placeresolve, geocode, schedules, routepaths, everythingmap, weather, transitscore, traveltime, vehiclehire, walk v1 and blog are defined in the bundle but were not observed live; the engineer stage replays them once each.",
+      "Response bodies of findtransport were not captured (seen by URL in your browser only).",
+      "How far ahead departure_time may be set, and whether past times are accepted, is untested.",
+      "Brand planner pages (/{region}/planner/{brand}) were not visited; valid brand slugs are unknown."
+   ]
+}

@@ -1,0 +1,84 @@
+{
+   "results": [
+      {
+         "id": "stations",
+         "name": "Stations",
+         "result_type": "heading"
+      },
+      {
+         "brands": [
+            "PortvaleMetro"
+         ],
+         "coords": [
+            10.512,
+            20.488
+         ],
+         "id": "citymapper:MetroHarbourSq",
+         "lines": [
+            "A",
+            "C"
+         ],
+         "name": "Harbour Sq",
+         "route_icon_names": [
+            "zz-portvale-metro-a",
+            "zz-portvale-metro-c"
+         ],
+         "source": "citymapper_stations",
+         "type": "station"
+      },
+      {
+         "id": "results",
+         "name": "Results",
+         "result_type": "heading",
+         "search_providers": [
+            {
+               "id": "google",
+               "name": "Google"
+            }
+         ]
+      },
+      {
+         "address": "Quay Rd, Portvale",
+         "id": "google:ChIJFakePlaceAlpha",
+         "name": "Lantern Market",
+         "place_details_available": true,
+         "result_type": "result",
+         "source": "google",
+         "type": "place"
+      },
+      {
+         "address": "Mill Ln, Portvale",
+         "id": "google:ChIJFakePlaceBeta",
+         "name": "Old Mill Hall",
+         "place_details_available": true,
+         "result_type": "result",
+         "source": "google",
+         "type": "place"
+      },
+      {
+         "alternate_search_providers": [],
+         "id": "results",
+         "included_search_providers": [
+            {
+               "id": "google",
+               "name": "Google"
+            }
+         ],
+         "name": "Results",
+         "result_type": "attribution"
+      }
+   ],
+   "included_search_providers": [
+      {
+         "id": "google",
+         "name": "Google"
+      },
+      {
+         "id": "citymapper",
+         "name": "Citymapper"
+      }
+   ],
+   "alternate_search_providers": [],
+   "detailed_search_providers": [],
+   "query": "Harbour"
+}

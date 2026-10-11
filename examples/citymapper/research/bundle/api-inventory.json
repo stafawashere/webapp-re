@@ -1,0 +1,4726 @@
+[
+ {
+  "name": "getAllJourneys",
+  "source_file": "/__w/web/web/src/api/src/methods/get-journeys.js",
+  "resource": "journeys",
+  "method": "GET",
+  "url_pattern": "/api/7/journeys",
+  "query_keys": [
+   {
+    "name": "start",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from startCoords, validated by isValidCoords"
+   },
+   {
+    "name": "end",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from endCoords, validated by isValidCoords"
+   },
+   {
+    "name": "saddr",
+    "required": false,
+    "shape": "string",
+    "note": "startAddress"
+   },
+   {
+    "name": "eaddr",
+    "required": false,
+    "shape": "string",
+    "note": "endAddress"
+   },
+   {
+    "name": "sname",
+    "required": false,
+    "shape": "string",
+    "note": "startName"
+   },
+   {
+    "name": "ename",
+    "required": false,
+    "shape": "string",
+    "note": "endName"
+   },
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string, e.g. uk-london",
+    "note": "not checked by invariant, but every caller sends it"
+   },
+   {
+    "name": "departure_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is now or depart"
+   },
+   {
+    "name": "arrival_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is arrive"
+   },
+   {
+    "name": "include_stepfree",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page and journey page always send \"1\""
+   },
+   {
+    "name": "include_networks",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_floating",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_via_microtransit",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page sends \"1\""
+   },
+   {
+    "name": "limit",
+    "required": false,
+    "shape": "integer",
+    "note": "walk request uses limit 2"
+   },
+   {
+    "name": "context",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string",
+    "note": "brand planner slug with '-' replaced by '_'"
+   },
+   {
+    "name": "cycle",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "status_format",
+    "required": true,
+    "shape": "constant \"html\"",
+    "note": "hard-coded"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "actions/journey-actions.js fetchJourneys (FETCH_JOURNEYS) <- containers/journey-results/results-page.js fetch() on mount and when start/end/time change on /directions, /:region_slug/directions, /webapp, /:region_slug/webapp, /:region_slug/planner/:brand",
+   "actions/journey-actions.js fetchScenarioJourneys (FETCH_SCENARIO_JOURNEYS): defined, no dispatcher found"
+  ],
+  "response_fields_used": [
+   "journeys[] (signature, legs[], leave_by_time, time, journey_kind, mode, duration_seconds, departure_time, arrival_time, journey_equivalence_hash, trip_equivalence_id)",
+   "sections[] (id, name, journeys[] as indexes; id WALK_CYCLE for enterprise scenario)",
+   "shared.cycle_docks[]",
+   "legs[].routes[].affinities, legs[].stops[].id, legs[].mode"
+  ],
+  "pagination_or_time_window": "Single shot. Time window set by departure_time or arrival_time. After results arrive the page polls getJourneyTimes every 30s, max 10 times (JOURNEYTIME_REFRESH, MAX_REFRESH_COUNT).",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Fired in parallel with getWalk7Journeys (limit 2), getCycleJourneys and getTaxiJourneys (taxi skipped in brand planner). Only sent when both points are inside region.bounding_box.",
+  "evidence": [
+   "var w=t.query({start:n,end:o,saddr:a,eaddr:i,sname:s,ename:c,region_id:l,departure_time:u,arrival_time:f,include_stepfree:p,include_networks:_,include_floating:h,include_via_microtransit:m,limit:g,context:y,partner:v,cycle:b,status_format:\"html\"}).toString();return e.get(w)",
+   "d()(n&&tt(n),'API.getJourneysForResource(): Valid \"startCoords\" are required. You passed \"'.concat(n,'\".'))",
+   "journeys:l.template(\"/7/journeys\")",
+   "m={startName:d.name,endName:p.name,startCoords:d.coords.join(\",\"),endCoords:p.coords.join(\",\"),startAddress:d.address,endAddress:p.address,regionId:u.region_id,include_stepfree:\"1\",include_via_microtransit:\"1\",partner:r.getPlanner().partner}"
+  ]
+ },
+ {
+  "name": "getWalkJourneys",
+  "source_file": "/__w/web/web/src/api/src/methods/get-journeys.js",
+  "resource": "walk",
+  "method": "GET",
+  "url_pattern": "/api/1/walk",
+  "query_keys": [
+   {
+    "name": "start",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from startCoords, validated by isValidCoords"
+   },
+   {
+    "name": "end",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from endCoords, validated by isValidCoords"
+   },
+   {
+    "name": "saddr",
+    "required": false,
+    "shape": "string",
+    "note": "startAddress"
+   },
+   {
+    "name": "eaddr",
+    "required": false,
+    "shape": "string",
+    "note": "endAddress"
+   },
+   {
+    "name": "sname",
+    "required": false,
+    "shape": "string",
+    "note": "startName"
+   },
+   {
+    "name": "ename",
+    "required": false,
+    "shape": "string",
+    "note": "endName"
+   },
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string, e.g. uk-london",
+    "note": "not checked by invariant, but every caller sends it"
+   },
+   {
+    "name": "departure_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is now or depart"
+   },
+   {
+    "name": "arrival_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is arrive"
+   },
+   {
+    "name": "include_stepfree",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page and journey page always send \"1\""
+   },
+   {
+    "name": "include_networks",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_floating",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_via_microtransit",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page sends \"1\""
+   },
+   {
+    "name": "limit",
+    "required": false,
+    "shape": "integer",
+    "note": "walk request uses limit 2"
+   },
+   {
+    "name": "context",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string",
+    "note": "brand planner slug with '-' replaced by '_'"
+   },
+   {
+    "name": "cycle",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "status_format",
+    "required": true,
+    "shape": "constant \"html\"",
+    "note": "hard-coded"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": "Single shot, time window from departure_time or arrival_time.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined and registered, no caller in bundle.js or landing.js.",
+  "evidence": [
+   "var w=t.query({start:n,end:o,saddr:a,eaddr:i,sname:s,ename:c,region_id:l,departure_time:u,arrival_time:f,include_stepfree:p,include_networks:_,include_floating:h,include_via_microtransit:m,limit:g,context:y,partner:v,cycle:b,status_format:\"html\"}).toString();return e.get(w)",
+   "walk:l.template(\"/1/walk\")"
+  ]
+ },
+ {
+  "name": "getWalk7Journeys",
+  "source_file": "/__w/web/web/src/api/src/methods/get-journeys.js",
+  "resource": "walk7",
+  "method": "GET",
+  "url_pattern": "/api/7/walk",
+  "query_keys": [
+   {
+    "name": "start",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from startCoords, validated by isValidCoords"
+   },
+   {
+    "name": "end",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from endCoords, validated by isValidCoords"
+   },
+   {
+    "name": "saddr",
+    "required": false,
+    "shape": "string",
+    "note": "startAddress"
+   },
+   {
+    "name": "eaddr",
+    "required": false,
+    "shape": "string",
+    "note": "endAddress"
+   },
+   {
+    "name": "sname",
+    "required": false,
+    "shape": "string",
+    "note": "startName"
+   },
+   {
+    "name": "ename",
+    "required": false,
+    "shape": "string",
+    "note": "endName"
+   },
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string, e.g. uk-london",
+    "note": "not checked by invariant, but every caller sends it"
+   },
+   {
+    "name": "departure_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is now or depart"
+   },
+   {
+    "name": "arrival_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is arrive"
+   },
+   {
+    "name": "include_stepfree",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page and journey page always send \"1\""
+   },
+   {
+    "name": "include_networks",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_floating",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_via_microtransit",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page sends \"1\""
+   },
+   {
+    "name": "limit",
+    "required": false,
+    "shape": "integer",
+    "note": "walk request uses limit 2"
+   },
+   {
+    "name": "context",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string",
+    "note": "brand planner slug with '-' replaced by '_'"
+   },
+   {
+    "name": "cycle",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "status_format",
+    "required": true,
+    "shape": "constant \"html\"",
+    "note": "hard-coded"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "actions/journey-actions.js fetchWalk (FETCH_WALK) <- results-page fetch() with limit 2; journey-page componentDidUpdate when highlighted journey is walkable"
+  ],
+  "response_fields_used": [
+   "journeys[]",
+   "sections[]",
+   "shared (cycle_docks)"
+  ],
+  "pagination_or_time_window": "Single shot, time window from departure_time or arrival_time.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Same parameter builder as getAllJourneys.",
+  "evidence": [
+   "var w=t.query({start:n,end:o,saddr:a,eaddr:i,sname:s,ename:c,region_id:l,departure_time:u,arrival_time:f,include_stepfree:p,include_networks:_,include_floating:h,include_via_microtransit:m,limit:g,context:y,partner:v,cycle:b,status_format:\"html\"}).toString();return e.get(w)",
+   "walk7:l.template(\"/7/walk\")"
+  ]
+ },
+ {
+  "name": "getCycleJourneys",
+  "source_file": "/__w/web/web/src/api/src/methods/get-journeys.js",
+  "resource": "cycle",
+  "method": "GET",
+  "url_pattern": "/api/6/cycle",
+  "query_keys": [
+   {
+    "name": "start",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from startCoords, validated by isValidCoords"
+   },
+   {
+    "name": "end",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from endCoords, validated by isValidCoords"
+   },
+   {
+    "name": "saddr",
+    "required": false,
+    "shape": "string",
+    "note": "startAddress"
+   },
+   {
+    "name": "eaddr",
+    "required": false,
+    "shape": "string",
+    "note": "endAddress"
+   },
+   {
+    "name": "sname",
+    "required": false,
+    "shape": "string",
+    "note": "startName"
+   },
+   {
+    "name": "ename",
+    "required": false,
+    "shape": "string",
+    "note": "endName"
+   },
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string, e.g. uk-london",
+    "note": "not checked by invariant, but every caller sends it"
+   },
+   {
+    "name": "departure_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is now or depart"
+   },
+   {
+    "name": "arrival_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is arrive"
+   },
+   {
+    "name": "include_stepfree",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page and journey page always send \"1\""
+   },
+   {
+    "name": "include_networks",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_floating",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_via_microtransit",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page sends \"1\""
+   },
+   {
+    "name": "limit",
+    "required": false,
+    "shape": "integer",
+    "note": "walk request uses limit 2"
+   },
+   {
+    "name": "context",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string",
+    "note": "brand planner slug with '-' replaced by '_'"
+   },
+   {
+    "name": "cycle",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "status_format",
+    "required": true,
+    "shape": "constant \"html\"",
+    "note": "hard-coded"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "actions/journey-actions.js fetchCycle (FETCH_CYCLE) <- results-page fetch(); journey-page when highlighted journey_kind matches /cycle/"
+  ],
+  "response_fields_used": [
+   "journeys[]",
+   "sections[]",
+   "shared (cycle_docks)"
+  ],
+  "pagination_or_time_window": "Single shot, time window from departure_time or arrival_time.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "503, or 404 with body.error NO_CYCLE_ROUTES_AVAILABLE, is treated as ignorable by the error handler (isIgnorableCycle503).",
+  "evidence": [
+   "var w=t.query({start:n,end:o,saddr:a,eaddr:i,sname:s,ename:c,region_id:l,departure_time:u,arrival_time:f,include_stepfree:p,include_networks:_,include_floating:h,include_via_microtransit:m,limit:g,context:y,partner:v,cycle:b,status_format:\"html\"}).toString();return e.get(w)",
+   "cycle:l.template(\"/6/cycle\")"
+  ]
+ },
+ {
+  "name": "getTaxiJourneys",
+  "source_file": "/__w/web/web/src/api/src/methods/get-journeys.js",
+  "resource": "taxi",
+  "method": "GET",
+  "url_pattern": "/api/2/taxi",
+  "query_keys": [
+   {
+    "name": "start",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from startCoords, validated by isValidCoords"
+   },
+   {
+    "name": "end",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from endCoords, validated by isValidCoords"
+   },
+   {
+    "name": "saddr",
+    "required": false,
+    "shape": "string",
+    "note": "startAddress"
+   },
+   {
+    "name": "eaddr",
+    "required": false,
+    "shape": "string",
+    "note": "endAddress"
+   },
+   {
+    "name": "sname",
+    "required": false,
+    "shape": "string",
+    "note": "startName"
+   },
+   {
+    "name": "ename",
+    "required": false,
+    "shape": "string",
+    "note": "endName"
+   },
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string, e.g. uk-london",
+    "note": "not checked by invariant, but every caller sends it"
+   },
+   {
+    "name": "departure_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is now or depart"
+   },
+   {
+    "name": "arrival_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is arrive"
+   },
+   {
+    "name": "include_stepfree",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page and journey page always send \"1\""
+   },
+   {
+    "name": "include_networks",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_floating",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_via_microtransit",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page sends \"1\""
+   },
+   {
+    "name": "limit",
+    "required": false,
+    "shape": "integer",
+    "note": "walk request uses limit 2"
+   },
+   {
+    "name": "context",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string",
+    "note": "brand planner slug with '-' replaced by '_'"
+   },
+   {
+    "name": "cycle",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "status_format",
+    "required": true,
+    "shape": "constant \"html\"",
+    "note": "hard-coded"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "actions/journey-actions.js fetchTaxi (FETCH_TAXI) <- results-page fetch() unless planner.skipTaxi"
+  ],
+  "response_fields_used": [
+   "journeys[]",
+   "sections[]",
+   "shared (cycle_docks)"
+  ],
+  "pagination_or_time_window": "Single shot, time window from departure_time or arrival_time.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Same parameter builder as getAllJourneys.",
+  "evidence": [
+   "var w=t.query({start:n,end:o,saddr:a,eaddr:i,sname:s,ename:c,region_id:l,departure_time:u,arrival_time:f,include_stepfree:p,include_networks:_,include_floating:h,include_via_microtransit:m,limit:g,context:y,partner:v,cycle:b,status_format:\"html\"}).toString();return e.get(w)",
+   "taxi:l.template(\"/2/taxi\")"
+  ]
+ },
+ {
+  "name": "getVehicleHireJourneys",
+  "source_file": "/__w/web/web/src/api/src/methods/get-journeys.js",
+  "resource": "vehiclehire",
+  "method": "GET",
+  "url_pattern": "/api/7/vehiclehire",
+  "query_keys": [
+   {
+    "name": "start",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from startCoords, validated by isValidCoords"
+   },
+   {
+    "name": "end",
+    "required": true,
+    "shape": "lat,lng string",
+    "note": "from endCoords, validated by isValidCoords"
+   },
+   {
+    "name": "saddr",
+    "required": false,
+    "shape": "string",
+    "note": "startAddress"
+   },
+   {
+    "name": "eaddr",
+    "required": false,
+    "shape": "string",
+    "note": "endAddress"
+   },
+   {
+    "name": "sname",
+    "required": false,
+    "shape": "string",
+    "note": "startName"
+   },
+   {
+    "name": "ename",
+    "required": false,
+    "shape": "string",
+    "note": "endName"
+   },
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string, e.g. uk-london",
+    "note": "not checked by invariant, but every caller sends it"
+   },
+   {
+    "name": "departure_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is now or depart"
+   },
+   {
+    "name": "arrival_time",
+    "required": false,
+    "shape": "ISO 8601 datetime",
+    "note": "sent when 'when' is arrive"
+   },
+   {
+    "name": "include_stepfree",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page and journey page always send \"1\""
+   },
+   {
+    "name": "include_networks",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_floating",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "include_via_microtransit",
+    "required": false,
+    "shape": "\"1\"",
+    "note": "results page sends \"1\""
+   },
+   {
+    "name": "limit",
+    "required": false,
+    "shape": "integer",
+    "note": "walk request uses limit 2"
+   },
+   {
+    "name": "context",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string",
+    "note": "brand planner slug with '-' replaced by '_'"
+   },
+   {
+    "name": "cycle",
+    "required": false,
+    "shape": "string",
+    "note": "no caller sets it"
+   },
+   {
+    "name": "status_format",
+    "required": true,
+    "shape": "constant \"html\"",
+    "note": "hard-coded"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": "Single shot, time window from departure_time or arrival_time.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined and registered, no caller in bundle.js or landing.js.",
+  "evidence": [
+   "var w=t.query({start:n,end:o,saddr:a,eaddr:i,sname:s,ename:c,region_id:l,departure_time:u,arrival_time:f,include_stepfree:p,include_networks:_,include_floating:h,include_via_microtransit:m,limit:g,context:y,partner:v,cycle:b,status_format:\"html\"}).toString();return e.get(w)",
+   "vehiclehire:l.template(\"/7/vehiclehire\")"
+  ]
+ },
+ {
+  "name": "refreshJourney",
+  "source_file": "/__w/web/web/src/api/src/methods/get-trips.js",
+  "resource": "refreshjourneys",
+  "method": "POST",
+  "url_pattern": "/api/1/refreshjourneys?region_id={regionId}",
+  "query_keys": [
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string",
+    "note": "invariant on regionId"
+   }
+  ],
+  "body_fields": [
+   {
+    "name": "signatures",
+    "required": true,
+    "shape": "[signature] (array with one opaque journey signature string)"
+   },
+   {
+    "name": "time_mode",
+    "required": true,
+    "shape": "\"SIGNATURE_EXACT\" when exact (default true) else \"SIGNATURE\""
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string"
+   },
+   {
+    "name": "use_departures",
+    "required": false,
+    "shape": "[{departure_stop_id, departure_time}]"
+   },
+   {
+    "name": "status_format",
+    "required": true,
+    "shape": "constant \"html\""
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "actions/journey-actions.js refreshJourney (FETCH_JOURNEY) <- containers/journey-detail/journey-page.js refreshJourney(): on mount for /trip/signature?signature=<hashified> (exact:false), after getTrip for /trip/:slug, and the 'refresh times' button",
+   "actions/journey-actions.js setUsedLegDeparture (SET_USED_LEG_DEPARTURE) <- components/departure-selector.js when the user picks another departure (exact:true, use_departures)"
+  ],
+  "response_fields_used": [
+   "refreshed_journeys[0].journey",
+   "refreshed_journeys[0].error",
+   "shared"
+  ],
+  "pagination_or_time_window": "Re-run on demand; journey page then polls getJourneyTimes every 30s up to 10 times and marks results stale.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "POST used as a read. The /trip/signature URL carries the signature deflated with pako and base64 encoded (util/hash-util.js dehashify).",
+  "evidence": [
+   "d()(n,'API.refreshJourney(): A valid signature is required. You passed \"'.concat(n,'\"')),d()(o,'API.refreshJourney(): Invalid regionId. You passed \"'.concat(o,'\"'))",
+   "t.post(l.query({region_id:o}).toString(),{signatures:[n],time_mode:i?\"SIGNATURE_EXACT\":\"SIGNATURE\",region_id:o,partner:s,use_departures:c,status_format:\"html\"})"
+  ]
+ },
+ {
+  "name": "getTrip",
+  "source_file": "/__w/web/web/src/api/src/methods/get-trips.js",
+  "resource": "gettrip",
+  "method": "GET",
+  "url_pattern": "/api/1/gettrip?slug={slug}",
+  "query_keys": [
+   {
+    "name": "slug",
+    "required": true,
+    "shape": "short trip slug from /trip/:slug"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "actions/journey-actions.js fetchSignature (FETCH_SIGNATURE) <- journey-page componentDidMount when route is /trip/:slug"
+  ],
+  "response_fields_used": [
+   "signature (then passed to refreshJourney)"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Resolves a shared trip link to a journey signature.",
+  "evidence": [
+   "d()(e,'API.getTrip(): A valid slug is required. You passed \"'.concat(e,'\"'));var o=n.query({slug:e});return t.get(o.toString())"
+  ]
+ },
+ {
+  "name": "getJourneyTimes",
+  "source_file": "/__w/web/web/src/api/src/methods/get-journey-times.js",
+  "resource": "journeytimes",
+  "method": "POST",
+  "url_pattern": "/api/1/journeytimes?region_id={region_id}",
+  "query_keys": [
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string",
+    "note": "not checked by invariant"
+   }
+  ],
+  "body_fields": [
+   {
+    "name": "signatures",
+    "required": true,
+    "shape": "array of journey signature strings"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "fetchJourneysTimes (FETCH_JOURNEYS_TIMES) <- results-page fetchAccurate(): all result signatures, every 30s, retry every 1s while no results, max 10 rounds",
+   "fetchJourneyTimes (FETCH_JOURNEY_TIMES) <- journey-page fetchAccurate(): highlighted signature, every 30s, max 10, skipped for walk and cycle",
+   "setUsedLegDeparture: after refreshJourney with use_departures"
+  ],
+  "response_fields_used": [
+   "journey_times[] (request_signature, leg_times[] {leg_index, times[] {type, live_time, arrival_time, scheduled_time, headway_seconds_range, headway_time_from, headway_time_to}, departures[] {departure_time}})",
+   "labels[] (id)"
+  ],
+  "pagination_or_time_window": "Polling: 30s interval, 1s when there are no results yet, capped at 10 refreshes per page view.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "setUsedLegDeparture passes a time argument that the method ignores.",
+  "evidence": [
+   "d()(Array.isArray(n),\"API.getJourneyTimes: invalid signatures, array expected\");var s=i.query({region_id:o}).toString(),c={signatures:n,partner:a};return t.post(s,c)",
+   "__REACT_HOT_LOADER__.register(wO,\"JOURNEYTIME_REFRESH\""
+  ]
+ },
+ {
+  "name": "getStopInfo",
+  "source_file": "/__w/web/web/src/api/src/methods/get-stop-info.js",
+  "resource": "stopInfo",
+  "method": "GET",
+  "url_pattern": "/api/3/stopinfo?ids={stopId}&region_id={regionId}",
+  "query_keys": [
+   {
+    "name": "ids",
+    "required": true,
+    "shape": "stop id (the :alias URL segment)"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "containers/stop-station-page.js refresh() on mount and when :alias changes (route /:region_slug/:mode/:stopType/:alias)"
+  ],
+  "response_fields_used": [
+   "stops[0] (id, brand_ids, exits[], coords)",
+   "routes[] (keyed by id)"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "d()(n,\"API.getStopInfo(): stopId missing\"),d()(o,\"API.getStopInfo(): regionId missing\");var i=a.query({ids:n,region_id:o}).toString();return t.get(i)"
+  ]
+ },
+ {
+  "name": "getDepartures",
+  "source_file": "/__w/web/web/src/api/src/methods/get-departures.js",
+  "resource": "departures | metrodepartures | raildepartures (first key of brand.departure_apis that exists in resources)",
+  "method": "GET",
+  "url_pattern": "/api/1/departures | /api/2/metrodepartures | /api/1/raildepartures  ?headways=1&ids={stopId}&region_id={regionId}",
+  "query_keys": [
+   {
+    "name": "headways",
+    "required": true,
+    "shape": "constant 1"
+   },
+   {
+    "name": "ids",
+    "required": true,
+    "shape": "stop id"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "containers/stop-station-page.js fetchLiveTimes() after getStopInfo, brand taken from window.citymapper.brands[brand_id]"
+  ],
+  "response_fields_used": [
+   "stations[0].station (name, coords, kind, cycles_available, indicator, brands)",
+   "stops[0] (routes, indicator)",
+   "rendered by rail, metro or generic departure components"
+  ],
+  "pagination_or_time_window": "Live refresh every 30s (LIVE_REFRESH_INTERVAL = 3e4) while the stop page is mounted.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "var l=W()(c,function(e){return r[e]});s=r[l]}var u={headways:1,ids:o,region_id:a},f=s.query(u).toString();return t.get(f)",
+   "this.refreshLoop=setTimeout(function(){r.fetchLiveTimes(e,t)},3e4)"
+  ]
+ },
+ {
+  "name": "getSchedules",
+  "source_file": "/__w/web/web/src/api/src/methods/get-schedules.js",
+  "resource": "schedules",
+  "method": "GET",
+  "url_pattern": "/api/1/schedules?id={stopId}&region_id={regionId}&time={time}",
+  "query_keys": [
+   {
+    "name": "id",
+    "required": true,
+    "shape": "stop id"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   },
+   {
+    "name": "time",
+    "required": false,
+    "shape": "time string (format not shown)"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined, no caller in bundle.js or landing.js.",
+  "evidence": [
+   "var s={id:n,region_id:o,time:a},c=i.query(s).toString();return t.get(c)"
+  ]
+ },
+ {
+  "name": "getNearby",
+  "source_file": "/__w/web/web/src/api/src/methods/get-nearby.js",
+  "resource": "nearby",
+  "method": "GET",
+  "url_pattern": "/api/3/nearby",
+  "query_keys": [
+   {
+    "name": "kinds",
+    "required": false,
+    "shape": "comma list",
+    "note": "one of kinds, brand_ids or mode_id is required"
+   },
+   {
+    "name": "brand_ids",
+    "required": false,
+    "shape": "comma list"
+   },
+   {
+    "name": "mode_id",
+    "required": false,
+    "shape": "string"
+   },
+   {
+    "name": "location",
+    "required": true,
+    "shape": "lat,lng"
+   },
+   {
+    "name": "viewspan",
+    "required": false,
+    "shape": "comma list from bounds ([dLat,dLng] span in brand planner)"
+   },
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string"
+   },
+   {
+    "name": "limit",
+    "required": false,
+    "shape": "integer (50 nearby page, 500 brand planner)"
+   },
+   {
+    "name": "extended",
+    "required": false,
+    "shape": "default 1"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "actions/nearby-actions.js fetchNearby (FETCH_NEARBY) <- containers/nearby-page/index.js fetch() on mount and on map pan (route /:region_slug/:mode/:stopType with stopType in the nearby slug list)",
+   "actions/brand-network-actions.js fetchBrandStops <- loadBrandNetwork for /:region_slug/planner/:brand"
+  ],
+  "response_fields_used": [
+   "elements[] (id, name, coords, brand_ids, route_ids)",
+   "featured_routes[] (id)",
+   "routes",
+   "blog_posts[0]"
+  ],
+  "pagination_or_time_window": "limit only; refetched when the map centre moves.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "When featured_routes is non-empty, fetchNearby chains getRouteInfo with route_ids.",
+  "evidence": [
+   "d()(i||s||a,'API.getNearby(): A mode ID or an array of \"kinds\" or \"brandIds\" is required. '),d()(o,'API.getNearby(): A lat/lng \"coords\" array is required')",
+   "p.query({kinds:s&&s.join(\",\"),brand_ids:a&&a.join(\",\"),location:o.join(\",\"),viewspan:c&&c.join(\",\"),region_id:n,mode_id:i,limit:l,extended:f})"
+  ]
+ },
+ {
+  "name": "getEverything",
+  "source_file": "/__w/web/web/src/api/src/methods/get-everything.js",
+  "resource": "everything",
+  "method": "GET",
+  "url_pattern": "/api/1/everythingmap?location={lat,lng}&size={size}&region_id={regionId}",
+  "query_keys": [
+   {
+    "name": "location",
+    "required": true,
+    "shape": "lat,lng"
+   },
+   {
+    "name": "size",
+    "required": true,
+    "shape": "unknown shape"
+   },
+   {
+    "name": "region_id",
+    "required": false,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined, no caller in bundle.js or landing.js.",
+  "evidence": [
+   "d()(o,'API.getEverything(): A lat/lng \"coords\" array is required'),d()(a,\"API.getEverything(): Size is required\");var s=i.query({location:o.join(\",\"),size:a,region_id:n}).toString()"
+  ]
+ },
+ {
+  "name": "getSearchResults",
+  "source_file": "/__w/web/web/src/api/src/methods/get-search-results.js",
+  "resource": "searchpost",
+  "method": "POST",
+  "url_pattern": "/api/4/searchpost",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "query",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   },
+   {
+    "name": "location",
+    "required": false,
+    "shape": "unset by callers"
+   },
+   {
+    "name": "is_refinement",
+    "required": false,
+    "shape": "bool, default true"
+   },
+   {
+    "name": "refinement_data",
+    "required": false,
+    "shape": "object, default {is_chain:true}"
+   },
+   {
+    "name": "search_providers",
+    "required": false,
+    "shape": "unset by callers"
+   },
+   {
+    "name": "powersearch",
+    "required": false,
+    "shape": "bool from withDeepSearch, default false"
+   },
+   {
+    "name": "partner",
+    "required": false,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "constant \"application/x-www-form-urlencoded; charset=UTF-8\" while the body is still JSON.stringify output (only text/plain skips stringify)"
+   },
+   {
+    "name": "Citymapper-Region",
+    "source": "regionId argument"
+   },
+   {
+    "name": "Accept-Language",
+    "source": "language argument, default \"en\"; the only caller never passes it"
+   },
+   {
+    "name": "Citymapper-Client",
+    "source": "constant \"Web Search\""
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/search/search.js fetchResults (debounced 300ms) on typing in the start/end/place search box, when transportSearch is false"
+  ],
+  "response_fields_used": [
+   "results[] (result_type, id, coords, target, display_name, name, address)"
+  ],
+  "pagination_or_time_window": "Debounced 300ms per keystroke; minQueryLength gate.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "t.post(g.toString(),{query:n,region_id:i,location:s,is_refinement:_,refinement_data:f,search_providers:h,powersearch:a,partner:m},{contentType:\"application/x-www-form-urlencoded; charset=UTF-8\",headers:{\"Citymapper-Region\":i,\"Accept-Language\":l,\"Citymapper-Client\":\"Web Search\"}})",
+   "(a?De.A.getTransport:De.A.getSearchResults)({query:e,regionId:o.region_id,partner:i})"
+  ]
+ },
+ {
+  "name": "getTransport",
+  "source_file": "/__w/web/web/src/api/src/methods/get-transport.js",
+  "resource": "findtransport",
+  "method": "GET",
+  "url_pattern": "/api/2/findtransport?query={query}&region_id={regionId}",
+  "query_keys": [
+   {
+    "name": "query",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/search/search.js fetchResults when the search box has transportSearch (line/stop search)"
+  ],
+  "response_fields_used": [
+   "results[]"
+  ],
+  "pagination_or_time_window": "Debounced 300ms.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Params go through http.get's params argument, so qs.stringify builds the query string and any options are dropped.",
+  "evidence": [
+   "t.get(a.toString(),{query:n,region_id:o})",
+   "t?E(A.GET,\"\".concat(e,\"?\").concat(h.stringify(t))):E(A.GET,e,void 0,r)"
+  ]
+ },
+ {
+  "name": "resolvePlace",
+  "source_file": "/__w/web/web/src/api/src/methods/resolve-place.js",
+  "resource": "placeresolve",
+  "method": "GET",
+  "url_pattern": "/api/1/placeresolve?id={id}&region_id={region_id}",
+  "query_keys": [
+   {
+    "name": "id",
+    "required": true,
+    "shape": "search result id"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/search/search.js handleResultSelected when a picked result has an id but no coords"
+  ],
+  "response_fields_used": [
+   "place_result (merged with the search result, then onSelect)"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "De.A.resolvePlace({id:e.id,region_id:o}).then(function(r){var n=r.place_result;"
+  ]
+ },
+ {
+  "name": "getRouteInfo",
+  "source_file": "/__w/web/web/src/api/src/methods/get-route-info.js",
+  "resource": "routeinfo (route given) | routeinfo2 (routeIds given)",
+  "method": "GET",
+  "url_pattern": "/api/1/routeinfo?route={route}&region_id=&weekend=&status_format=&extended= | /api/2/routeinfo?route_ids={id,id}&region_id=&weekend=&status_format=&extended=",
+  "query_keys": [
+   {
+    "name": "route",
+    "required": false,
+    "shape": "line live code; required if route_ids absent"
+   },
+   {
+    "name": "route_ids",
+    "required": false,
+    "shape": "comma list; required if route absent"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   },
+   {
+    "name": "weekend",
+    "required": false,
+    "shape": "default 1"
+   },
+   {
+    "name": "status_format",
+    "required": false,
+    "shape": "default \"rich\""
+   },
+   {
+    "name": "extended",
+    "required": false,
+    "shape": "1 for line page and brand planner"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "status-actions fetchRouteStatus (FETCH_STATUS_ROUTE) <- components/lines-card/fetch-status-enhancer.js for saved lines missing from region status",
+   "status-actions fetchRouteStatusExtended (extended:1) <- containers/line-page/line-page.js fetch() on /:region_slug/:mode/:id",
+   "status-actions fetchDisruptions (FETCH_DISRUPTIONS, routeIds) <- components/strike-map/index.js after region status loads (home and status page)",
+   "nearby-actions fetchNearby when nearby returns featured_routes",
+   "brand-network-actions fetchNetwork: one call per live_line_code of the brand, extended:1",
+   "components/line-search/line-search.js"
+  ],
+  "response_fields_used": [
+   "routes[] (live_line_code, patterns[] {id, path, stop_points}, name, color, ui_color, status)",
+   "stops{}"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "d()(n&&\"string\"==typeof n||o&&o.length,'API.getRouteInfo(): Invalid route or routeIds. You passed \"'.concat(n||o,'\"'))",
+   "var _={region_id:s,weekend:i,status_format:l,extended:u},h=n?f.query(le({route:n},_)):p.query(le({route_ids:o.join()},_));return t.get(h.toString())"
+  ]
+ },
+ {
+  "name": "getRoutePaths",
+  "source_file": "/__w/web/web/src/api/src/methods/get-route-paths.js",
+  "resource": "routepaths",
+  "method": "GET",
+  "url_pattern": "/api/1/routepaths?route_ids={ids}&region_id={regionId}",
+  "query_keys": [
+   {
+    "name": "route_ids",
+    "required": true,
+    "shape": "comma list, non-empty array"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined, no caller in bundle.js or landing.js.",
+  "evidence": [
+   "var i=a.query({route_ids:n.join(\",\"),region_id:o}).toString();return t.get(i)"
+  ]
+ },
+ {
+  "name": "getRouteStatus",
+  "source_file": "/__w/web/web/src/api/src/methods/get-route-status.js",
+  "resource": "routestatus",
+  "method": "GET",
+  "url_pattern": "/api/1/routestatus?region_id={region_id}&format={format}",
+  "query_keys": [
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   },
+   {
+    "name": "format",
+    "required": false,
+    "shape": "default \"rich\""
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "Citymapper-Region",
+    "source": "region_id argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "status-actions fetchRegionStatus (FETCH_STATUS) <- containers/status-page/index.js (/:region_slug/status) and lines-card fetch-status-enhancer",
+   "user-actions fetchLineStatus <- syncUserData after login (saved routes)",
+   "brand-network-actions fetchNetwork (brand planner)"
+  ],
+  "response_fields_used": [
+   "groupings[] (routes[] with live_line_code, supports_routeinfo, status, name)"
+  ],
+  "pagination_or_time_window": "Status page refetches every 2 minutes (setTimeout Np = 2m) after each update.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "var s=i.query({region_id:n,format:a}).toString();return t.get(s,null,{headers:{\"Citymapper-Region\":n}})",
+   "Np=ft()(\"2m\")"
+  ]
+ },
+ {
+  "name": "getVehicleLocations",
+  "source_file": "/__w/web/web/src/api/src/methods/get-vehicle-locations.js",
+  "resource": "vehiclelocations",
+  "method": "GET",
+  "url_pattern": "/api/1/vehiclelocations?route={route}&region_id={region_id}",
+  "query_keys": [
+   {
+    "name": "route",
+    "required": true,
+    "shape": "line live_line_code"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "containers/line-page/line-page.js fetchVehicles() after route info loads"
+  ],
+  "response_fields_used": [
+   "vehicle_locations[]"
+  ],
+  "pagination_or_time_window": "Timer INTERVAL = 10s (startTimer); inferred that it re-arms after each fetch.",
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "r&&De.A.getVehicleLocations({route:r,region_id:n}).then(function(t){var r=t.vehicle_locations;",
+   "yg=ft()(\"10s\")"
+  ]
+ },
+ {
+  "name": "getMessage",
+  "source_file": "/__w/web/web/src/api/src/methods/get-message.js",
+  "resource": "message",
+  "method": "GET",
+  "url_pattern": "/api/2/message?had_previous_versions=0",
+  "query_keys": [
+   {
+    "name": "had_previous_versions",
+    "required": true,
+    "shape": "constant 0"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "Citymapper-Region",
+    "source": "regionId argument (required by invariant)"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "actions/message-actions.js fetchGodMessages (FETCH_GOD_MESSAGES) <- components/god-message/god-message.js componentDidMount once per session (godMessages.fetched)"
+  ],
+  "response_fields_used": [
+   "messages[] (id, text, ui_color, color, can_dismiss, level, url); citymapper:// urls and one blacklisted id are filtered out"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Caller also passes location, which the method ignores. Observed live: GET /api/2/message?had_previous_versions=0.",
+  "evidence": [
+   "d()(e,'API.getMessage: \"regionId\" is required');var o=n.query({had_previous_versions:0}).toString();return t.get(o,null,{headers:{\"Citymapper-Region\":e}})"
+  ]
+ },
+ {
+  "name": "getBlogPosts",
+  "source_file": "/__w/web/web/src/api/src/methods/get-blog-posts.js",
+  "resource": "blog",
+  "method": "GET",
+  "url_pattern": "/api/1/blog[?id={id}]",
+  "query_keys": [
+   {
+    "name": "id",
+    "required": false,
+    "shape": "post id"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "Citymapper-Region",
+    "source": "regionId argument (required string)"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined, no caller in either bundle (news pages are server rendered).",
+  "evidence": [
+   "var i=o?a.query({id:o}):a;return t.get(i.toString(),null,{headers:{\"Citymapper-Region\":n}})"
+  ]
+ },
+ {
+  "name": "getWeather",
+  "source_file": "/__w/web/web/src/api/src/methods/get-weather.js",
+  "resource": "weather",
+  "method": "GET",
+  "url_pattern": "/api/1/weather?location={lat,lng}&units={c|f}&term={now}",
+  "query_keys": [
+   {
+    "name": "location",
+    "required": true,
+    "shape": "lat,lng"
+   },
+   {
+    "name": "units",
+    "required": false,
+    "shape": "default \"c\""
+   },
+   {
+    "name": "term",
+    "required": false,
+    "shape": "default \"now\""
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined, no caller in either bundle.",
+  "evidence": [
+   "var l=c.query({location:n.join(\",\"),units:a,term:s}).toString();return t.get(l)"
+  ]
+ },
+ {
+  "name": "getTransitScore",
+  "source_file": "/__w/web/web/src/api/src/methods/get-transit-score.js",
+  "resource": "transitscore",
+  "method": "GET",
+  "url_pattern": "/api/1/transitscore?startcoord={lat,lng}",
+  "query_keys": [
+   {
+    "name": "startcoord",
+    "required": true,
+    "shape": "coords array (serialised by url-assembler, inferred lat,lng)"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined, no caller in either bundle.",
+  "evidence": [
+   "var a=o.query({startcoord:n}).toString();return t.get(a)"
+  ]
+ },
+ {
+  "name": "getETA",
+  "source_file": "/__w/web/web/src/api/src/methods/get-eta.js",
+  "resource": "eta",
+  "method": "POST",
+  "url_pattern": "/api/1/eta?region_id={region_id}",
+  "query_keys": [
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [
+   {
+    "name": "signature",
+    "required": true,
+    "shape": "journey signature"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Defined, no caller in either bundle. The /eta/:slug page is SSR (uri-config SSR_PAGES), not in these bundles.",
+  "evidence": [
+   "d()(n,'API.getETA: \"signature\" is required'),d()(o,'API.getETA: \"region_id\" is required');var i=a.query({region_id:o}).toString(),s={signature:n};return t.post(i,s)"
+  ]
+ },
+ {
+  "name": "createGoLink",
+  "source_file": "/__w/web/web/src/api/src/methods/create-links.js",
+  "resource": "createshorturl",
+  "method": "GET",
+  "url_pattern": "/api/1/createshorturl?endcoord=&endaddress=&endname=&title=&message=&place_id=",
+  "query_keys": [
+   {
+    "name": "endcoord",
+    "required": true,
+    "shape": "lat,lng (coords.join(\",\"))"
+   },
+   {
+    "name": "endaddress",
+    "required": false,
+    "shape": "string, default \"\""
+   },
+   {
+    "name": "endname",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "title",
+    "required": true,
+    "shape": "constant \"\""
+   },
+   {
+    "name": "message",
+    "required": true,
+    "shape": "constant \"\""
+   },
+   {
+    "name": "place_id",
+    "required": true,
+    "shape": "constant \"\""
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/golink-card/golink-card.js handleClick ('Meet me somewhere' card on the city home page), then navigates to /go/{slug}"
+  ],
+  "response_fields_used": [
+   "slug"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": true,
+  "notes": "Creates a server-side short link with a GET.",
+  "evidence": [
+   "var c=s.query({endcoord:n.join(\",\"),endaddress:i,endname:o,title:\"\",message:\"\",place_id:\"\"}).toString();return t.get(c)"
+  ]
+ },
+ {
+  "name": "createTripLink",
+  "source_file": "/__w/web/web/src/api/src/methods/create-links.js",
+  "resource": "createtripurl",
+  "method": "GET",
+  "url_pattern": "/api/1/createtripurl?signature={signature}&trip_region_id={region_id}",
+  "query_keys": [
+   {
+    "name": "signature",
+    "required": true,
+    "shape": "journey signature"
+   },
+   {
+    "name": "trip_region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "containers/journey-detail/trip-share.js componentDidMount (share block on the journey detail page)"
+  ],
+  "response_fields_used": [
+   "url"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": true,
+  "notes": "Memoised per argument set with lodash memoize keyed by JSON.stringify, so one call per signature per page load.",
+  "evidence": [
+   "var i=a.query({signature:n,trip_region_id:o}).toString();return t.get(i)},JSON.stringify)"
+  ]
+ },
+ {
+  "name": "getShortURL",
+  "source_file": "/__w/web/web/src/api/src/methods/get-short-url.js",
+  "resource": "getshorturl",
+  "method": "GET",
+  "url_pattern": "/api/1/getshorturl?slug={slug}",
+  "query_keys": [
+   {
+    "name": "slug",
+    "required": true,
+    "shape": "string from /go/:slug or /widget/:slug"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "containers/go-page/go-page.js fetchData() on mount"
+  ],
+  "response_fields_used": [
+   "endname",
+   "endaddress",
+   "endcoord (\"lat,lng\")",
+   "message"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "De.A.getShortURL(t);case 2:r=e.v,n=r.endname,o=r.endaddress,a=r.endcoord,i=r.message"
+  ]
+ },
+ {
+  "name": "logEvents",
+  "source_file": "/__w/web/web/src/api/src/methods/log-events.js",
+  "resource": "logevents",
+  "method": "POST",
+  "url_pattern": "/api/2/logevents",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "(text/plain body)",
+    "required": true,
+    "shape": "lines: \"U <userAgent>\", \"R <region>\", then one \"E <JSON event>\" per event, joined by \\n"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "\"text/plain; charset=utf-8\""
+   },
+   {
+    "name": "User-Device",
+    "source": "value of the \"uid\" cookie, or \"NO_UID\""
+   },
+   {
+    "name": "Citymapper-Region",
+    "source": "region id from redshift.init"
+   },
+   {
+    "name": "Citymapper-Client",
+    "source": "constant \"Web\""
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "analytics/providers/redshift.js flush(): batched with a 2s debounce, also on window.onbeforeunload; events from pageView and UI tracking"
+  ],
+  "response_fields_used": [],
+  "pagination_or_time_window": "Batch flush every 2s after the first queued event.",
+  "auth_needed": "none; device identified by uid cookie value in User-Device",
+  "mutates": true,
+  "notes": "Analytics only. Event objects carry type, time, context, environment and, on one stack, the major version.",
+  "evidence": [
+   "var c=[\"U \".concat(n),\"R \".concat(o)].concat((0,Pe.A)(i.map(function(e){return\"E \".concat(JSON.stringify(e))}))).join(\"\\n\");return t.post(s.toString(),c,{contentType:m,headers:{\"User-Device\":a,\"Citymapper-Region\":o,\"Citymapper-Client\":\"Web\"}})",
+   "v.A.logEvents(E(E({},R),{},{events:e,sessionCookie:_()().get(\"uid\")||\"NO_UID\"}))"
+  ]
+ },
+ {
+  "name": "cityVote",
+  "source_file": "/__w/web/web/src/api/src/methods/city-vote.js",
+  "resource": "cityvote",
+  "method": "POST",
+  "url_pattern": "/cities/vote_submit/",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "city_slug",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "email",
+    "required": true,
+    "shape": "email"
+   },
+   {
+    "name": "(rest)",
+    "required": false,
+    "shape": "any extra args are spread into the body"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "X-CSRFToken",
+    "source": "csrfToken argument (required); no code in either bundle reads a csrftoken cookie, so the token source is unknown"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "Django CSRF token in X-CSRFToken; session cookie sent",
+  "mutates": true,
+  "notes": "Uses the prefix-less resource (i.prefix(\"\")), so it is outside /api. Defined, no caller in either bundle.",
+  "evidence": [
+   "d()(n&&o&&i,'API.cityVote(): Invalid arguments. \"city_slug\", \"email\", and \"csrfToken\" are required')",
+   "return t.post(c.toString(),l,{headers:{\"X-CSRFToken\":i}})",
+   "cityvote:f.template(\"/cities/vote_submit/\")"
+  ]
+ },
+ {
+  "name": "getUserData",
+  "source_file": "/__w/web/web/src/api/src/methods/user-data.js",
+  "resource": "userdata",
+  "method": "GET",
+  "url_pattern": "/api/1/identity/user_data",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "index.js on every /webapp boot; enhancers/with-initial-props.js on the client after SSR hydration; landing-page/index.js on landing boot",
+   "user-actions syncUserData (Promise.all with getUserPlaces and getUserFavourites) after login"
+  ],
+  "response_fields_used": [
+   "merged into store.user: id, email, first_name, is_interested_in_pass, has_seen_marketing_opt_out, has_opted_out_of_marketing (inferred from user initialState)"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": false,
+  "notes": "403 from /api/1/identity/* is swallowed by isIgnorableIdentity403. Observed live: 403 when signed out.",
+  "evidence": [
+   "gt=function(e){var t=e.http,r=e.resources;return function(){var e=r.userdata;return t.get(e.toString())}}",
+   "o=function(e){var t=e.status,r=e.url,n=403===t,o=/api\\/1\\/identity/.test(r);return n&&o}"
+  ]
+ },
+ {
+  "name": "logUserIn",
+  "source_file": "/__w/web/web/src/api/src/methods/user-data.js",
+  "resource": "sessions",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/sessions",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "auth_provider",
+    "required": true,
+    "shape": "\"emailpassword\" | \"magiclink\" | \"facebook\" | \"google\""
+   },
+   {
+    "name": "email",
+    "required": false,
+    "shape": "required with password when auth_provider is emailpassword"
+   },
+   {
+    "name": "password",
+    "required": false,
+    "shape": "required for emailpassword"
+   },
+   {
+    "name": "access_token",
+    "required": false,
+    "shape": "OAuth access token; required for every provider except emailpassword"
+   },
+   {
+    "name": "source_page",
+    "required": false,
+    "shape": "string"
+   },
+   {
+    "name": "has_seen_marketing_opt_out",
+    "required": false,
+    "shape": "bool"
+   },
+   {
+    "name": "has_opted_out_of_marketing",
+    "required": false,
+    "shape": "bool"
+   },
+   {
+    "name": "is_interested_in_pass",
+    "required": false,
+    "shape": "bool"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/login/login.js loginWithGoogleCallback (Google Identity Services token client) and loginWithFacebook / handleFBResponse (FB JS SDK), via user-actions logUserIn"
+  ],
+  "response_fields_used": [
+   "user object, dispatched as USER_LOGIN_SUCCESSFUL and merged into store.user"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none before the call; the response is expected to set the sessionid cookie (inferred, cookie handling is server side)",
+  "mutates": true,
+  "notes": "Web UI only uses google and facebook here; email goes through sendMagicLink. No Apple sign-in anywhere in either bundle.",
+  "evidence": [
+   "d()(a&&(a===pt||a===_t||a===ht||a===mt),'API.logUserIn(): Invalid \"auth_provider\"'),a===pt?d()(n&&o,'API.logUserIn(): \"email\" and \"password\" required'):d()(i,'API.logUserIn(): \"access_token\" required')",
+   "\"/__w/web/web/src/api/src/methods/create-links.js\")),\"emailpassword\"),_t=\"magiclink\",ht=\"facebook\",mt=\"google\""
+  ]
+ },
+ {
+  "name": "logUserOut",
+  "source_file": "/__w/web/web/src/api/src/methods/user-data.js",
+  "resource": "sessions",
+  "method": "DELETE",
+  "url_pattern": "/api/1/identity/sessions",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/login/login-logout-button.js logout (header button) via user-actions logUserOut"
+  ],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "",
+  "evidence": [
+   "vt=function(e){var t=e.http,r=e.resources;return function(){var e=r.sessions;return t.del(e.toString())}}"
+  ]
+ },
+ {
+  "name": "signUserUp",
+  "source_file": "/__w/web/web/src/api/src/methods/user-data.js",
+  "resource": "signup",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/signup",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "auth_provider",
+    "required": true,
+    "shape": "same four values as logUserIn"
+   },
+   {
+    "name": "email",
+    "required": false,
+    "shape": "required for emailpassword"
+   },
+   {
+    "name": "password",
+    "required": false,
+    "shape": "required for emailpassword"
+   },
+   {
+    "name": "access_token",
+    "required": false,
+    "shape": "required for other providers"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": true,
+  "notes": "Defined, no caller in either bundle.",
+  "evidence": [
+   "t.post(s.toString(),{email:n,password:o,auth_provider:a,access_token:i})"
+  ]
+ },
+ {
+  "name": "sendMagicLink",
+  "source_file": "/__w/web/web/src/api/src/methods/magiclink.js",
+  "resource": "magiclink",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/magiclink/create",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "email",
+    "required": true,
+    "shape": "email"
+   },
+   {
+    "name": "force_prototype",
+    "required": false,
+    "shape": "must equal 1 if present"
+   },
+   {
+    "name": "source_page",
+    "required": false,
+    "shape": "string, e.g. web-pass-show-interest"
+   },
+   {
+    "name": "has_seen_marketing_opt_out",
+    "required": false,
+    "shape": "bool"
+   },
+   {
+    "name": "has_opted_out_of_marketing",
+    "required": false,
+    "shape": "bool"
+   },
+   {
+    "name": "is_interested_in_pass",
+    "required": false,
+    "shape": "bool"
+   },
+   {
+    "name": "redirect_path",
+    "required": false,
+    "shape": "path to return to"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/login/login.js signupOrLogin (email form submit, 'Sign up or log in')"
+  ],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": true,
+  "notes": "Sends an email; the link lands back with ?ls=<base64 email> which login-logout-button decodes with atob to show 'Logged in as'.",
+  "evidence": [
+   "t.post(u.toString(),{email:n,force_prototype:o,source_page:a,has_seen_marketing_opt_out:i,has_opted_out_of_marketing:s,is_interested_in_pass:c,redirect_path:l})",
+   "De.A.sendMagicLink({email:n,source_page:a,is_interested_in_pass:i,redirect_path:s})"
+  ]
+ },
+ {
+  "name": "confirmEmailAddress",
+  "source_file": "/__w/web/web/src/api/src/methods/confirm-email-address.js",
+  "resource": "confirm_sign_up",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/confirm_sign_up/{token}",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "(none)",
+    "required": false,
+    "shape": "body defaults to {} and is sent as \"{}\""
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": true,
+  "notes": "Defined, no caller in either bundle (the /signup/:token/confirm page is SSR).",
+  "evidence": [
+   "var n=r.confirm_sign_up.param({token:e}).toString();return t.post(n)"
+  ]
+ },
+ {
+  "name": "resetPasswordForEmail",
+  "source_file": "/__w/web/web/src/api/src/methods/password-reset.js",
+  "resource": "password_reset",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/password_reset",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "email",
+    "required": false,
+    "shape": "email (no invariant)"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": true,
+  "notes": "Defined, no caller in either bundle.",
+  "evidence": [
+   "var n=r.password_reset;return t.post(n.toString(),{email:e})"
+  ]
+ },
+ {
+  "name": "setNewPasswordForEmail",
+  "source_file": "/__w/web/web/src/api/src/methods/password-reset.js",
+  "resource": "password_reset",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/password_reset/{token}",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "email",
+    "required": false,
+    "shape": "email"
+   },
+   {
+    "name": "new_password",
+    "required": false,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": true,
+  "notes": "Defined, no caller in either bundle.",
+  "evidence": [
+   "i=r.password_reset.segment(\"/:token\").param({token:a}).toString();return t.post(i,{email:n,new_password:o})"
+  ]
+ },
+ {
+  "name": "updateUser",
+  "source_file": "/__w/web/web/src/api/src/methods/update-user.js",
+  "resource": "updateuser",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/update_user",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "first_name",
+    "required": false,
+    "shape": "string; at least one of first_name, last_name, mobile, is_interested_in_pass"
+   },
+   {
+    "name": "last_name",
+    "required": false,
+    "shape": "string"
+   },
+   {
+    "name": "mobile",
+    "required": false,
+    "shape": "string"
+   },
+   {
+    "name": "is_interested_in_pass",
+    "required": false,
+    "shape": "bool"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "Passing email throws client side ('Updating \"email\" is not supported'). Defined, no caller in either bundle.",
+  "evidence": [
+   "return t.post(c.toString(),{first_name:n,last_name:o,mobile:a,is_interested_in_pass:s})",
+   "if(d()(n||o||a||s,'API.updateUser(): \"first_name\", \"last_name, \"mobile\", or \"is_interested_in_pass\" required.'),i)throw new Error"
+  ]
+ },
+ {
+  "name": "getUserPlaces",
+  "source_file": "/__w/web/web/src/api/src/methods/user-place.js",
+  "resource": "userplaces",
+  "method": "GET",
+  "url_pattern": "/api/1/identity/places",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "user-actions syncUserData after login and after every place save/remove"
+  ],
+  "response_fields_used": [
+   "items[] (region_code, my_places_order, populated, role home|work, name, address, coords, place_id); filtered to the current region"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "Et=function(e){var t=e.http,r=e.resources;return function(){var e=r.userplaces;return t.get(e.toString())}}",
+   "p=g()(h()(i()(\"region_code\",e.regionId)),l()(\"items\"))"
+  ]
+ },
+ {
+  "name": "saveUserPlace",
+  "source_file": "/__w/web/web/src/api/src/methods/user-place.js",
+  "resource": "userplaces",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/places",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "(place object)",
+    "required": true,
+    "shape": "address, coords, created, deleted, editability(1), last_used, modified, my_places_order(0), name, place_type(2), populated(true), region_code, role(\"\"), section(\"Special\"), source(0), template_place_id(\"\")"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/save/save-button.js toggleSave (star on a place) via user-actions savePlace"
+  ],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "",
+  "evidence": [
+   "return d()(n&&\"object\"===(0,wt.A)(n),'API.saveUserPlace(): Invalid arguments: \"place\" required'),t.post(o.toString(),n)",
+   "[\"address\",\"coords\",\"created\",\"deleted\",\"editability\",\"last_used\",\"modified\",\"my_places_order\",\"name\",\"place_type\",\"populated\",\"region_code\",\"role\",\"section\",\"source\",\"template_place_id\"]"
+  ]
+ },
+ {
+  "name": "updateUserPlace",
+  "source_file": "/__w/web/web/src/api/src/methods/user-place.js",
+  "resource": "userplaces",
+  "method": "PUT",
+  "url_pattern": "/api/1/identity/places/{place_id}",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "(place minus place_id)",
+    "required": true,
+    "shape": "place object fields"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "Defined, no caller in either bundle.",
+  "evidence": [
+   "var s=i.segment(\"/\".concat(o));return t.put(s.toString(),a)"
+  ]
+ },
+ {
+  "name": "delUserPlace",
+  "source_file": "/__w/web/web/src/api/src/methods/user-place.js",
+  "resource": "userplaces",
+  "method": "DELETE",
+  "url_pattern": "/api/1/identity/places/{place_id}",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/save/save-button.js toggleSave via user-actions removePlace"
+  ],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "Bug: removePlace calls delUserPlace({placeId}) but the method destructures place_id, so the invariant throws and no request is sent (inferred from code, not observed).",
+  "evidence": [
+   "d()(n&&\"string\"==typeof n,'API.delUserPlace(): Invalid arguments: \"place_id\" required')",
+   "T.A.delUserPlace({placeId:o})"
+  ]
+ },
+ {
+  "name": "getUserFavourites",
+  "source_file": "/__w/web/web/src/api/src/methods/user-favourite.js",
+  "resource": "userfavourites",
+  "method": "GET",
+  "url_pattern": "/api/1/identity/favorites",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "user-actions syncUserData"
+  ],
+  "response_fields_used": [
+   "items[] (region_code, last_used, target_type_code Stop|Route, target_id, short_name, created, favorite_id, brand_code, coords, name)"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "return function(){var e=r.userfavourites;return t.get(e.toString())}"
+  ]
+ },
+ {
+  "name": "saveUserFavourite",
+  "source_file": "/__w/web/web/src/api/src/methods/user-favourite.js",
+  "resource": "userfavourites",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/favorites",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "(favourite object)",
+    "required": true,
+    "shape": "brand_code, coords, name, region_code, short_name, target_id, target_type (1 busstop, 2 station, 3 transit_line)"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/save/save-button.js on stop, station and line pages, via user-actions saveFavorite"
+  ],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "",
+  "evidence": [
+   "t.post(o.toString(),n)}},St=function",
+   "target_type:t.target_type||{unknown:0,busstop:1,station:2,transit_line:3}[t.entity_type]||{stop:1,station:2,route:3}[r]"
+  ]
+ },
+ {
+  "name": "delUserFavourite",
+  "source_file": "/__w/web/web/src/api/src/methods/user-favourite.js",
+  "resource": "userfavourites",
+  "method": "DELETE",
+  "url_pattern": "/api/1/identity/favorites/{favouriteId}",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/save/save-button.js via user-actions removeFavorite (favorite_id)"
+  ],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "",
+  "evidence": [
+   "d()(n&&\"string\"==typeof n,'API.delUserFavourite(): Invalid arguments: \"favouriteId\" required');var a=o.segment(\"/\".concat(n));return t.del(a.toString())"
+  ]
+ },
+ {
+  "name": "saveUserJourney",
+  "source_file": "/__w/web/web/src/api/src/methods/user-journey.js",
+  "resource": "userjourneys",
+  "method": "POST",
+  "url_pattern": "/api/1/identity/documents/SavedJourney",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "document_data",
+    "required": true,
+    "shape": "JSON string of {region_id, created, journey, signature, start_place, end_place, shared, associated_journeys}"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "components/save/send-to-phone-button.js ('Send to phone' on journey detail) via user-actions saveJourney"
+  ],
+  "response_fields_used": [
+   "document (document_id kept for delete)"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "There is no list call for saved journeys; savedJourneys only lives in the session store.",
+  "evidence": [
+   "r={document_data:JSON.stringify(o)},e.n=1,T.A.saveUserJourney({journey:r})",
+   "userjourneys:l.template(\"/1/identity/documents/SavedJourney\")"
+  ]
+ },
+ {
+  "name": "delUserJourney",
+  "source_file": "/__w/web/web/src/api/src/methods/user-journey.js",
+  "resource": "userjourneys",
+  "method": "DELETE",
+  "url_pattern": "/api/1/identity/documents/SavedJourney/{document_id}",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [
+   "send-to-phone-button unsave via user-actions unsaveJourney"
+  ],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "session cookie (Django \"sessionid\", sent because fetch uses credentials:\"include\"); 403 when signed out",
+  "mutates": true,
+  "notes": "",
+  "evidence": [
+   "var a=o.segment(\"/\".concat(n));return t.del(a.toString())}},kt=",
+   "o=t.document_id,r.n=1,T.A.delUserJourney({journeyId:o})"
+  ]
+ },
+ {
+  "name": "turnstileGetUserInfo",
+  "source_file": "/__w/web/web/src/api/src/methods/turnstile.js",
+  "resource": "turnstileUserInfo",
+  "method": "POST",
+  "url_pattern": "https://turnstile-api.citymapper.com/web/1/userinfo",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": false,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "turnstileUserInfo:d.template(\"/1/userinfo\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "stagingTurnstileGetUserInfo",
+  "source_file": "/__w/web/web/src/api/src/methods/staging-turnstile.js",
+  "resource": "stagingTurnstileUserInfo",
+  "method": "POST",
+  "url_pattern": "https://turnstile-staging-api.citymapper.com/web/1/userinfo",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": false,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "stagingTurnstileUserInfo:p.template(\"/1/userinfo\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "turnstileAddPaymentMethod",
+  "source_file": "/__w/web/web/src/api/src/methods/turnstile.js",
+  "resource": "turnstileAddPaymentMethod",
+  "method": "POST",
+  "url_pattern": "https://turnstile-api.citymapper.com/web/1/addpaymentmethod",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_method_id",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": true,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "turnstileAddPaymentMethod:d.template(\"/1/addpaymentmethod\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "stagingTurnstileAddPaymentMethod",
+  "source_file": "/__w/web/web/src/api/src/methods/staging-turnstile.js",
+  "resource": "stagingTurnstileAddPaymentMethod",
+  "method": "POST",
+  "url_pattern": "https://turnstile-staging-api.citymapper.com/web/1/addpaymentmethod",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_method_id",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": true,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "stagingTurnstileAddPaymentMethod:p.template(\"/1/addpaymentmethod\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "turnstileSetDefaultPaymentMethod",
+  "source_file": "/__w/web/web/src/api/src/methods/turnstile.js",
+  "resource": "turnstileSetDefaultPaymentMethod",
+  "method": "POST",
+  "url_pattern": "https://turnstile-api.citymapper.com/web/1/setdefaultpaymentmethod",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_method_id",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": true,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "turnstileSetDefaultPaymentMethod:d.template(\"/1/setdefaultpaymentmethod\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "stagingTurnstileSetDefaultPaymentMethod",
+  "source_file": "/__w/web/web/src/api/src/methods/staging-turnstile.js",
+  "resource": "stagingTurnstileSetDefaultPaymentMethod",
+  "method": "POST",
+  "url_pattern": "https://turnstile-staging-api.citymapper.com/web/1/setdefaultpaymentmethod",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_method_id",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": true,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "stagingTurnstileSetDefaultPaymentMethod:p.template(\"/1/setdefaultpaymentmethod\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "turnstileDeletePaymentMethod",
+  "source_file": "/__w/web/web/src/api/src/methods/turnstile.js",
+  "resource": "turnstileDeletePaymentMethod",
+  "method": "POST",
+  "url_pattern": "https://turnstile-api.citymapper.com/web/1/deletepaymentmethod",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_method_id",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": true,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "turnstileDeletePaymentMethod:d.template(\"/1/deletepaymentmethod\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "stagingTurnstileDeletePaymentMethod",
+  "source_file": "/__w/web/web/src/api/src/methods/staging-turnstile.js",
+  "resource": "stagingTurnstileDeletePaymentMethod",
+  "method": "POST",
+  "url_pattern": "https://turnstile-staging-api.citymapper.com/web/1/deletepaymentmethod",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_method_id",
+    "required": true,
+    "shape": "string"
+   },
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": true,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "stagingTurnstileDeletePaymentMethod:p.template(\"/1/deletepaymentmethod\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "turnstileDeleteAllPaymentMethods",
+  "source_file": "/__w/web/web/src/api/src/methods/turnstile.js",
+  "resource": "turnstileDeleteAllPaymentMethods",
+  "method": "POST",
+  "url_pattern": "https://turnstile-api.citymapper.com/web/1/deleteallpaymentmethods",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": true,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "turnstileDeleteAllPaymentMethods:d.template(\"/1/deleteallpaymentmethods\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "stagingTurnstileDeleteAllPaymentMethods",
+  "source_file": "/__w/web/web/src/api/src/methods/staging-turnstile.js",
+  "resource": "stagingTurnstileDeleteAllPaymentMethods",
+  "method": "POST",
+  "url_pattern": "https://turnstile-staging-api.citymapper.com/web/1/deleteallpaymentmethods",
+  "query_keys": [],
+  "body_fields": [
+   {
+    "name": "payment_provider_id",
+    "required": true,
+    "shape": "string"
+   }
+  ],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": true,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle.",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "stagingTurnstileDeleteAllPaymentMethods:p.template(\"/1/deleteallpaymentmethods\")",
+   "{headers:{\"User-Device\":"
+  ]
+ },
+ {
+  "name": "turnstileGetSessionTimeRemaining",
+  "source_file": "/__w/web/web/src/api/src/methods/turnstile.js",
+  "resource": "turnstileGetSessionTimeRemaining",
+  "method": "GET",
+  "url_pattern": "https://turnstile-api.citymapper.com/web/1/sessionttl",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": false,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle. Bug: it calls http.get(url, {}, {headers}); {} is truthy so http.get appends \"?\" and drops the options, so User-Device and Session-Id are never sent (inferred from code).",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "turnstileGetSessionTimeRemaining:d.template(\"/1/sessionttl\")",
+   "s={headers:{\"User-Device\":n,\"Session-Id\":o}};return t.get(i,{},s)"
+  ]
+ },
+ {
+  "name": "stagingTurnstileGetSessionTimeRemaining",
+  "source_file": "/__w/web/web/src/api/src/methods/staging-turnstile.js",
+  "resource": "stagingTurnstileGetSessionTimeRemaining",
+  "method": "GET",
+  "url_pattern": "https://turnstile-staging-api.citymapper.com/web/1/sessionttl",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "always set by http.proxy, default \"application/json; charset=utf-8\", even on GET",
+    "evidence": "c={method:e,credentials:\"include\",headers:w(w({},o),{},{\"Content-Type\":s}),body:s!==m?JSON.stringify(r):r}"
+   },
+   {
+    "name": "User-Device",
+    "source": "uid argument (device id; the web elsewhere reads it from the uid cookie)"
+   },
+   {
+    "name": "Session-Id",
+    "source": "sessionid argument"
+   }
+  ],
+  "static_headers": [
+   {
+    "name": "(none on the client)",
+    "source": "apiInstance is built with no staticHeaders, so _staticHeaders is {} in the browser",
+    "evidence": "rr=new Qt({errorHandler:tr,hostname:\"\"})"
+   },
+   {
+    "name": "Cookie",
+    "source": "SSR only (Next getInitialProps): \"sessionid=\" + the incoming request's sessionid cookie",
+    "evidence": "staticHeaders:{Cookie:\"sessionid=\".concat(f),\"User-Agent\":r.req.headers[\"user-agent\"],\"X-Forwarded-For\":r.req._ip}"
+   },
+   {
+    "name": "User-Agent",
+    "source": "SSR only: copied from the incoming request"
+   },
+   {
+    "name": "X-Forwarded-For",
+    "source": "SSR only: req._ip of the incoming request"
+   }
+  ],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "User-Device (uid) + Session-Id headers, each required string by invariant; cookies also sent",
+  "mutates": false,
+  "notes": "Citymapper's own payment service named Turnstile (Citymapper Pass), not Cloudflare Turnstile. Cross-origin, credentials:\"include\". Defined, no caller in either bundle. Bug: it calls http.get(url, {}, {headers}); {} is truthy so http.get appends \"?\" and drops the options, so User-Device and Session-Id are never sent (inferred from code).",
+  "evidence": [
+   "u=void 0===l?\"https://turnstile-api.citymapper.com\":l,f=e.stagingTurnstileHostname,d=void 0===f?\"https://turnstile-staging-api.citymapper.com\":f,p=e.turnstilePrefix,_=void 0===p?\"/web\":p",
+   "stagingTurnstileGetSessionTimeRemaining:p.template(\"/1/sessionttl\")",
+   "s={headers:{\"User-Device\":n,\"Session-Id\":o}};return t.get(i,{},s)"
+  ]
+ },
+ {
+  "name": "nearby-util.makeApiCall (direct jQuery)",
+  "source_file": "/__w/web/web/src/components/nearby/nearby-util.js",
+  "resource": null,
+  "method": "GET",
+  "url_pattern": "/api/2/nearby?brand_ids=|kinds=&location=lat,lng[&viewspan=]&limit=&region_id=",
+  "query_keys": [
+   {
+    "name": "brand_ids",
+    "required": false,
+    "shape": "comma list; used when brandIds given"
+   },
+   {
+    "name": "kinds",
+    "required": false,
+    "shape": "comma list; used otherwise"
+   },
+   {
+    "name": "location",
+    "required": true,
+    "shape": "lat,lng"
+   },
+   {
+    "name": "viewspan",
+    "required": false,
+    "shape": "comma list"
+   },
+   {
+    "name": "limit",
+    "required": true,
+    "shape": "integer (1 or 50)"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "(jQuery defaults)",
+    "source": "jQuery $.ajax, no custom headers, no credentials override (same origin cookies)"
+   }
+  ],
+  "static_headers": [],
+  "callers": [
+   "containers/stop-station-page.js: nearby stops list after getStopInfo (brandIds, limit 50)",
+   "actions/actions.js setGoPlace (legacy Gobot, kinds metrostation,railstation, limit 1): no dispatcher found"
+  ],
+  "response_fields_used": [
+   "elements[]"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Older v2 endpoint built by string concatenation, bypasses CitymapperAPI.",
+  "evidence": [
+   "return o().ajax({url:\"/api/2/nearby\"+c+\"&location=\"+r.join(\",\")+(i?\"&viewspan=\"+i.join(\",\"):\"\")+\"&limit=\"+s+\"&region_id=\"+t})"
+  ]
+ },
+ {
+  "name": "place.makeTravelTimeRequest (direct jQuery)",
+  "source_file": "/__w/web/web/src/util/place.js",
+  "resource": null,
+  "method": "GET",
+  "url_pattern": "/api/1/traveltime?startcoord=lat,lng&endcoord=lat,lng&region_id=",
+  "query_keys": [
+   {
+    "name": "startcoord",
+    "required": true,
+    "shape": "lat,lng"
+   },
+   {
+    "name": "endcoord",
+    "required": true,
+    "shape": "lat,lng"
+   },
+   {
+    "name": "region_id",
+    "required": true,
+    "shape": "region id string"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "(jQuery defaults)",
+    "source": "no custom headers"
+   }
+  ],
+  "static_headers": [],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Dead code: registered with react-hot-loader but not exported (module exports only addPlaceToListUnique).",
+  "evidence": [
+   "s=\"/api/1/traveltime?startcoord=\".concat(o,\"&endcoord=\").concat(a,\"&region_id=\").concat(n);return i().ajax({url:s})",
+   "r.d(t,{Ns:()=>c})"
+  ]
+ },
+ {
+  "name": "geocode (direct fetch)",
+  "source_file": "/__w/web/web/src/actions/actions.js; containers/journey-results/results-page.js",
+  "resource": null,
+  "method": "GET",
+  "url_pattern": "/geocode?lat={lat}&lng={lng}",
+  "query_keys": [
+   {
+    "name": "lat",
+    "required": true,
+    "shape": "number"
+   },
+   {
+    "name": "lng",
+    "required": true,
+    "shape": "number"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "(fetch defaults)",
+    "source": "plain fetch(), default credentials same-origin"
+   }
+  ],
+  "static_headers": [],
+  "callers": [
+   "actions.js getPlaceFromLocation <- setUserLocationFromBrowser ('current location' in GMS form, go page, golink card)",
+   "results-page getPlaceObjectFromCoords <- geoCodeStartEndIfNeeded for unnamed start/end, marker drag, pick from map"
+  ],
+  "response_fields_used": [
+   "results[0].formatted_address",
+   "results[0].geometry.location.lat/lng",
+   "results[0].place_id",
+   "results[0].address_components[] (types, long_name, short_name)"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Google Geocoding response shape, proxied by citymapper.com (inferred).",
+  "evidence": [
+   "fetch(\"/geocode?lat=\".concat(r,\"&lng=\").concat(n)).then(function(e){return e.json()})"
+  ]
+ },
+ {
+  "name": "hackyReplacePageMeta (direct fetch)",
+  "source_file": "/__w/web/web/src/util/hacky-replace-page-meta.js",
+  "resource": null,
+  "method": "GET",
+  "url_pattern": "{current pathname}?{current query}&meta_only=true",
+  "query_keys": [
+   {
+    "name": "meta_only",
+    "required": true,
+    "shape": "constant true"
+   },
+   {
+    "name": "(all current query keys)",
+    "required": false,
+    "shape": "copied from the new location"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "Content-Type",
+    "source": "util/http.js proxy, application/json; charset=utf-8"
+   }
+  ],
+  "static_headers": [],
+  "callers": [
+   "index.js history.listen: every client-side route change"
+  ],
+  "response_fields_used": [
+   "HTML fragment of meta/link/title tags, swapped into <head>"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "r=g(g({},e.query),{},{meta_only:!0})",
+   "(0,h.Jt)(\"\".concat(t,\"?\").concat(n)).then(function(e){E(),O(e)})"
+  ]
+ },
+ {
+  "name": "directions link (navigation, not XHR)",
+  "source_file": "/__w/web/web/src/actions/actions.js; util/gms-query-util.js",
+  "resource": null,
+  "method": "GET (page navigation)",
+  "url_pattern": "/directions?startcoord=&endcoord=&startname=&endname=&startaddress=&endaddress=&departure_time=|arrival_time=",
+  "query_keys": [
+   {
+    "name": "startcoord",
+    "required": false,
+    "shape": "lat,lng; alias start"
+   },
+   {
+    "name": "endcoord",
+    "required": false,
+    "shape": "lat,lng; alias end"
+   },
+   {
+    "name": "startname",
+    "required": false,
+    "shape": "string"
+   },
+   {
+    "name": "endname",
+    "required": false,
+    "shape": "string"
+   },
+   {
+    "name": "startaddress",
+    "required": false,
+    "shape": "string; alias saddr"
+   },
+   {
+    "name": "endaddress",
+    "required": false,
+    "shape": "string; alias eaddr"
+   },
+   {
+    "name": "departure_time",
+    "required": false,
+    "shape": "datetime"
+   },
+   {
+    "name": "arrival_time",
+    "required": false,
+    "shape": "datetime"
+   },
+   {
+    "name": "timemode",
+    "required": false,
+    "shape": "now|depart|arrive with time"
+   },
+   {
+    "name": "arriveby",
+    "required": false,
+    "shape": "datetime"
+   },
+   {
+    "name": "departat",
+    "required": false,
+    "shape": "datetime"
+   }
+  ],
+  "body_fields": [],
+  "request_headers": [],
+  "static_headers": [],
+  "callers": [],
+  "response_fields_used": [],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Deep-link contract parsed by deserialiseGMSQuery; /router and /superrouter redirect here. getDirectionsUrl has a bug: start.address is written to endaddress.",
+  "evidence": [
+   "s=e.startcoord||e.start,c=e.endcoord||e.end",
+   "e.arriveby&&(l=Wg.OZ,n=e.arriveby),e.departat&&(l=Wg.El,o=e.departat)"
+  ]
+ },
+ {
+  "name": "landing region-info (direct fetch, landing.js only)",
+  "source_file": "/__w/web/web/src/containers/landing-page/index.js",
+  "resource": null,
+  "method": "GET",
+  "url_pattern": "/resource/region-info/{cm_region cookie or uk-london}",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "(fetch defaults)",
+    "source": "plain fetch(t)"
+   }
+  ],
+  "static_headers": [],
+  "callers": [
+   "landing.js boot; on failure retries with uk-london, then falls back to {}"
+  ],
+  "response_fields_used": [
+   "whole region object (region_slug, region_id and the rest of the region config)"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "Only in landing.js; the /webapp bundle gets the region inlined in window.citymapper instead.",
+  "evidence": [
+   "t=Ad()().get(Np.REGION_COOKIE)||Rb,e.p=1,e.n=2,Ib(\"/resource/region-info/\".concat(t))",
+   "Rb=\"uk-london\""
+  ]
+ },
+ {
+  "name": "landing brand-directory (direct fetch, landing.js only)",
+  "source_file": "/__w/web/web/src/containers/landing-page/index.js",
+  "resource": null,
+  "method": "GET",
+  "url_pattern": "/resource/brand-directory",
+  "query_keys": [],
+  "body_fields": [],
+  "request_headers": [
+   {
+    "name": "(fetch defaults)",
+    "source": "plain fetch(t)"
+   }
+  ],
+  "static_headers": [],
+  "callers": [
+   "landing.js boot, in parallel with region-info"
+  ],
+  "response_fields_used": [
+   "brands[] keyed by brand_id"
+  ],
+  "pagination_or_time_window": null,
+  "auth_needed": "none required by the client code (cookies are still sent because credentials:\"include\")",
+  "mutates": false,
+  "notes": "",
+  "evidence": [
+   "Ib(\"/resource/brand-directory\");case 1:t=e.v,n={},o=Pb(t.brands)"
+  ]
+ }
+]

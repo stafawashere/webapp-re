@@ -1,0 +1,1828 @@
+openapi: 3.1.0
+info:
+  title: Citymapper web API (private, observed)
+  version: '2026-10-10'
+  description: Rendered from the citymapper knowledge base (knowledge/endpoints). Only replayed, verified contracts are in
+    paths; bundle-only contracts are in x-hypotheses and retired ones in x-retired. These are the website's own requests,
+    not Citymapper's official developer API.
+servers:
+- url: https://citymapper.com
+paths:
+  /api/1/blog:
+    get:
+      operationId: blog
+      summary: Read Citymapper news posts
+      description: ''
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: blog
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/departures:
+    get:
+      operationId: departuresBus
+      summary: Get live departures at a stop or station
+      description: Bus and ferry stops.
+      parameters:
+      - name: headways
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stops:
+                    type: array
+                    description: 'stops[]: id, name, coords, bearing, region_id, routes[], services[{route_id, headsign, live_departures_seconds[],
+                      representative_pattern_id}]'
+      x-provenance:
+        finding: departures-bus
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/everythingmap:
+    get:
+      operationId: everythingmap
+      summary: Get everything on the map around a point
+      description: ''
+      parameters:
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: everythingmap
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/identity/user_data:
+    get:
+      operationId: identityUserData
+      summary: Read the signed-in user
+      description: 403 with an empty body while signed out (observed); user object when signed in.
+      parameters:
+      - name: accept
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: content-type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: referer
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: identity-user-data
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/journeytimes:
+    post:
+      operationId: journeytimes
+      summary: Refresh live times of planned journeys
+      description: 'Body {signatures: [<journey signature JSON string>]}; response order follows the request.'
+      parameters:
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  journey_times:
+                    type: array
+                    description: 'journey_times[]: time (ISO with offset), time_mode (NOWISH, ...), formatted_price, leg_times[],
+                      request_signature, traffic_level'
+      x-provenance:
+        finding: journeytimes
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                signatures: {}
+                partner: {}
+        x-content-type-sent: application/json
+  /api/1/placeresolve:
+    get:
+      operationId: placeresolve
+      summary: Resolve a place result without coordinates
+      description: ''
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: placeresolve
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/raildepartures:
+    get:
+      operationId: departuresRail
+      summary: Get live departures at a stop or station
+      description: ''
+      parameters:
+      - name: headways
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stations:
+                    type: array
+                    description: 'stations[]: station{...}, can_have_departures, departures[{destination, route_id, brand_id,
+                      pattern_id, scheduled_time, expected_departure_time, time_seconds, is_live, status, platform_number,
+                      trip_short_name, stops[]}]'
+      x-provenance:
+        finding: departures-rail
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/refreshjourneys:
+    post:
+      operationId: refreshjourneys
+      summary: Open a journey's detail
+      description: time_mode SIGNATURE_EXACT or SIGNATURE; bundle and route table, not fired by in-app navigation.
+      parameters:
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  refreshed_journeys:
+                    type: array
+                    description: 'refreshed_journeys[]: journey, error'
+                  shared:
+                    type: object
+                    description: 'shared: ...'
+      x-provenance:
+        finding: refreshjourneys
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                signatures: {}
+                time_mode: {}
+                region_id: {}
+                partner: {}
+                use_departures: {}
+                status_format: {}
+        x-content-type-sent: application/json
+  /api/1/resources:
+    get:
+      operationId: resources
+      summary: Read the terms of service or privacy policy
+      description: Linked from the footer for the terms and privacy policy.
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: object
+      x-provenance:
+        finding: resources
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/routeinfo:
+    get:
+      operationId: routeinfo1
+      summary: Get a line's branches, stops, path and status
+      description: ''
+      parameters:
+      - name: route
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: weekend
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status_format
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: extended
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  routes:
+                    type: array
+                    description: 'routes[]: id, name, long_name, brand, mode, color, live_line_code, live_availability, url,
+                      aliases, status{level, summary, description, replacements}, patterns[{id, name, pattern_type, path,
+                      stop_points}]'
+                  stops:
+                    type: object
+                    description: 'stops: {stop_id: {name, coords, routes, brands, live_code, status}}'
+                  feeds:
+                    type: array
+                    description: 'feeds[]: ...'
+                  status:
+                    type: object
+                    description: 'status: int'
+      x-provenance:
+        finding: routeinfo1
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/routepaths:
+    get:
+      operationId: routepaths
+      summary: Get line paths for a map
+      description: ''
+      parameters:
+      - name: route_ids
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: routepaths
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/routestatus:
+    get:
+      operationId: routestatus
+      summary: Get the status of every line in a city
+      description: ''
+      parameters:
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: format
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  groupings:
+                    type: array
+                    description: 'groupings[]: id, name, include_in_disruption_count, routes[{name, long_name, brand, aliases,
+                      status{level, summary, description, replacements, disruptions[{level, summary, description, replacements,
+                      stops}]}}], partners[]'
+                  last_updated_time:
+                    type: object
+                    description: 'last_updated_time: str'
+                  referenced_routes:
+                    type: array
+                    description: 'referenced_routes[]: ...'
+      x-provenance:
+        finding: routestatus
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accept: {}
+                citymapper-region: {}
+                content-type: {}
+                referer: {}
+        x-content-type-sent: application/json
+  /api/1/schedules:
+    get:
+      operationId: schedules
+      summary: Get a stop's timetable
+      description: ''
+      parameters:
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: time
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: schedules
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/traveltime:
+    get:
+      operationId: traveltime
+      summary: Get the travel time between two points
+      description: ''
+      parameters:
+      - name: startcoord
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: endcoord
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: traveltime
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/vehiclelocations:
+    get:
+      operationId: vehiclelocations
+      summary: Get live vehicle positions on a line
+      description: ''
+      parameters:
+      - name: route
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: vehiclelocations
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/1/walk:
+    get:
+      operationId: walk1
+      summary: Plan a walking route
+      description: Older walk endpoint; bundle only.
+      parameters:
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: end
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: saddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: eaddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sname
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: ename
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: departure_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: arrival_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_stepfree
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_networks
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_floating
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_via_microtransit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: partner
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: cycle
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status_format
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: walk1
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/2/findtransport:
+    get:
+      operationId: findtransport
+      summary: Find a bus or line by name or number
+      description: Observed in your browser (URL only, body not captured).
+      parameters:
+      - name: query
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: findtransport
+        status: verified
+        verify_count: 3
+        last_verified: '2026-10-10'
+  /api/2/message:
+    get:
+      operationId: message
+      summary: Read the site-wide service message
+      description: ''
+      parameters:
+      - name: had_previous_versions
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  messages:
+                    type: array
+                    description: 'messages[]: ...'
+      x-provenance:
+        finding: message
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accept: {}
+                citymapper-region: {}
+                content-type: {}
+                referer: {}
+        x-content-type-sent: application/json
+  /api/2/metrodepartures:
+    get:
+      operationId: departuresMetro
+      summary: Get live departures at a stop or station
+      description: Observed in NYC and Paris.
+      parameters:
+      - name: headways
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stations:
+                    type: array
+                    description: 'stations[]: station{name, coords, live_code, status}, sections[{id, name, departure_types,
+                      departure_groupings[{grouping_id, departures[{route_id, destination_name, time_seconds | scheduled_time,
+                      pattern_id, direction_id, is_advisory_message}]}]}], routes[], messages[]'
+                  last_updated_time:
+                    type: object
+                    description: 'last_updated_time: str'
+      x-provenance:
+        finding: departures-metro
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/2/nearby:
+    get:
+      operationId: nearby2
+      summary: List nearby stops, stations, piers or bike docks for one mode
+      description: jQuery call on stop pages.
+      parameters:
+      - name: brand_ids
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: kinds
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: viewspan
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  elements:
+                    type: array
+                    description: 'elements[]: same element shape as nearby3'
+                  bounding_box:
+                    type: object
+                    description: 'bounding_box: ...'
+      x-provenance:
+        finding: nearby2
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                accept: {}
+                referer: {}
+                x-requested-with: {}
+        x-content-type-sent: application/json
+  /api/2/routeinfo:
+    get:
+      operationId: routeinfo2
+      summary: Get several lines at once
+      description: ''
+      parameters:
+      - name: route_ids
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: weekend
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status_format
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: extended
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  routes:
+                    type: array
+                    description: 'routes[]: same route shape as routeinfo1'
+                  stops:
+                    type: object
+                    description: 'stops: {stop_id: {...}}'
+      x-provenance:
+        finding: routeinfo2
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/2/taxi:
+    get:
+      operationId: taxi
+      summary: Estimate a cab or on-demand ride
+      description: ''
+      parameters:
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: end
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: saddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: eaddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sname
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: ename
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: departure_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: arrival_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_stepfree
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_networks
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_floating
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_via_microtransit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: partner
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: cycle
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status_format
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  routes:
+                    type: array
+                    description: 'routes[]: mode taxi, length_meters, duration_seconds, legs[]'
+                  on_demand_model:
+                    type: object
+                    description: 'on_demand_model: title, categories[]'
+                  status:
+                    type: object
+                    description: 'status: int'
+      x-provenance:
+        finding: taxi
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/3/nearby:
+    get:
+      operationId: nearby3
+      summary: List nearby stops, stations, piers or bike docks for one mode
+      description: brand_ids and mode_id come from the region's nearby_modes.
+      parameters:
+      - name: brand_ids
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: kinds
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: mode_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: viewspan
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: extended
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  elements:
+                    type: array
+                    description: 'elements[]: id, name, coords, kind (transitstop, cycledock, ...), brand_ids, route_ids,
+                      route_names, route_icon_names, alias, bearing, walk_time_seconds; docks add cycles_available, cycles_spaces,
+                      cycles_total, cycles_electric_available, cycles_manual_available'
+                  bounding_box:
+                    type: object
+                    description: 'bounding_box: southwest_corner_coords, northeast_corner_coords'
+                  last_updated_time:
+                    type: object
+                    description: 'last_updated_time: str'
+      x-provenance:
+        finding: nearby3
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/3/stopinfo:
+    get:
+      operationId: stopinfo
+      summary: Get a stop or station's details
+      description: ''
+      parameters:
+      - name: ids
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  stops:
+                    type: array
+                    description: 'stops[]: id, requested_id, alias, name, coords, route_ids, brand_ids, url, sharing_urls[{departure_api,
+                      url}], exits[], stop_curation_url_ids'
+                  routes:
+                    type: array
+                    description: 'routes[]: id, name, brand_id, icon_name, color'
+      x-provenance:
+        finding: stopinfo
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/4/searchpost:
+    post:
+      operationId: searchpost
+      summary: Plan a transit journey
+      description: 'Content-Type application/x-www-form-urlencoded with a JSON body; Citymapper-Client: Web Search; Citymapper-Region:
+        <region_id>.'
+      parameters:
+      - name: citymapper-client
+        in: header
+        required: false
+        schema:
+          type: string
+        x-value-source: constant 'Web Search' on searchpost
+      - name: citymapper-region
+        in: header
+        required: false
+        schema:
+          type: string
+        x-value-source: the region_id of the request
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    description: 'results[]: id, name, result_type (heading or item), type (station, place, ...), coords,
+                      address, brands, lines, route_icon_names, source, place_details_available, search_providers'
+                  included_search_providers:
+                    type: array
+                    description: 'included_search_providers[]: id, name'
+                  query:
+                    type: object
+                    description: 'query: str'
+      x-provenance:
+        finding: searchpost
+        status: verified
+        verify_count: 3
+        last_verified: '2026-10-10'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                query: {}
+                region_id: {}
+                location: {}
+                is_refinement: {}
+                refinement_data: {}
+                search_providers: {}
+                powersearch: {}
+                partner: {}
+        x-content-type-sent: application/x-www-form-urlencoded (JSON text body)
+  /api/6/cycle:
+    get:
+      operationId: cycle
+      summary: Plan a cycling route (own bike or bike share)
+      description: ''
+      parameters:
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: end
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: saddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: eaddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sname
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: ename
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: departure_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: arrival_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_stepfree
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_networks
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_floating
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_via_microtransit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: partner
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: cycle
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status_format
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  journeys:
+                    type: array
+                    description: 'journeys[]: journey_kind (cycle_personal, cycle_hire), profile_id, journey_profile, duration_seconds,
+                      distance_meters, legs[], signature, formatted_price, representative_brand_id'
+                  shared:
+                    type: object
+                    description: 'shared.cycle_docks[]: dock ids and availability'
+      x-provenance:
+        finding: cycle
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /api/7/journeys:
+    get:
+      operationId: journeys
+      summary: Plan a transit journey
+      description: 'Transit journeys. start and end are ''lat,lng''. Observed keys: start, end, sname, ename, saddr, region_id,
+        include_stepfree=1, include_via_microtransit=1, status_format=html, arrival_time or departure_time ISO UTC. 97 KB
+        for NYC, 166 KB for London.'
+      parameters:
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: end
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: saddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: eaddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sname
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: ename
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: departure_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: arrival_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_stepfree
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_networks
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_floating
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_via_microtransit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: partner
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: cycle
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status_format
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  sections:
+                    type: array
+                    description: 'sections[]: id, name, journeys[] (indexes), ad_may_follow'
+                  journeys:
+                    type: array
+                    description: 'journeys[]: start, end, legs[], duration_seconds, walk_seconds, distance_meters, calories,
+                      signature, journey_equivalence_hash, formatted_price, price_amount, currency_code, step_free, trip_curation_url_ids,
+                      log journeys[].legs[]: mode (walk, transit, cycle, ...), routes[], stops[] (id, name, coords, duration_seconds_to_here),
+                      shape[[lat,lng]], frequency, departure_time, arrival_time, pattern_ids, boarding_info'
+                  shared:
+                    type: object
+                    description: 'shared: station_exits[], trip_curation_urls[]'
+                  routing_request_id:
+                    type: object
+                    description: 'routing_request_id: str'
+      x-provenance:
+        finding: journeys
+        status: verified
+        verify_count: 3
+        last_verified: '2026-10-10'
+  /api/7/walk:
+    get:
+      operationId: walk7
+      summary: Plan a walking route
+      description: limit=2 in the UI.
+      parameters:
+      - name: start
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: end
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: saddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: eaddr
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sname
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: ename
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: region_id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: departure_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: arrival_time
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_stepfree
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_networks
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_floating
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: include_via_microtransit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: limit
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: context
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: partner
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: cycle
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: status_format
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  journeys:
+                    type: array
+                    description: 'journeys[]: duration_seconds, distance_meters, calories, legs[], signature, profile_id,
+                      profile_localized_name'
+                  shared:
+                    type: object
+                    description: 'shared.station_exits[]: ...'
+      x-provenance:
+        finding: walk7
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /cities:
+    get:
+      operationId: citiesHtml
+      summary: List every supported city and region
+      description: Same window.citymapper globals; city tiles link to /{region_slug}.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: object
+      x-provenance:
+        finding: cities-html
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /geocode:
+    get:
+      operationId: geocode
+      summary: Name a point clicked on the map
+      description: ''
+      parameters:
+      - name: lat
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: lng
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  results:
+                    type: array
+                    description: 'results[]: address_components[], formatted_address (Google geocoder shape)'
+      x-provenance:
+        finding: geocode
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /news:
+    get:
+      operationId: newsHtml
+      summary: Read Citymapper news posts
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: object
+      x-provenance:
+        finding: news-html
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /resource/brand-directory:
+    get:
+      operationId: resourceBrandDirectory
+      summary: List transport brands (operators) worldwide
+      description: 445 KB JSON brand catalogue.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+      x-provenance:
+        finding: resource-brand-directory
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /resource/region-info/{region_id}:
+    get:
+      operationId: resourceRegionInfo
+      summary: Get one city's configuration (modes, brands, bounding box, timezone)
+      description: JSON region config; landing.js calls it with the cm_region cookie value.
+      parameters:
+      - name: region_id
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      x-provenance:
+        finding: resource-region-info
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /trip/signature:
+    get:
+      operationId: tripMeta
+      summary: Open a journey's detail
+      description: Head-tag refresh on client navigation (hackyReplacePageMeta). The signature param is the journey signature,
+        pako-deflated and base64 encoded.
+      parameters:
+      - name: signature
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: meta_only
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: object
+      x-provenance:
+        finding: trip-meta
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+  /{region_slug}:
+    get:
+      operationId: cityHtml
+      summary: List every supported city and region
+      description: 2 MB to 15 MB of HTML; the one source of the region list.
+      parameters:
+      - name: region_slug
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/html:
+              schema:
+                type: object
+                properties:
+                  window:
+                    type: object
+                    description: 'window.citymapper.region: region_id, region_name, region_slug, bounding_box, default_place,
+                      nearby_modes[], timezone, core_brand_ids, distance_units, feature flags window.citymapper.regions: [[region,
+                      distance_km]] x115 window.citymapper.citiesInRegions: {city_slug: {city_name, city_id, region_id, default_place,
+                      show_in_city_switcher}} x252 window.citymapper.brands: {brand_id: {..., departure_apis}} window.citymapper.apiUrl:
+                      /api/'
+      x-provenance:
+        finding: city-html
+        status: verified
+        verify_count: 2
+        last_verified: '2026-10-10'
+components:
+  securitySchemes:
+    sessionCookie:
+      type: apiKey
+      in: cookie
+      name: sessionid
+x-hypotheses:
+- finding: city-vote
+  method: POST
+  url: https://citymapper.com/cities/vote_submit/
+  status: hypothesis
+- finding: createshorturl
+  method: GET
+  url: https://citymapper.com/api/1/createshorturl?endcoord=&endaddress=&endname=&title=&message=&place_id=
+  status: hypothesis
+- finding: createtripurl
+  method: GET
+  url: https://citymapper.com/api/1/createtripurl?signature={signature}&trip_region_id={region_id}
+  status: hypothesis
+- finding: getshorturl
+  method: GET
+  url: https://citymapper.com/api/1/getshorturl?slug={slug}
+  status: hypothesis
+- finding: gettrip
+  method: GET
+  url: https://citymapper.com/api/1/gettrip?slug={slug}
+  status: hypothesis
+- finding: identity-confirm-signup
+  method: POST
+  url: https://citymapper.com/api/1/identity/confirm_sign_up/{token}
+  status: hypothesis
+- finding: identity-delete-journey
+  method: DELETE
+  url: https://citymapper.com/api/1/identity/documents/SavedJourney/{document_id}
+  status: hypothesis
+- finding: identity-favorites-create
+  method: POST
+  url: https://citymapper.com/api/1/identity/favorites
+  status: hypothesis
+- finding: identity-favorites-delete
+  method: DELETE
+  url: https://citymapper.com/api/1/identity/favorites/{favourite_id}
+  status: hypothesis
+- finding: identity-favorites-list
+  method: GET
+  url: https://citymapper.com/api/1/identity/favorites
+  status: hypothesis
+- finding: identity-magiclink
+  method: POST
+  url: https://citymapper.com/api/1/identity/magiclink/create
+  status: hypothesis
+- finding: identity-password-reset
+  method: POST
+  url: https://citymapper.com/api/1/identity/password_reset[/{token}]
+  status: hypothesis
+- finding: identity-places-create
+  method: POST
+  url: https://citymapper.com/api/1/identity/places
+  status: hypothesis
+- finding: identity-places-delete
+  method: DELETE
+  url: https://citymapper.com/api/1/identity/places/{place_id}
+  status: hypothesis
+- finding: identity-places-list
+  method: GET
+  url: https://citymapper.com/api/1/identity/places
+  status: hypothesis
+- finding: identity-places-update
+  method: PUT
+  url: https://citymapper.com/api/1/identity/places/{place_id}
+  status: hypothesis
+- finding: identity-save-journey
+  method: POST
+  url: https://citymapper.com/api/1/identity/documents/SavedJourney
+  status: hypothesis
+- finding: identity-sessions-create
+  method: POST
+  url: https://citymapper.com/api/1/identity/sessions
+  status: hypothesis
+- finding: identity-sessions-delete
+  method: DELETE
+  url: https://citymapper.com/api/1/identity/sessions
+  status: hypothesis
+- finding: identity-update-user
+  method: POST
+  url: https://citymapper.com/api/1/identity/update_user
+  status: hypothesis
+- finding: turnstile-addpaymentmethod
+  method: POST
+  url: https://turnstile-api.citymapper.com/web/1/addpaymentmethod
+  status: hypothesis
+- finding: turnstile-deleteallpaymentmethods
+  method: POST
+  url: https://turnstile-api.citymapper.com/web/1/deleteallpaymentmethods
+  status: hypothesis
+- finding: turnstile-deletepaymentmethod
+  method: POST
+  url: https://turnstile-api.citymapper.com/web/1/deletepaymentmethod
+  status: hypothesis
+- finding: turnstile-sessionttl
+  method: GET
+  url: https://turnstile-api.citymapper.com/web/1/sessionttl
+  status: hypothesis
+- finding: turnstile-setdefaultpaymentmethod
+  method: POST
+  url: https://turnstile-api.citymapper.com/web/1/setdefaultpaymentmethod
+  status: hypothesis
+- finding: turnstile-userinfo
+  method: POST
+  url: https://turnstile-api.citymapper.com/web/1/userinfo
+  status: hypothesis
+x-retired:
+- finding: eta
+  method: POST
+  url: https://citymapper.com/api/1/eta?region_id={region_id}
+- finding: transitscore
+  method: GET
+  url: https://citymapper.com/api/1/transitscore?startcoord={lat,lng}
+- finding: vehiclehire
+  method: GET
+  url: https://citymapper.com/api/7/vehiclehire
+- finding: weather
+  method: GET
+  url: https://citymapper.com/api/1/weather?location={lat,lng}&units={c|f}&term=now
+x-discovery-notes:
+  authentication:
+    type: cookie-session (optional)
+    session_cookie: sessionid
+    login: e-mail magic link, Google or Facebook token to /api/1/identity/sessions (not automated)
+  required_headers:
+    Citymapper-Region: region id, on searchpost, routestatus and message
+    Citymapper-Client: '''Web Search'' on searchpost'
+    Content-Type: application/json; charset=utf-8 on every call, form type with a JSON body on searchpost
+  anti_bot:
+    cdn: cloudflare
+    cookie: __cf_bm
+    challenges: none observed
+    rate_limit: no headers; client paces at 3 s or more
+  session:
+    initialization: none needed for public reads
+    region: explicit region_id on every call
+  quirks:
+  - name: google-results-without-coords
+    description: searchpost Google autocomplete items carry no coords; resolve with placeresolve?id=google:<id>
+  - name: departures-per-brand
+    description: stopinfo sharing_urls[].departure_api picks departures, metrodepartures or raildepartures
+  - name: named-tile-size
+    description: everythingmap size must be small or large
+  - name: signature-is-a-journey
+    description: journey signature is a JSON journey descriptor, deflated and base64 encoded in /trip/signature URLs

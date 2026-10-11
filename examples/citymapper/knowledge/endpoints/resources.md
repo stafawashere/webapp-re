@@ -1,0 +1,77 @@
+---
+id: resources
+goal: Read the terms of service or privacy policy
+method: GET
+url: https://citymapper.com/api/1/resources?id={resource_id}
+surface: html
+operation: 
+operation_id: 
+status: verified
+required_headers: [accept, content-type, referer]
+required_cookies: []
+first_seen: 2026-10-10
+last_seen: 2026-10-10
+last_verified: 2026-10-10
+verify_count: 4
+fail_count: 0
+runs: [run-2026-10-10-082844, run-2026-10-10-090401, run-2026-10-10-113603]
+---
+
+## Goal
+
+Read the terms of service or privacy policy
+
+## Request
+
+```
+GET https://citymapper.com/api/1/resources?id={resource_id}
+```
+
+## Headers that matter
+
+Names in front matter. Where each value comes from: fill in.
+
+## Cookies that gate it
+
+unknown
+
+## Request body
+
+none
+
+## Response, trimmed
+
+{}
+
+## Success signal
+
+unknown
+
+## Failure signals
+
+unknown
+
+## Notes
+
+read from the bundle only, not observed live. Linked from the footer for the terms and privacy policy.
+
+## Replay template
+
+```json
+{
+   "method": "GET",
+   "url": "https://citymapper.com/api/1/resources?id={resource_id}",
+   "headers": [
+      "accept",
+      "content-type",
+      "referer"
+   ],
+   "body": null
+}
+```
+
+## Verification history
+- 2026-10-10 run-2026-10-10-090401 pass: replay resources-1: HTTP 200, length 31635
+- 2026-10-10 run-2026-10-10-090401 pass: replay resources-2: HTTP 200, length 86587
+- 2026-10-10 run-2026-10-10-090401 pass: program live check get-legal (verify-2026-10-10-090820.json): exit 0, schema and invariants passed, 1 requests
+- 2026-10-10 run-2026-10-10-113603 pass: program live check get-legal (verify-2026-10-10-114004.json): exit 0, schema and invariants passed, 2 requests

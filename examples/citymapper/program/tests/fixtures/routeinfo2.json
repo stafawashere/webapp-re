@@ -1,0 +1,191 @@
+{
+   "routes": [
+      {
+         "color": "#1A6FB0",
+         "text_color": "#FFFFFF",
+         "icon_name": "zz-portvale-metro-a",
+         "icon_contains_name": true,
+         "name": "A",
+         "live_line_code": "A",
+         "brand": "PortvaleMetro",
+         "mode": "metro",
+         "supports_routeinfo": true,
+         "url": "https://citymapper.com/portvale/line/metro-a",
+         "patterns": [
+            {
+               "name": "Airport - Harbour Sq",
+               "path": [
+                  [
+                     10.21,
+                     20.11
+                  ],
+                  [
+                     10.556,
+                     20.531
+                  ],
+                  [
+                     10.512,
+                     20.488
+                  ]
+               ],
+               "stop_points": [
+                  {
+                     "id": "MetroAirport",
+                     "path_index": 0
+                  },
+                  {
+                     "id": "MetroDockRd",
+                     "path_index": 1
+                  },
+                  {
+                     "id": "MetroHarbourSq",
+                     "path_index": 2
+                  }
+               ],
+               "id": "A_0_1__Stations",
+               "pattern_type": "multidirectional"
+            },
+            {
+               "name": "Harbour Sq - Dock Rd",
+               "path": [
+                  [
+                     10.512,
+                     20.488
+                  ],
+                  [
+                     10.556,
+                     20.531
+                  ]
+               ],
+               "stop_points": [
+                  {
+                     "id": "MetroHarbourSq",
+                     "path_index": 0
+                  },
+                  {
+                     "id": "MetroDockRd",
+                     "path_index": 1
+                  }
+               ],
+               "id": "A_1_1__Stations",
+               "pattern_type": "multidirectional"
+            }
+         ],
+         "live_availability": 0,
+         "ui_color": "#1A6FB0",
+         "long_name": "Airport - Harbour",
+         "status": {
+            "level": 0,
+            "summary": "Good Service"
+         },
+         "aliases": [
+            "metro-a"
+         ]
+      },
+      {
+         "color": "#E0812B",
+         "text_color": "#FFFFFF",
+         "icon_name": "zz-portvale-metro-c",
+         "icon_contains_name": true,
+         "name": "C",
+         "live_line_code": "C",
+         "brand": "PortvaleMetro",
+         "mode": "metro",
+         "supports_routeinfo": true,
+         "url": "https://citymapper.com/portvale/line/metro-c",
+         "patterns": [
+            {
+               "name": "Circle",
+               "path": [
+                  [
+                     10.512,
+                     20.488
+                  ],
+                  [
+                     10.556,
+                     20.531
+                  ]
+               ],
+               "stop_points": [
+                  {
+                     "id": "MetroHarbourSq",
+                     "path_index": 0
+                  },
+                  {
+                     "id": "MetroDockRd",
+                     "path_index": 1
+                  }
+               ],
+               "id": "C_0_1__Stations",
+               "pattern_type": "multidirectional"
+            }
+         ],
+         "live_availability": 0,
+         "ui_color": "#E0812B",
+         "status": {
+            "level": 1,
+            "summary": "Minor Delays"
+         },
+         "aliases": [
+            "metro-c"
+         ]
+      }
+   ],
+   "stops": {
+      "MetroAirport": {
+         "live_code": "MetroAirport",
+         "routes": [
+            "A"
+         ],
+         "brands": [
+            "PortvaleMetro"
+         ],
+         "name": "Airport",
+         "coords": [
+            10.21,
+            20.11
+         ],
+         "route_icon_names": [
+            "zz-portvale-metro-a"
+         ]
+      },
+      "MetroDockRd": {
+         "live_code": "MetroDockRd",
+         "routes": [
+            "A",
+            "C"
+         ],
+         "brands": [
+            "PortvaleMetro"
+         ],
+         "name": "Dock Rd",
+         "coords": [
+            10.556,
+            20.531
+         ],
+         "route_icon_names": [
+            "zz-portvale-metro-a",
+            "zz-portvale-metro-c"
+         ]
+      },
+      "MetroHarbourSq": {
+         "live_code": "MetroHarbourSq",
+         "routes": [
+            "A",
+            "C"
+         ],
+         "brands": [
+            "PortvaleMetro"
+         ],
+         "name": "Harbour Sq",
+         "coords": [
+            10.512,
+            20.488
+         ],
+         "route_icon_names": [
+            "zz-portvale-metro-a",
+            "zz-portvale-metro-c"
+         ]
+      }
+   }
+}

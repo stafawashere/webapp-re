@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Citymapper cities</title>
+</head>
+<body>
+   <div id="cities">Pick a city</div>
+   <script>
+      window.citymapper = window.citymapper || {};
+      window.citymapper.regions = [[{"api_enabled": true, "bounding_box": {"northeast_corner_coords": [11.0, 21.0], "southwest_corner_coords": [10.0, 20.0]}, "default_place": {"coords": [10.5, 20.5]}, "region_dude": "gulls", "region_growth_percent": 100, "region_id": "zz-portvale", "region_is_launched": true, "region_name": "Portvale", "region_name_aliases": ["Port V", "Portvale Bay"], "region_name_localization_key": "DL_REGION_NAME_PORTVALE", "region_slug": "portvale", "web_enabled": true}, 142.5], [{"api_enabled": true, "bounding_box": {"northeast_corner_coords": [-4.0, 31.0], "southwest_corner_coords": [-5.0, 30.0]}, "default_place": {"coords": [-4.5, 30.5]}, "region_dude": "herons", "region_growth_percent": 80, "region_id": "zz-lakeshore", "region_is_launched": true, "region_name": "Lakeshore", "region_name_aliases": ["Lake Town"], "region_name_localization_key": "DL_REGION_NAME_LAKESHORE", "region_slug": "lakeshore", "web_enabled": true}, 87.25], [{"api_enabled": false, "bounding_box": {"northeast_corner_coords": [3.0, 41.0], "southwest_corner_coords": [2.0, 40.0]}, "default_place": {"coords": [2.5, 40.5]}, "region_dude": "moles", "region_growth_percent": 10, "region_id": "zz-portmoor", "region_is_launched": false, "region_name": "Portmoor", "region_name_aliases": [], "region_name_localization_key": "DL_REGION_NAME_PORTMOOR", "region_slug": "portmoor", "web_enabled": false}, 12.0]];
+      window.citymapper.citiesInRegions = {"portvale-central": {"city_name": "Portvale Central", "city_id": "city-zz-portvale-central", "city_name_localization_key": "DL_CITY_NAME_PORTVALE", "city_slug": "portvale-central", "show_in_city_switcher": true, "default_place": {"name": "Portvale Central", "coords": [10.5, 20.5]}, "region_id": "zz-portvale"}, "east-quay": {"city_name": "East Quay", "city_id": "city-zz-east-quay", "city_name_localization_key": "DL_CITY_NAME_EAST_QUAY", "city_slug": "east-quay", "show_in_city_switcher": false, "default_place": {"name": "East Quay", "coords": [10.7, 20.9]}, "region_id": "zz-portvale"}, "north-cove": {"city_name": "North Cove", "city_id": "city-zz-north-cove", "city_name_localization_key": "DL_CITY_NAME_NORTH_COVE", "city_slug": "north-cove", "show_in_city_switcher": true, "default_place": {"name": "North Cove", "coords": [-4.2, 30.4]}, "region_id": "zz-lakeshore"}, "ghost-town": {"city_name": "Ghost Town", "city_id": "city-zz-ghost-town", "city_name_localization_key": "DL_CITY_NAME_GHOST_TOWN", "city_slug": "ghost-town", "show_in_city_switcher": false, "default_place": {"name": "Ghost Town", "coords": [0.0, 0.0]}, "region_id": "zz-nowhere"}};
+   </script>
+</body>
+</html>

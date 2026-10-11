@@ -1,0 +1,8 @@
+home https://citymapper.com/
+stop-nyc-rail https://citymapper.com/nyc/rail/stations/grand-central
+stop-nyc-ferry https://citymapper.com/nyc/ferry/piers/midtown-w-39th-st
+stop-nyc-bike https://citymapper.com/nyc/bike/docks/CitiBike_904930bd-2671-4695-9c1a-8a894b041129
+line-london-bakerloo https://citymapper.com/london/l/bakerloo
+stop-paris-metro https://citymapper.com/paris/metro/stations/chatelet
+directions-paris-depart https://citymapper.com/directions?startcoord=48.858370%2C2.347000&endcoord=48.880930%2C2.355330&startname=Chatelet&endname=Gare%20du%20Nord&departure_time=2026-10-10T18%3A00%3A00.000Z
+news https://citymapper.com/news

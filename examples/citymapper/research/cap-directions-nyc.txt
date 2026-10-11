@@ -1,0 +1,215 @@
+=== GET 403 citymapper.com/api/1/identity/user_data
+   headers: accept, content-type, cookie, referer
+   response headers: cf-cache-status
+   text len=0
+=== GET 200 citymapper.com/api/2/message
+   query: had_previous_versions=0
+   headers: accept, citymapper-region, content-type, cookie, referer
+   response headers: cf-cache-status, x-version
+   $: dict x1
+   messages: list x1
+=== GET 200 citymapper.com/api/7/walk
+   query: start=40.752852,-73.977142; end=40.706086,-73.996864; sname=Grand Central; ename=Brooklyn Bridge; region_id=us-nyc; include_stepfree=1; include_via_microtransit=1; limit=2; status_format=html
+   headers: accept, content-type, cookie, referer
+   response headers: cf-cache-status, x-version
+   $: dict x1
+   sections: list x1
+   sections[]: dict x1
+   sections[].journeys: list x1
+   shared: dict x1
+   shared.station_exits: list x1
+   shared.station_exits[]: dict x6
+   journeys: list x1
+   journeys[]: dict x2
+   journeys[].start: dict x2
+   journeys[].end: dict x2
+   journeys[].walk_seconds: int x2  e.g. 4551
+   journeys[].duration_seconds: int x2  e.g. 4551
+   journeys[].calories: int x2  e.g. 316
+   journeys[].legs: list x2
+   journeys[].signature: str x2
+   journeys[].outdoor_walk_minutes: int x2  e.g. 76
+   journeys[].distance_meters: int x2  e.g. 6214
+   journeys[].journey_equivalence_hash: str x2  e.g. "95019e21c3b8f50abb2ec4d73d98a1ec"
+   journeys[].profile_id: str x2  e.g. "fast"
+   journeys[].profile_localized_name: str x2  e.g. "Fast"
+=== GET 200 citymapper.com/api/6/cycle
+   query: start=40.752852,-73.977142; end=40.706086,-73.996864; sname=Grand Central; ename=Brooklyn Bridge; region_id=us-nyc; include_stepfree=1; include_via_microtransit=1; status_format=html
+   headers: accept, content-type, cookie, referer
+   response headers: cf-cache-status, x-version
+   $: dict x1
+   sections: list x1
+   sections[]: dict x1
+   sections[].journeys: list x1
+   journeys: list x1
+   journeys[]: dict x6
+   journeys[].start: dict x6
+   journeys[].end: dict x6
+   journeys[].walk_seconds: int x6  e.g. 911
+   journeys[].duration_seconds: int x6  e.g. 3060
+   journeys[].calories: int x6  e.g. 214
+   journeys[].legs: list x6
+   journeys[].signature: str x6
+   journeys[].outdoor_walk_minutes: int x6  e.g. 16
+   journeys[].distance_meters: int x6  e.g. 9677
+   journeys[].journey_kind: str x6  e.g. "cycle_personal"
+   journeys[].profile_id: str x6  e.g. "cyclequiet"
+   journeys[].profile_localized_name: str x6  e.g. "Quiet"
+   journeys[].journey_profile: str x6  e.g. "quietest"
+   journeys[].representative_affinities: list x6
+   journeys[].formatted_price: str x3  e.g. "$6.90"
+   journeys[].price_amount: str x3  e.g. "6.90"
+   journeys[].currency_code: str x3  e.g. "USD"
+   journeys[].representative_brand_id: str x3  e.g. "CitiBike"
+   shared: dict x1
+   shared.cycle_docks: list x1
+   shared.cycle_docks[]: dict x9
+=== GET 200 citymapper.com/api/7/journeys
+   query: start=40.752852,-73.977142; end=40.706086,-73.996864; sname=Grand Central; ename=Brooklyn Bridge; region_id=us-nyc; include_stepfree=1; include_via_microtransit=1; status_format=html
+   headers: accept, content-type, cookie, referer
+   response headers: cf-cache-status, x-version
+   $: dict x1
+   sections: list x1
+   sections[]: dict x3
+   sections[].journeys: list x3
+   sections[].name: str x3  e.g. "Suggested"
+   sections[].id: str x3  e.g. "SUGGESTED"
+   sections[].ad_may_follow: bool x1  e.g. true
+   shared: dict x1
+   shared.station_exits: list x1
+   shared.station_exits[]: dict x30
+   shared.trip_curation_urls: list x1
+   shared.trip_curation_urls[]: dict x2
+   journeys: list x1
+   journeys[]: dict x11
+   journeys[].start: dict x11
+   journeys[].end: dict x11
+   journeys[].walk_seconds: int x11  e.g. 988
+   journeys[].duration_seconds: int x11  e.g. 1614
+   journeys[].calories: int x11  e.g. 67
+   journeys[].legs: list x11
+   journeys[].signature: str x11
+   journeys[].outdoor_walk_minutes: int x11  e.g. 13
+   journeys[].distance_meters: int x11  e.g. 1240
+   journeys[].formatted_price: str x11  e.g. "$3.00"
+   journeys[].price_amount: str x11  e.g. "3.00"
+   journeys[].currency_code: str x11  e.g. "USD"
+   journeys[].trip_curation_url_ids: list x10
+   journeys[].journey_equivalence_hash: str x11  e.g. "e9682cbef97c0d9369b796b2537b0a1e"
+   journeys[].log: dict x11
+   journeys[].step_free: bool x3  e.g. true
+   routing_request_id: str x1  e.g. "11fd29ad-d778-42f2-88ff-d3714d93ee2b"
+   allow_jokes: bool x1  e.g. true
+   log: dict x1
+   log.Time Planned For Hour: int x1  e.g. 8
+   log.Time Planned For Minute: int x1  e.g. 28
+   log.Time Planned For Weekday: int x1  e.g. 6
+   log.Request ID: str x1  e.g. "11fd29ad-d778-42f2-88ff-d3714d93ee2b"
+   log.Time Mode: str x1  e.g. "Nowish"
+   log.Current Time Hour: int x1  e.g. 8
+   log.Current Time Minute: int x1  e.g. 28
+   log.Current Time Weekday: int x1  e.g. 6
+   log.Minutes Ahead Planned: int x1  e.g. 0
+   log.Cycle Preference: str x1  e.g. "Hire"
+   log.Scenario: str x1  e.g. "Normal"
+   log.Transit Journeys: int x1  e.g. 11
+   log.Bus Journeys: int x1  e.g. 0
+   log.Train Journeys: int x1  e.g. 0
+   log.Single-mode Via rank: null x1
+   log.Intermodal Via rank: list x1
+=== GET 200 citymapper.com/api/2/taxi
+   query: start=40.752852,-73.977142; end=40.706086,-73.996864; sname=Grand Central; ename=Brooklyn Bridge; region_id=us-nyc; include_stepfree=1; include_via_microtransit=1; status_format=html
+   headers: accept, content-type, cookie, referer
+   response headers: cf-cache-status, x-version
+   $: dict x1
+   routes: list x1
+   routes[]: dict x1
+   routes[].mode: str x1  e.g. "taxi"
+   routes[].length_meters: int x1  e.g. 6922
+   routes[].duration_seconds: int x1  e.g. 1381
+   routes[].legs: list x1
+   status: int x1  e.g. 0
+   diagnostic: dict x1
+   on_demand_model: dict x1
+   on_demand_model.categories: list x1
+   on_demand_model.categories[]: dict x5
+   on_demand_model.title: str x1  e.g. ""
+=== POST 200 citymapper.com/api/4/searchpost
+   headers: accept, citymapper-client, citymapper-region, content-length, content-type, cookie, origin, referer
+   body: {"query": "Grand Central", "region_id": "us-nyc", "is_refinement": true, "refinement_data": {"is_chain": true}, "powersearch": false}
+   response headers: cf-cache-status, x-version
+   $: dict x1
+   results: list x1
+   results[]: dict x8
+   results[].id: str x8  e.g. "stations"
+   results[].name: str x8  e.g. "Stations"
+   results[].result_type: str x5  e.g. "heading"
+   results[].brands: list x3
+   results[].coords: list x3
+   results[].lines: list x3
+   results[].route_icon_names: list x3
+   results[].source: str x5  e.g. "citymapper_stations"
+   results[].type: str x5  e.g. "station"
+   results[].search_providers: list x1
+   results[].address: str x2  e.g. "East 42nd Street, New York, NY, USA"
+   results[].place_details_available: bool x2  e.g. true
+   results[].alternate_search_providers: list x1
+   results[].included_search_providers: list x1
+   included_search_providers: list x1
+   included_search_providers[]: dict x2
+   included_search_providers[].id: str x2  e.g. "google"
+   included_search_providers[].name: str x2  e.g. "Google"
+   alternate_search_providers: list x1
+   detailed_search_providers: list x1
+   query: str x1  e.g. "Grand Central"
+=== POST 200 citymapper.com/api/4/searchpost
+   headers: accept, citymapper-client, citymapper-region, content-length, content-type, cookie, origin, referer
+   body: {"query": "Brooklyn Bridge", "region_id": "us-nyc", "is_refinement": true, "refinement_data": {"is_chain": true}, "powersearch": false}
+   response headers: cf-cache-status, x-version
+   $: dict x1
+   results: list x1
+   results[]: dict x9
+   results[].id: str x9  e.g. "stations"
+   results[].name: str x9  e.g. "Stations"
+   results[].result_type: str x8  e.g. "heading"
+   results[].brands: list x1
+   results[].coords: list x1
+   results[].lines: list x1
+   results[].route_icon_names: list x1
+   results[].source: str x6  e.g. "citymapper_stations"
+   results[].type: str x6  e.g. "station"
+   results[].search_providers: list x1
+   results[].address: str x5  e.g. "New York, NY, USA"
+   results[].place_details_available: bool x5  e.g. true
+   results[].alternate_search_providers: list x1
+   results[].included_search_providers: list x1
+   included_search_providers: list x1
+   included_search_providers[]: dict x2
+   included_search_providers[].id: str x2  e.g. "google"
+   included_search_providers[].name: str x2  e.g. "Google"
+   alternate_search_providers: list x1
+   detailed_search_providers: list x1
+   query: str x1  e.g. "Brooklyn Bridge"
+=== POST 200 citymapper.com/api/2/logevents
+   headers: accept, citymapper-client, citymapper-region, content-length, content-type, cookie, origin, referer, user-device
+   body: U Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/152.0.0.0 Safari/537.36
+R us-nyc
+E {"type":"pageView","time":"2026-10-10T08:28:58-04:00","context":"directions","region_id":"us-nyc","cmpage":"directions","pathname":"/directions","httpReferer":"","device":"desktop","ext":"cmweb","isLoggedIn":false,"browserWidth":1200,"browserHeight":970,"environment":"production","version":"v749"}
+E {"type":"Initialised PersistentMap","time":"2026-10-10T08:28:58-04:00","context":"directions","uniqueMapId":"persistent-map-fe2060e5-71e8-471b-b572-0685a990db9f","numbe
+   response headers: cf-cache-status
+   $: dict x1
+   status: int x1  e.g. 0
+=== POST 200 citymapper.com/api/1/journeytimes
+   query: region_id=us-nyc
+   headers: accept, content-length, content-type, cookie, origin, referer
+   body: {"signatures": ["{\"car\": 6922, \"duration\": 1614, \"end\": {\"coords\": \"40.706086,-73.996864\", \"name\": \"Brooklyn Bridge\"}, \"jr_index\": 0, \"legs\": [{\"distance\": 136, \"duration\": 180, \"ec\": \"40.753,-73.97705\", \"mode\": \"walk\", \"sc\": \"40.753,-73.97705\"}, {\"duration\": 510, \"end\": \"SubwayBrooklynBridgeCityHall\", \"headway\": 350, \"mode\": \"transit\", \"route_ids\": [\"4\", \"5\"], \"start\": \"SubwayGrandCentral42St\", \"stop_count\": 3, \"stop_ids\": [\"Platform_SubwayGrandCentral42St_456_dSW\", \"Platform_SubwayBrooklynBridgeCityHall_456_dSW\"]}, {\"distance\"
+   response headers: cf-cache-status, x-version
+   $: dict x1
+   journey_times: list x1
+   journey_times[]: dict x11
+   journey_times[].formatted_price: str x11  e.g. "$3.00"
+   journey_times[].leg_times: list x11
+   journey_times[].request_signature: str x11
+   journey_times[].time: str x11  e.g. "2026-10-10T08:28:58-04:00"
+   journey_times[].time_mode: str x11  e.g. "NOWISH"
+   journey_times[].traffic_level: int x11  e.g. 0

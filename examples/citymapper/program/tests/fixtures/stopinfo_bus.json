@@ -1,0 +1,64 @@
+{
+   "stops": [
+      {
+         "id": "PVBus_4471",
+         "requested_id": "pier-st-mill-ln",
+         "alias": "pier-st-mill-ln",
+         "name": "Pier St / Mill Ln",
+         "coords": [
+            10.507,
+            20.511
+         ],
+         "route_ids": [
+            "PortvaleBus12",
+            "PortvaleBus40"
+         ],
+         "brand_ids": [
+            "PortvaleBus"
+         ],
+         "url": "https://citymapper.com/portvale/stop/pier-st-mill-ln",
+         "sharing_urls": [
+            {
+               "departure_api": "departures",
+               "url": "https://citymapper.com/portvale/stop/pier-st-mill-ln"
+            }
+         ],
+         "exits": [],
+         "stop_curation_url_ids": [
+            "web_edit_station"
+         ]
+      }
+   ],
+   "routes": [
+      {
+         "id": "PortvaleBus12",
+         "name": "12",
+         "brand_id": "PortvaleBus",
+         "icon_name": "zz-portvale-bus",
+         "icon_contains_name": false,
+         "color": "#C2322E",
+         "ui_color": "#C2322E",
+         "text_color": "#FFFFFF"
+      },
+      {
+         "id": "PortvaleBus40",
+         "name": "40",
+         "brand_id": "PortvaleBus",
+         "icon_name": "zz-portvale-bus",
+         "icon_contains_name": false,
+         "color": "#C2322E",
+         "ui_color": "#C2322E",
+         "text_color": "#FFFFFF"
+      }
+   ],
+   "shared": {
+      "stop_curation_urls": [
+         {
+            "href": "https://citymapper.com/stop-curation/facilities",
+            "id": "web_edit_station",
+            "permission_required": "show_stop_curation",
+            "title": "Add Facilities"
+         }
+      ]
+   }
+}

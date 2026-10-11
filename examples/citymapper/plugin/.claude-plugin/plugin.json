@@ -1,0 +1,12 @@
+{
+   "name": "citymapper",
+   "version": "2026.10.10",
+   "description": "Use Citymapper (citymapper.com) through a local program for any of its 115 regions",
+   "author": {
+      "name": "stafawashere"
+   },
+   "keywords": [
+      "webapp-re",
+      "citymapper"
+   ]
+}

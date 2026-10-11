@@ -1,0 +1,78 @@
+{
+   "sections": [
+      {
+         "journeys": [
+            0
+         ]
+      }
+   ],
+   "journeys": [
+      {
+         "start": {
+            "coords": [
+               10.5,
+               20.5
+            ]
+         },
+         "end": {
+            "coords": [
+               10.6,
+               20.7
+            ]
+         },
+         "walk_seconds": 120,
+         "duration_seconds": 1210,
+         "calories": 88,
+         "legs": [
+            {
+               "mode": "cycle",
+               "duration_seconds": 1210,
+               "shape": [
+                  [
+                     10.5,
+                     20.5
+                  ],
+                  [
+                     10.6,
+                     20.7
+                  ]
+               ],
+               "navigation_kind": "cycle",
+               "distance_meters": 4310
+            }
+         ],
+         "signature": "{\"duration\": 1210, \"end\": {\"coords\": \"10.6,20.7\"}, \"jr_index\": 0}",
+         "outdoor_walk_minutes": 2,
+         "distance_meters": 4310,
+         "journey_kind": "cycle_personal",
+         "profile_id": "cyclequiet",
+         "profile_localized_name": "Quiet",
+         "journey_profile": "quietest",
+         "representative_affinities": [
+            "cycle"
+         ]
+      }
+   ],
+   "shared": {
+      "cycle_docks": [
+         {
+            "id": "HarbourBikes_7f3a",
+            "name": "Pier Rd & Mill Ln",
+            "coords": [
+               10.505,
+               20.509
+            ],
+            "cycles_available": 4,
+            "cycles_spaces": 11,
+            "cycles_broken": 1,
+            "cycles_total": 16,
+            "brand_id": "HarbourBikes",
+            "has_low_spaces": false,
+            "has_low_vehicles": false,
+            "is_virtual": false,
+            "cycles_electric_available": 2,
+            "cycles_manual_available": 2
+         }
+      ]
+   }
+}

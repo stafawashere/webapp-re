@@ -1,0 +1,137 @@
+{
+   "stations": [
+      {
+         "station": {
+            "name": "Harbour Sq",
+            "coords": [
+               10.512,
+               20.488
+            ],
+            "live_code": "MetroHarbourSq",
+            "brands": [
+               "PortvaleMetro"
+            ],
+            "route_icon_names": [
+               "zz-portvale-metro-a",
+               "zz-portvale-metro-c"
+            ],
+            "status": {
+               "summary": "Harbour Sq: Station Open",
+               "description": "",
+               "level": 0
+            }
+         },
+         "messages": [],
+         "sections": [
+            {
+               "id": "MetroHarbourSq_Now",
+               "departure_groupings": [
+                  {
+                     "grouping_id": "Platform_MetroHarbourSq_1",
+                     "schedule_grouping_id": "Platform_MetroHarbourSq_1",
+                     "departures": [
+                        {
+                           "destination_name": "Saltmarsh",
+                           "route_id": "A",
+                           "pattern_id": "A_0_1__Stations",
+                           "direction_id": "0",
+                           "time_seconds": 300
+                        },
+                        {
+                           "destination_name": "Lighthouse Point",
+                           "route_id": "C",
+                           "pattern_id": "C_0_1__Stations",
+                           "direction_id": "0",
+                           "time_seconds": 60
+                        },
+                        {
+                           "route_id": "A",
+                           "destination_name": "Platform 2 closed for repairs",
+                           "is_advisory_message": 1
+                        }
+                     ],
+                     "advertised_route_ids": [
+                        "A",
+                        "C"
+                     ],
+                     "direction_name": "Southbound"
+                  }
+               ],
+               "name": "Departures",
+               "departure_types": [
+                  "now"
+               ]
+            },
+            {
+               "id": "MetroHarbourSq_Later",
+               "departure_groupings": [
+                  {
+                     "grouping_id": "Platform_MetroHarbourSq_2",
+                     "schedule_grouping_id": "Platform_MetroHarbourSq_2",
+                     "departures": [
+                        {
+                           "destination_name": "Airport",
+                           "route_id": "A",
+                           "pattern_id": "A_1_1__Stations",
+                           "direction_id": "1",
+                           "scheduled_time": "2026-10-12T09:40:00+09:00"
+                        }
+                     ],
+                     "advertised_route_ids": [
+                        "A"
+                     ],
+                     "direction_name": "Northbound"
+                  }
+               ],
+               "name": "Later",
+               "departure_types": [
+                  "scheduled"
+               ]
+            }
+         ],
+         "routes": [
+            {
+               "name": "A",
+               "color": "#1A6FB0",
+               "text_color": "#FFFFFF",
+               "icon_name": "zz-portvale-metro-a",
+               "icon_contains_name": true,
+               "live_line_code": "A",
+               "brand": "PortvaleMetro",
+               "ui_color": "#1A6FB0",
+               "long_name": "Airport - Harbour",
+               "supports_routeinfo": true,
+               "aliases": [
+                  "metro-a"
+               ],
+               "status": {
+                  "level": 0,
+                  "summary": "Good Service",
+                  "description": ""
+               }
+            },
+            {
+               "name": "C",
+               "color": "#E0812B",
+               "text_color": "#FFFFFF",
+               "icon_name": "zz-portvale-metro-c",
+               "icon_contains_name": true,
+               "live_line_code": "C",
+               "brand": "PortvaleMetro",
+               "ui_color": "#E0812B",
+               "long_name": "Circle",
+               "supports_routeinfo": true,
+               "aliases": [
+                  "metro-c"
+               ],
+               "status": {
+                  "level": 1,
+                  "summary": "Minor Delays",
+                  "description": "Minor delays"
+               }
+            }
+         ]
+      }
+   ],
+   "last_updated_time": "2026-10-12T08:30:10+09:00"
+}

@@ -1,0 +1,231 @@
+# Changelog
+
+- 2026-10-10 pattern noise-logevents added in run-2026-10-10-082844
+- 2026-10-10 pattern noise-third-party added in run-2026-10-10-082844
+- 2026-10-10 pattern technique-cdp-for-bodies added in run-2026-10-10-082844
+- 2026-10-10 pattern surface-embedded-region-config added in run-2026-10-10-082844
+- 2026-10-10 finding journeys recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding walk7 recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding walk1 recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding cycle recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding taxi recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding vehiclehire recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding journeytimes recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding refreshjourneys recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding trip-meta recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding gettrip recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding createtripurl recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding createshorturl recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding getshorturl recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding eta recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding searchpost recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding placeresolve recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding geocode recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding nearby3 recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding nearby2 recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding everythingmap recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding stopinfo recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding departures-bus recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding departures-metro recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding departures-rail recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding schedules recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding routeinfo1 recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding routeinfo2 recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding routepaths recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding routestatus recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding findtransport recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding vehiclelocations recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding message recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding weather recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding transitscore recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding traveltime recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding blog recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding resources recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding city-html recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding cities-html recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding news-html recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding resource-region-info recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding resource-brand-directory recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-user-data recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-sessions-create recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-sessions-delete recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-magiclink recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-update-user recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-password-reset recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-confirm-signup recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-places-list recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-places-create recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-places-update recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-places-delete recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-favorites-list recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-favorites-create recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-favorites-delete recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-save-journey recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding identity-delete-journey recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding turnstile-userinfo recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding turnstile-addpaymentmethod recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding turnstile-setdefaultpaymentmethod recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding turnstile-deletepaymentmethod recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding turnstile-deleteallpaymentmethods recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding turnstile-sessionttl recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 finding city-vote recorded as hypothesis in run-2026-10-10-082844
+- 2026-10-10 pattern quirk-searchpost-form-json added in run-2026-10-10-082844
+- 2026-10-10 pattern quirk-departure-api-per-brand added in run-2026-10-10-082844
+- 2026-10-10 pattern quirk-line-url-redirect added in run-2026-10-10-082844
+- 2026-10-10 finding cities-html replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding city-html replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding resource-region-info replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding resource-region-info replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding resource-brand-directory replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding searchpost replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding searchpost replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding geocode replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding geocode replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding journeys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding journeys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding walk7 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding walk7 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding cycle replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding cycle replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding taxi replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding taxi replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding vehiclehire replay fail in run-2026-10-10-090401, now stale
+- 2026-10-10 finding vehiclehire replay fail in run-2026-10-10-090401, now stale
+- 2026-10-10 finding journeytimes replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding journeytimes replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding refreshjourneys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding refreshjourneys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding traveltime replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding eta replay fail in run-2026-10-10-090401, now stale
+- 2026-10-10 finding nearby3 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding nearby3 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding nearby2 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding departures-metro replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding departures-metro replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding departures-bus replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding departures-rail replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding schedules replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routestatus replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routestatus replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routeinfo2 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routeinfo2 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding message replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding message replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding findtransport replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding findtransport replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routeinfo1 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routeinfo1 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding vehiclelocations replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routepaths replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding weather replay fail in run-2026-10-10-090401, now stale
+- 2026-10-10 finding transitscore replay fail in run-2026-10-10-090401, now stale
+- 2026-10-10 finding blog replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding resources replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding identity-user-data replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding cities-html replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding city-html replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding resource-brand-directory replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding searchpost replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding placeresolve replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding placeresolve replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding walk1 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding walk1 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding journeys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding trip-meta replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding trip-meta replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding eta replay fail in run-2026-10-10-090401, now stale
+- 2026-10-10 finding traveltime replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding nearby2 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding departures-bus replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding departures-rail replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding schedules replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding vehiclelocations replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routepaths replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding everythingmap replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding everythingmap replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding weather replay fail in run-2026-10-10-090401, now stale
+- 2026-10-10 finding transitscore replay fail in run-2026-10-10-090401, now stale
+- 2026-10-10 finding blog replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding news-html replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding news-html replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding resources replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding findtransport replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding identity-user-data replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding vehiclehire recorded as dead in run-2026-10-10-090401
+- 2026-10-10 finding eta recorded as dead in run-2026-10-10-090401
+- 2026-10-10 finding weather recorded as dead in run-2026-10-10-090401
+- 2026-10-10 finding transitscore recorded as dead in run-2026-10-10-090401
+- 2026-10-10 pattern quirk-journeytimes-missing-time added in run-2026-10-10-090401
+- 2026-10-10 pattern quirk-slug-links-404 added in run-2026-10-10-090401
+- 2026-10-10 finding resource-region-info replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding resource-brand-directory replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding searchpost replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding placeresolve replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding geocode replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding journeys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding journeys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding walk7 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding cycle replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding taxi replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding refreshjourneys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding traveltime replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding nearby3 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding nearby3 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding schedules replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routestatus replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routestatus replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding message replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding findtransport replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routeinfo1 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routeinfo2 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding vehiclelocations replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding routepaths replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding everythingmap replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding news-html replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding resources replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding cities-html replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding journeys replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding journeytimes replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding identity-user-data replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding nearby3 replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-090401, now verified
+- 2026-10-10 finding cities-html replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding resource-brand-directory replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding searchpost replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding placeresolve replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding geocode replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding journeys replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding journeys replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding walk7 replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding cycle replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding taxi replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding journeytimes replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding refreshjourneys replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding traveltime replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding nearby3 replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding nearby3 replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding stopinfo replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding schedules replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding routestatus replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding routestatus replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding message replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding findtransport replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding routeinfo1 replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding routeinfo2 replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding vehiclelocations replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding routepaths replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding everythingmap replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding news-html replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding identity-user-data replay pass in run-2026-10-10-113603, now verified
+- 2026-10-10 finding resources replay pass in run-2026-10-10-113603, now verified

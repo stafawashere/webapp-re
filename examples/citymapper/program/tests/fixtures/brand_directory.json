@@ -1,0 +1,29 @@
+{
+   "brands": [
+      {
+         "affinities": [
+            "metro"
+         ],
+         "brand_id": "PortvaleMetro",
+         "brand_name": "Portvale Metro",
+         "image_name_stem": "portvale-metro"
+      },
+      {
+         "affinities": [
+            "bus"
+         ],
+         "brand_id": "PortvaleBus",
+         "brand_name": "Portvale Buses",
+         "image_name_stem": "portvale-bus"
+      },
+      {
+         "affinities": [
+            "taxicab"
+         ],
+         "brand_id": "GullCabs",
+         "brand_name": "Gull Cabs",
+         "image_name_stem": "gull-cabs",
+         "partner_app_id": "gullcabs"
+      }
+   ]
+}

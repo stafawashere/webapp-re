@@ -1,0 +1,65 @@
+{
+   "stops": [
+      {
+         "name": "Pier St / Mill Ln",
+         "coords": [
+            10.507,
+            20.511
+         ],
+         "id": "PVBus_4471",
+         "routes": [
+            {
+               "name": "12",
+               "color": "#C2322E",
+               "text_color": "#FFFFFF",
+               "id": "PortvaleBus12",
+               "brand": "PortvaleBus",
+               "ui_color": "#C2322E",
+               "long_name": "Lighthouse - Old Town",
+               "supports_routeinfo": true,
+               "aliases": [
+                  "bus-12"
+               ]
+            },
+            {
+               "name": "40",
+               "color": "#C2322E",
+               "text_color": "#FFFFFF",
+               "id": "PortvaleBus40",
+               "brand": "PortvaleBus",
+               "ui_color": "#C2322E",
+               "long_name": "Saltmarsh - Airport",
+               "supports_routeinfo": true,
+               "aliases": [
+                  "bus-40"
+               ]
+            }
+         ],
+         "brands": [
+            "PortvaleBus"
+         ],
+         "bearing": "NE",
+         "region_id": "zz-portvale",
+         "services": [
+            {
+               "headsign": "Lighthouse",
+               "route_id": "PortvaleBus12",
+               "live_departures_seconds": [
+                  420,
+                  95
+               ],
+               "representative_pattern_id": "12_1"
+            },
+            {
+               "headsign": "Airport",
+               "route_id": "PortvaleBus40",
+               "next_departures": [
+                  "2026-10-12T08:50:00+09:00",
+                  "2026-10-12T09:20:00+09:00"
+               ],
+               "representative_pattern_id": "40_1"
+            }
+         ]
+      }
+   ]
+}

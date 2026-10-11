@@ -1,0 +1,6514 @@
+{
+ "generated_from": "plan/plan.json 2026-10-10",
+ "commands": {
+  "help": {
+   "name": "help",
+   "purpose": "List every command with inputs, outputs, kind, readiness and the session status",
+   "kind": "read",
+   "tier": "base",
+   "live_policy": "local",
+   "input_schema": {
+    "type": "object",
+    "properties": {}
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "commands": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string"
+        },
+        "kind": {
+         "type": "string"
+        },
+        "readiness": {
+         "type": "string"
+        }
+       }
+      }
+     },
+     "session": {
+      "type": "object"
+     }
+    },
+    "required": [
+     "commands"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [],
+   "requests": 0
+  },
+  "adopt-session": {
+   "name": "adopt-session",
+   "purpose": "Store your Citymapper session cookies from stdin or a file into .env (mode 600); never from argv",
+   "kind": "write",
+   "tier": "base",
+   "live_policy": "local",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "from_file": {
+      "type": "string"
+     },
+     "stdin": {
+      "type": "boolean"
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "stored": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "path": {
+      "type": "string"
+     },
+     "lengths": {
+      "type": "object",
+      "description": "cookie name to value length; never the value"
+     }
+    },
+    "required": [
+     "stored"
+    ]
+   },
+   "confirmation": "local only: writes .env, sends nothing; prints cookie names and lengths, never values",
+   "depends_on": [],
+   "requests": 0
+  },
+  "list-cities": {
+   "name": "list-cities",
+   "purpose": "List every supported region and city, with ids, slugs and whether routing is enabled",
+   "kind": "read",
+   "tier": "base",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "refresh": {
+      "type": "boolean"
+     },
+     "query": {
+      "type": "string"
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "fetched_at": {
+      "type": [
+       "number",
+       "null"
+      ],
+      "description": "when the cached catalogue was fetched, in Unix seconds"
+     },
+     "regions": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "region_id": {
+         "type": "string"
+        },
+        "slug": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "aliases": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "api_enabled": {
+         "type": "boolean"
+        },
+        "bounding_box": {
+         "type": "object"
+        },
+        "cities": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "city_id": {
+            "type": "string"
+           },
+           "slug": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           }
+          }
+         }
+        }
+       },
+       "required": [
+        "region_id",
+        "slug",
+        "name"
+       ]
+      }
+     }
+    },
+    "required": [
+     "regions"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "cities-html",
+     "finding": "cities-html",
+     "state": "verified",
+     "verify_count": 4
+    },
+    {
+     "endpoint": "city-html",
+     "finding": "city-html",
+     "state": "verified",
+     "verify_count": 2
+    }
+   ],
+   "requests": 1
+  },
+  "get-city": {
+   "name": "get-city",
+   "purpose": "Get one region's configuration: nearby modes, brands, bounding box, timezone, default place",
+   "kind": "read",
+   "tier": "base",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     }
+    },
+    "required": [
+     "city"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "region_id": {
+      "type": "string"
+     },
+     "slug": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "timezone": {
+      "type": "string"
+     },
+     "bounding_box": {
+      "type": "object"
+     },
+     "default_place": {
+      "type": "object"
+     },
+     "nearby_modes": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "mode_id": {
+         "type": "string"
+        },
+        "slug": {
+         "type": "string"
+        },
+        "title": {
+         "type": "string"
+        },
+        "brand_ids": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "kinds": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        }
+       }
+      }
+     },
+     "core_brand_ids": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "distance_units": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "api_enabled": {
+      "type": "boolean"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "region_id",
+     "nearby_modes"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "resource-region-info",
+     "finding": "resource-region-info",
+     "state": "verified",
+     "verify_count": 3
+    },
+    {
+     "endpoint": "city-html",
+     "finding": "city-html",
+     "state": "verified",
+     "verify_count": 2
+    }
+   ],
+   "requests": 1
+  },
+  "list-brands": {
+   "name": "list-brands",
+   "purpose": "List transport brands (operators) from the brand directory, optionally for one city",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "query": {
+      "type": "string"
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "brands": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "affinities": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "departure_apis": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        }
+       },
+       "required": [
+        "id"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "brands"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "resource-brand-directory",
+     "finding": "resource-brand-directory",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "search-places": {
+   "name": "search-places",
+   "purpose": "Search places, addresses, stations and stops in a city (autocomplete)",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "query": {
+      "type": "string"
+     },
+     "near": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     }
+    },
+    "required": [
+     "city",
+     "query"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "query": {
+      "type": "string"
+     },
+     "results": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "name": {
+         "type": "string"
+        },
+        "address": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "coords": {
+         "type": [
+          "array",
+          "null"
+         ],
+         "items": {
+          "type": "number"
+         }
+        },
+        "type": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "source": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "brands": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "lines": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        }
+       },
+       "required": [
+        "name"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "results"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "searchpost",
+     "finding": "searchpost",
+     "state": "verified",
+     "verify_count": 5
+    }
+   ],
+   "requests": 1
+  },
+  "resolve-place": {
+   "name": "resolve-place",
+   "purpose": "Resolve a search result id to coordinates and an address",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "id": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "city",
+     "id"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "place": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "place"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "placeresolve",
+     "finding": "placeresolve",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "reverse-geocode": {
+   "name": "reverse-geocode",
+   "purpose": "Name the address at a coordinate",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "lat": {
+      "type": "number"
+     },
+     "lng": {
+      "type": "number"
+     }
+    },
+    "required": [
+     "lat",
+     "lng"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "address": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "name": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "components": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     },
+     "coords": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "[lat, lng]"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "address",
+     "coords"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "geocode",
+     "finding": "geocode",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "plan-journey": {
+   "name": "plan-journey",
+   "purpose": "Plan transit journeys between two places, leaving now, at a time, or arriving by a time",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "from": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "to": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "depart_at": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets departure_time"
+     },
+     "arrive_by": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets arrival_time"
+     },
+     "step_free": {
+      "type": "boolean"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "with_paths": {
+      "type": "boolean",
+      "description": "include each leg's map path (large)"
+     }
+    },
+    "required": [
+     "city",
+     "from",
+     "to"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string"
+     },
+     "region_id": {
+      "type": "string"
+     },
+     "from": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "to": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "time_mode": {
+      "type": "string"
+     },
+     "requested_time": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "sections": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "journey_indexes": {
+         "type": "array",
+         "items": {
+          "type": "integer"
+         }
+        }
+       }
+      }
+     },
+     "journeys": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "index": {
+         "type": "integer"
+        },
+        "duration_seconds": {
+         "type": "integer"
+        },
+        "walk_seconds": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "distance_meters": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "calories": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "price": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "departure_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "arrival_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "step_free": {
+         "type": [
+          "boolean",
+          "null"
+         ]
+        },
+        "profile": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "legs": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "mode": {
+            "type": "string"
+           },
+           "duration_seconds": {
+            "type": [
+             "integer",
+             "null"
+            ]
+           },
+           "distance_meters": {
+            "type": [
+             "integer",
+             "null"
+            ]
+           },
+           "departure_time": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "arrival_time": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "routes": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "name": {
+               "type": "string"
+              },
+              "brand_id": {
+               "type": [
+                "string",
+                "null"
+               ]
+              },
+              "color": {
+               "type": [
+                "string",
+                "null"
+               ]
+              }
+             },
+             "required": [
+              "id",
+              "name"
+             ]
+            }
+           },
+           "stops": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "name": {
+               "type": "string"
+              },
+              "coords": {
+               "type": "array",
+               "items": {
+                "type": "number"
+               },
+               "minItems": 2,
+               "maxItems": 2,
+               "description": "[lat, lng]"
+              }
+             }
+            }
+           },
+           "path": {
+            "type": "array",
+            "items": {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 2,
+             "maxItems": 2,
+             "description": "[lat, lng]"
+            }
+           }
+          },
+          "required": [
+           "mode"
+          ]
+         }
+        },
+        "signature": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "index",
+        "duration_seconds",
+        "legs",
+        "signature"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "region_id",
+     "journeys"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "journeys",
+     "finding": "journeys",
+     "state": "verified",
+     "verify_count": 8
+    },
+    {
+     "endpoint": "searchpost",
+     "finding": "searchpost",
+     "state": "verified",
+     "verify_count": 5
+    }
+   ],
+   "requests": 1
+  },
+  "plan-walk": {
+   "name": "plan-walk",
+   "purpose": "Plan walking routes between two places",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "from": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "to": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "depart_at": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets departure_time"
+     },
+     "arrive_by": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets arrival_time"
+     },
+     "step_free": {
+      "type": "boolean"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "with_paths": {
+      "type": "boolean",
+      "description": "include each leg's map path (large)"
+     }
+    },
+    "required": [
+     "city",
+     "from",
+     "to"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string"
+     },
+     "region_id": {
+      "type": "string"
+     },
+     "from": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "to": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "time_mode": {
+      "type": "string"
+     },
+     "requested_time": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "sections": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "journey_indexes": {
+         "type": "array",
+         "items": {
+          "type": "integer"
+         }
+        }
+       }
+      }
+     },
+     "journeys": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "index": {
+         "type": "integer"
+        },
+        "duration_seconds": {
+         "type": "integer"
+        },
+        "walk_seconds": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "distance_meters": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "calories": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "price": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "departure_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "arrival_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "step_free": {
+         "type": [
+          "boolean",
+          "null"
+         ]
+        },
+        "profile": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "legs": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "mode": {
+            "type": "string"
+           },
+           "duration_seconds": {
+            "type": [
+             "integer",
+             "null"
+            ]
+           },
+           "distance_meters": {
+            "type": [
+             "integer",
+             "null"
+            ]
+           },
+           "departure_time": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "arrival_time": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "routes": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "name": {
+               "type": "string"
+              },
+              "brand_id": {
+               "type": [
+                "string",
+                "null"
+               ]
+              },
+              "color": {
+               "type": [
+                "string",
+                "null"
+               ]
+              }
+             },
+             "required": [
+              "id",
+              "name"
+             ]
+            }
+           },
+           "stops": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "name": {
+               "type": "string"
+              },
+              "coords": {
+               "type": "array",
+               "items": {
+                "type": "number"
+               },
+               "minItems": 2,
+               "maxItems": 2,
+               "description": "[lat, lng]"
+              }
+             }
+            }
+           },
+           "path": {
+            "type": "array",
+            "items": {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 2,
+             "maxItems": 2,
+             "description": "[lat, lng]"
+            }
+           }
+          },
+          "required": [
+           "mode"
+          ]
+         }
+        },
+        "signature": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "index",
+        "duration_seconds",
+        "legs",
+        "signature"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "region_id",
+     "journeys"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "walk7",
+     "finding": "walk7",
+     "state": "verified",
+     "verify_count": 4
+    },
+    {
+     "endpoint": "walk1",
+     "finding": "walk1",
+     "state": "verified",
+     "verify_count": 2
+    }
+   ],
+   "requests": 1
+  },
+  "plan-cycle": {
+   "name": "plan-cycle",
+   "purpose": "Plan cycling routes with your own bike or bike share",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "from": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "to": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "depart_at": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets departure_time"
+     },
+     "arrive_by": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets arrival_time"
+     },
+     "step_free": {
+      "type": "boolean"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "with_paths": {
+      "type": "boolean",
+      "description": "include each leg's map path (large)"
+     }
+    },
+    "required": [
+     "city",
+     "from",
+     "to"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string"
+     },
+     "region_id": {
+      "type": "string"
+     },
+     "from": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "to": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "time_mode": {
+      "type": "string"
+     },
+     "requested_time": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "sections": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "journey_indexes": {
+         "type": "array",
+         "items": {
+          "type": "integer"
+         }
+        }
+       }
+      }
+     },
+     "journeys": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "index": {
+         "type": "integer"
+        },
+        "duration_seconds": {
+         "type": "integer"
+        },
+        "walk_seconds": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "distance_meters": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "calories": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "price": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "departure_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "arrival_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "step_free": {
+         "type": [
+          "boolean",
+          "null"
+         ]
+        },
+        "profile": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "legs": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "mode": {
+            "type": "string"
+           },
+           "duration_seconds": {
+            "type": [
+             "integer",
+             "null"
+            ]
+           },
+           "distance_meters": {
+            "type": [
+             "integer",
+             "null"
+            ]
+           },
+           "departure_time": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "arrival_time": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "routes": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "name": {
+               "type": "string"
+              },
+              "brand_id": {
+               "type": [
+                "string",
+                "null"
+               ]
+              },
+              "color": {
+               "type": [
+                "string",
+                "null"
+               ]
+              }
+             },
+             "required": [
+              "id",
+              "name"
+             ]
+            }
+           },
+           "stops": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "name": {
+               "type": "string"
+              },
+              "coords": {
+               "type": "array",
+               "items": {
+                "type": "number"
+               },
+               "minItems": 2,
+               "maxItems": 2,
+               "description": "[lat, lng]"
+              }
+             }
+            }
+           },
+           "path": {
+            "type": "array",
+            "items": {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 2,
+             "maxItems": 2,
+             "description": "[lat, lng]"
+            }
+           }
+          },
+          "required": [
+           "mode"
+          ]
+         }
+        },
+        "signature": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "index",
+        "duration_seconds",
+        "legs",
+        "signature"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "region_id",
+     "journeys"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "cycle",
+     "finding": "cycle",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "plan-cab": {
+   "name": "plan-cab",
+   "purpose": "Estimate cab and on-demand rides between two places",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "from": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "to": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "depart_at": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets departure_time"
+     },
+     "arrive_by": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets arrival_time"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     }
+    },
+    "required": [
+     "city",
+     "from",
+     "to"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "region_id": {
+      "type": "string"
+     },
+     "from": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "to": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "time_mode": {
+      "type": "string"
+     },
+     "routes": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "mode": {
+         "type": "string"
+        },
+        "duration_seconds": {
+         "type": "integer"
+        },
+        "distance_meters": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        }
+       }
+      }
+     },
+     "services": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "name": {
+         "type": "string"
+        },
+        "category": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       }
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "routes"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "taxi",
+     "finding": "taxi",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "plan-vehicle-hire": {
+   "name": "plan-vehicle-hire",
+   "purpose": "Plan journeys with hire vehicles (scooters, bikes, car share)",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "from": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "to": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "depart_at": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets departure_time"
+     },
+     "arrive_by": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day; sets arrival_time"
+     },
+     "step_free": {
+      "type": "boolean"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     },
+     "with_paths": {
+      "type": "boolean",
+      "description": "include each leg's map path (large)"
+     }
+    },
+    "required": [
+     "city",
+     "from",
+     "to"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string"
+     },
+     "region_id": {
+      "type": "string"
+     },
+     "from": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "to": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "time_mode": {
+      "type": "string"
+     },
+     "requested_time": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "sections": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "journey_indexes": {
+         "type": "array",
+         "items": {
+          "type": "integer"
+         }
+        }
+       }
+      }
+     },
+     "journeys": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "index": {
+         "type": "integer"
+        },
+        "duration_seconds": {
+         "type": "integer"
+        },
+        "walk_seconds": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "distance_meters": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "calories": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "price": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "currency": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "departure_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "arrival_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "step_free": {
+         "type": [
+          "boolean",
+          "null"
+         ]
+        },
+        "profile": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "legs": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "mode": {
+            "type": "string"
+           },
+           "duration_seconds": {
+            "type": [
+             "integer",
+             "null"
+            ]
+           },
+           "distance_meters": {
+            "type": [
+             "integer",
+             "null"
+            ]
+           },
+           "departure_time": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "arrival_time": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "routes": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "name": {
+               "type": "string"
+              },
+              "brand_id": {
+               "type": [
+                "string",
+                "null"
+               ]
+              },
+              "color": {
+               "type": [
+                "string",
+                "null"
+               ]
+              }
+             },
+             "required": [
+              "id",
+              "name"
+             ]
+            }
+           },
+           "stops": {
+            "type": "array",
+            "items": {
+             "type": "object",
+             "properties": {
+              "id": {
+               "type": "string"
+              },
+              "name": {
+               "type": "string"
+              },
+              "coords": {
+               "type": "array",
+               "items": {
+                "type": "number"
+               },
+               "minItems": 2,
+               "maxItems": 2,
+               "description": "[lat, lng]"
+              }
+             }
+            }
+           },
+           "path": {
+            "type": "array",
+            "items": {
+             "type": "array",
+             "items": {
+              "type": "number"
+             },
+             "minItems": 2,
+             "maxItems": 2,
+             "description": "[lat, lng]"
+            }
+           }
+          },
+          "required": [
+           "mode"
+          ]
+         }
+        },
+        "signature": {
+         "type": "string"
+        }
+       },
+       "required": [
+        "index",
+        "duration_seconds",
+        "legs",
+        "signature"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "region_id",
+     "journeys"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "vehiclehire",
+     "finding": "vehiclehire",
+     "state": "dead",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "get-journey-times": {
+   "name": "get-journey-times",
+   "purpose": "Get live departure and arrival times for journeys from a previous plan",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "signatures": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "required": [
+     "city",
+     "signatures"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "times": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "signature_index": {
+         "type": "integer"
+        },
+        "time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "time_mode": {
+         "type": "string"
+        },
+        "price": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "leg_times": {
+         "type": "array",
+         "items": {
+          "type": "object"
+         }
+        },
+        "error": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "signature_index",
+        "time"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "times"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "journeytimes",
+     "finding": "journeytimes",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-journey": {
+   "name": "get-journey",
+   "purpose": "Re-fetch one journey's full detail from its signature (journey detail page)",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "signature": {
+      "type": "string"
+     },
+     "exact": {
+      "type": "boolean"
+     },
+     "with_paths": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "city",
+     "signature"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "journey": {
+      "type": "object",
+      "properties": {
+       "index": {
+        "type": "integer"
+       },
+       "duration_seconds": {
+        "type": "integer"
+       },
+       "walk_seconds": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "distance_meters": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "calories": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "price": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "currency": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "departure_time": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "arrival_time": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "step_free": {
+        "type": [
+         "boolean",
+         "null"
+        ]
+       },
+       "profile": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "legs": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "mode": {
+           "type": "string"
+          },
+          "duration_seconds": {
+           "type": [
+            "integer",
+            "null"
+           ]
+          },
+          "distance_meters": {
+           "type": [
+            "integer",
+            "null"
+           ]
+          },
+          "departure_time": {
+           "type": [
+            "string",
+            "null"
+           ]
+          },
+          "arrival_time": {
+           "type": [
+            "string",
+            "null"
+           ]
+          },
+          "routes": {
+           "type": "array",
+           "items": {
+            "type": "object",
+            "properties": {
+             "id": {
+              "type": "string"
+             },
+             "name": {
+              "type": "string"
+             },
+             "brand_id": {
+              "type": [
+               "string",
+               "null"
+              ]
+             },
+             "color": {
+              "type": [
+               "string",
+               "null"
+              ]
+             }
+            },
+            "required": [
+             "id",
+             "name"
+            ]
+           }
+          },
+          "stops": {
+           "type": "array",
+           "items": {
+            "type": "object",
+            "properties": {
+             "id": {
+              "type": "string"
+             },
+             "name": {
+              "type": "string"
+             },
+             "coords": {
+              "type": "array",
+              "items": {
+               "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "[lat, lng]"
+             }
+            }
+           }
+          },
+          "path": {
+           "type": "array",
+           "items": {
+            "type": "array",
+            "items": {
+             "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "[lat, lng]"
+           }
+          }
+         },
+         "required": [
+          "mode"
+         ]
+        }
+       },
+       "signature": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "index",
+       "duration_seconds",
+       "legs",
+       "signature"
+      ]
+     },
+     "error": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "journey"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "refreshjourneys",
+     "finding": "refreshjourneys",
+     "state": "verified",
+     "verify_count": 4
+    },
+    {
+     "endpoint": "trip-meta",
+     "finding": "trip-meta",
+     "state": "verified",
+     "verify_count": 2
+    }
+   ],
+   "requests": 1
+  },
+  "open-trip-link": {
+   "name": "open-trip-link",
+   "purpose": "Open a shared trip link (citymapper.com/trip/<slug>) as a journey",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "slug": {
+      "type": "string"
+     },
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     }
+    },
+    "required": [
+     "slug"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "signature": {
+      "type": "string"
+     },
+     "journey": {
+      "type": "object",
+      "properties": {
+       "index": {
+        "type": "integer"
+       },
+       "duration_seconds": {
+        "type": "integer"
+       },
+       "walk_seconds": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "distance_meters": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "calories": {
+        "type": [
+         "integer",
+         "null"
+        ]
+       },
+       "price": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "currency": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "departure_time": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "arrival_time": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "step_free": {
+        "type": [
+         "boolean",
+         "null"
+        ]
+       },
+       "profile": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "legs": {
+        "type": "array",
+        "items": {
+         "type": "object",
+         "properties": {
+          "mode": {
+           "type": "string"
+          },
+          "duration_seconds": {
+           "type": [
+            "integer",
+            "null"
+           ]
+          },
+          "distance_meters": {
+           "type": [
+            "integer",
+            "null"
+           ]
+          },
+          "departure_time": {
+           "type": [
+            "string",
+            "null"
+           ]
+          },
+          "arrival_time": {
+           "type": [
+            "string",
+            "null"
+           ]
+          },
+          "routes": {
+           "type": "array",
+           "items": {
+            "type": "object",
+            "properties": {
+             "id": {
+              "type": "string"
+             },
+             "name": {
+              "type": "string"
+             },
+             "brand_id": {
+              "type": [
+               "string",
+               "null"
+              ]
+             },
+             "color": {
+              "type": [
+               "string",
+               "null"
+              ]
+             }
+            },
+            "required": [
+             "id",
+             "name"
+            ]
+           }
+          },
+          "stops": {
+           "type": "array",
+           "items": {
+            "type": "object",
+            "properties": {
+             "id": {
+              "type": "string"
+             },
+             "name": {
+              "type": "string"
+             },
+             "coords": {
+              "type": "array",
+              "items": {
+               "type": "number"
+              },
+              "minItems": 2,
+              "maxItems": 2,
+              "description": "[lat, lng]"
+             }
+            }
+           }
+          },
+          "path": {
+           "type": "array",
+           "items": {
+            "type": "array",
+            "items": {
+             "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "[lat, lng]"
+           }
+          }
+         },
+         "required": [
+          "mode"
+         ]
+        }
+       },
+       "signature": {
+        "type": "string"
+       }
+      },
+      "required": [
+       "index",
+       "duration_seconds",
+       "legs",
+       "signature"
+      ]
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "signature"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "gettrip",
+     "finding": "gettrip",
+     "state": "hypothesis",
+     "verify_count": 0
+    },
+    {
+     "endpoint": "refreshjourneys",
+     "finding": "refreshjourneys",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 2
+  },
+  "get-travel-time": {
+   "name": "get-travel-time",
+   "purpose": "Get the travel time between two points",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "from": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "to": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     }
+    },
+    "required": [
+     "city",
+     "from",
+     "to"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "seconds": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "minutes": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "from": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "to": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    }
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "traveltime",
+     "finding": "traveltime",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-shared-eta": {
+   "name": "get-shared-eta",
+   "purpose": "Get the ETA for a journey signature (shared ETA)",
+   "kind": "read",
+   "tier": "journey",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "signature": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "city",
+     "signature"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "eta": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    }
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "eta",
+     "finding": "eta",
+     "state": "dead",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "find-nearby": {
+   "name": "find-nearby",
+   "purpose": "List nearby stops, stations, piers or bike docks for one mode around a place",
+   "kind": "read",
+   "tier": "departures",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "near": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "mode": {
+      "type": "string",
+      "description": "mode slug from get-city (subway, bus, bike, rail, ferry, tube, metro, ...)"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     }
+    },
+    "required": [
+     "city",
+     "near",
+     "mode"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "mode_id": {
+      "type": "string"
+     },
+     "near": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "name": {
+        "type": "string"
+       },
+       "address": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "coords": {
+        "type": [
+         "array",
+         "null"
+        ],
+        "items": {
+         "type": "number"
+        }
+       },
+       "type": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "source": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brands": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "lines": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       }
+      },
+      "required": [
+       "name"
+      ]
+     },
+     "elements": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "alias": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "kind": {
+         "type": "string"
+        },
+        "coords": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 2,
+         "maxItems": 2,
+         "description": "[lat, lng]"
+        },
+        "walk_time_seconds": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "routes": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "brand_ids": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "bikes_available": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "spaces_available": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "electric_available": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "id",
+        "name",
+        "kind",
+        "coords"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "elements"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "nearby3",
+     "finding": "nearby3",
+     "state": "verified",
+     "verify_count": 7
+    },
+    {
+     "endpoint": "nearby2",
+     "finding": "nearby2",
+     "state": "verified",
+     "verify_count": 2
+    }
+   ],
+   "requests": 1
+  },
+  "get-stop": {
+   "name": "get-stop",
+   "purpose": "Get a stop or station's details: routes, exits and which departures feed it uses",
+   "kind": "read",
+   "tier": "departures",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "stop": {
+      "type": "string",
+      "description": "Stop alias (times-sq-42-st) or id (SubwayTimesSq42St)"
+     }
+    },
+    "required": [
+     "city",
+     "stop"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "alias": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "name": {
+      "type": "string"
+     },
+     "coords": {
+      "type": "array",
+      "items": {
+       "type": "number"
+      },
+      "minItems": 2,
+      "maxItems": 2,
+      "description": "[lat, lng]"
+     },
+     "routes": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "brand_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "color": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "id",
+        "name"
+       ]
+      }
+     },
+     "exits": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "coords": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 2,
+         "maxItems": 2,
+         "description": "[lat, lng]"
+        }
+       }
+      }
+     },
+     "departure_api": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "url": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "id",
+     "name"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "stopinfo",
+     "finding": "stopinfo",
+     "state": "verified",
+     "verify_count": 13
+    }
+   ],
+   "requests": 1
+  },
+  "get-departures": {
+   "name": "get-departures",
+   "purpose": "Get live departures at a stop or station (bus, metro, rail, ferry)",
+   "kind": "read",
+   "tier": "departures",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "stop": {
+      "type": "string",
+      "description": "Stop alias (times-sq-42-st) or id (SubwayTimesSq42St)"
+     },
+     "route": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     }
+    },
+    "required": [
+     "city",
+     "stop"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "stop": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       }
+      }
+     },
+     "feed": {
+      "type": "string"
+     },
+     "updated": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the feed's last update time, or when the departures request was sent if the feed gives none (bus feeds)"
+     },
+     "departures": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "route_id": {
+         "type": "string"
+        },
+        "route_name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "destination": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "platform_or_direction": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "seconds_away": {
+         "type": [
+          "integer",
+          "null"
+         ]
+        },
+        "time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "scheduled_time": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "is_live": {
+         "type": "boolean"
+        },
+        "advisory": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "route_id",
+        "is_live"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "stop",
+     "feed",
+     "departures"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "stopinfo",
+     "finding": "stopinfo",
+     "state": "verified",
+     "verify_count": 13
+    },
+    {
+     "endpoint": "departures-bus",
+     "finding": "departures-bus",
+     "state": "verified",
+     "verify_count": 2
+    },
+    {
+     "endpoint": "departures-metro",
+     "finding": "departures-metro",
+     "state": "verified",
+     "verify_count": 2
+    },
+    {
+     "endpoint": "departures-rail",
+     "finding": "departures-rail",
+     "state": "verified",
+     "verify_count": 2
+    }
+   ],
+   "requests": 2
+  },
+  "get-stop-schedule": {
+   "name": "get-stop-schedule",
+   "purpose": "Get a stop's timetable for a time",
+   "kind": "read",
+   "tier": "departures",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "stop": {
+      "type": "string",
+      "description": "Stop alias (times-sq-42-st) or id (SubwayTimesSq42St)"
+     },
+     "time": {
+      "type": "string",
+      "description": "HH:MM in the city's timezone (today, or tomorrow once more than 15 minutes past) or ISO 8601 for any other day"
+     }
+    },
+    "required": [
+     "city",
+     "stop"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "stop": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    }
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "schedules",
+     "finding": "schedules",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-line-status": {
+   "name": "get-line-status",
+   "purpose": "Get the status of every line in a city, grouped by mode",
+   "kind": "read",
+   "tier": "disruptions",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "mode": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "city"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "updated": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "groups": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "lines": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "id": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           },
+           "long_name": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "brand": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "mode": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "aliases": {
+            "type": "array",
+            "items": {
+             "type": "string"
+            }
+           },
+           "color": {
+            "type": [
+             "string",
+             "null"
+            ]
+           },
+           "status": {
+            "type": "object",
+            "properties": {
+             "level": {
+              "type": "integer"
+             },
+             "summary": {
+              "type": "string"
+             },
+             "description": {
+              "type": [
+               "string",
+               "null"
+              ]
+             }
+            },
+            "required": [
+             "level",
+             "summary"
+            ]
+           }
+          },
+          "required": [
+           "id",
+           "name"
+          ]
+         }
+        }
+       }
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "groups"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "routestatus",
+     "finding": "routestatus",
+     "state": "verified",
+     "verify_count": 6
+    }
+   ],
+   "requests": 1
+  },
+  "get-disruptions": {
+   "name": "get-disruptions",
+   "purpose": "List current disruptions in a city with readable descriptions and affected stops",
+   "kind": "read",
+   "tier": "disruptions",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "min_level": {
+      "type": "integer"
+     },
+     "line": {
+      "type": "string",
+      "description": "Line alias (subway-6, new-york-city-bus-m15) or route id"
+     }
+    },
+    "required": [
+     "city"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "updated": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "disruptions": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "line": {
+         "type": "string"
+        },
+        "line_name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "group": {
+         "type": "string"
+        },
+        "level": {
+         "type": "integer"
+        },
+        "summary": {
+         "type": "string"
+        },
+        "description": {
+         "type": "string"
+        },
+        "stops": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        }
+       },
+       "required": [
+        "line",
+        "level",
+        "summary",
+        "description"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "disruptions"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "routestatus",
+     "finding": "routestatus",
+     "state": "verified",
+     "verify_count": 6
+    },
+    {
+     "endpoint": "routeinfo2",
+     "finding": "routeinfo2",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-service-message": {
+   "name": "get-service-message",
+   "purpose": "Read the site-wide service message for a city",
+   "kind": "read",
+   "tier": "disruptions",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     }
+    },
+    "required": [
+     "city"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "messages": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "messages"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "message",
+     "finding": "message",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "find-line": {
+   "name": "find-line",
+   "purpose": "Find a bus or line by name or number in a city",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "query": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "city",
+     "query"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "lines": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "long_name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "brand": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "mode": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "aliases": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "color": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "status": {
+         "type": "object",
+         "properties": {
+          "level": {
+           "type": "integer"
+          },
+          "summary": {
+           "type": "string"
+          },
+          "description": {
+           "type": [
+            "string",
+            "null"
+           ]
+          }
+         },
+         "required": [
+          "level",
+          "summary"
+         ]
+        },
+        "description": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       },
+       "required": [
+        "id",
+        "name"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "lines"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "findtransport",
+     "finding": "findtransport",
+     "state": "verified",
+     "verify_count": 5
+    }
+   ],
+   "requests": 1
+  },
+  "get-line": {
+   "name": "get-line",
+   "purpose": "Get a line's branches, ordered stops, path and status",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "line": {
+      "type": "string",
+      "description": "Line alias (subway-6, new-york-city-bus-m15) or route id"
+     },
+     "with_paths": {
+      "type": "boolean"
+     }
+    },
+    "required": [
+     "city",
+     "line"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "line": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       },
+       "long_name": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "brand": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "mode": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "aliases": {
+        "type": "array",
+        "items": {
+         "type": "string"
+        }
+       },
+       "color": {
+        "type": [
+         "string",
+         "null"
+        ]
+       },
+       "status": {
+        "type": "object",
+        "properties": {
+         "level": {
+          "type": "integer"
+         },
+         "summary": {
+          "type": "string"
+         },
+         "description": {
+          "type": [
+           "string",
+           "null"
+          ]
+         }
+        },
+        "required": [
+         "level",
+         "summary"
+        ]
+       }
+      },
+      "required": [
+       "id",
+       "name"
+      ]
+     },
+     "patterns": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "stops": {
+         "type": "array",
+         "items": {
+          "type": "object",
+          "properties": {
+           "id": {
+            "type": "string"
+           },
+           "name": {
+            "type": "string"
+           },
+           "coords": {
+            "type": "array",
+            "items": {
+             "type": "number"
+            },
+            "minItems": 2,
+            "maxItems": 2,
+            "description": "[lat, lng]"
+           }
+          }
+         }
+        },
+        "path": {
+         "type": "array",
+         "items": {
+          "type": "array",
+          "items": {
+           "type": "number"
+          },
+          "minItems": 2,
+          "maxItems": 2,
+          "description": "[lat, lng]"
+         }
+        }
+       }
+      }
+     },
+     "stops": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "coords": {
+         "type": "array",
+         "items": {
+          "type": "number"
+         },
+         "minItems": 2,
+         "maxItems": 2,
+         "description": "[lat, lng]"
+        }
+       }
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "line",
+     "patterns"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "routeinfo1",
+     "finding": "routeinfo1",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-lines": {
+   "name": "get-lines",
+   "purpose": "Get several lines at once with status",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "lines": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "required": [
+     "city",
+     "lines"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "lines": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "long_name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "brand": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "mode": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "aliases": {
+         "type": "array",
+         "items": {
+          "type": "string"
+         }
+        },
+        "color": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "status": {
+         "type": "object",
+         "properties": {
+          "level": {
+           "type": "integer"
+          },
+          "summary": {
+           "type": "string"
+          },
+          "description": {
+           "type": [
+            "string",
+            "null"
+           ]
+          }
+         },
+         "required": [
+          "level",
+          "summary"
+         ]
+        }
+       },
+       "required": [
+        "id",
+        "name"
+       ]
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "lines"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "routeinfo2",
+     "finding": "routeinfo2",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-vehicles": {
+   "name": "get-vehicles",
+   "purpose": "Get live vehicle positions on a line where the city publishes them",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "line": {
+      "type": "string",
+      "description": "Line alias (subway-6, new-york-city-bus-m15) or route id"
+     }
+    },
+    "required": [
+     "city",
+     "line"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "line": {
+      "type": "object",
+      "properties": {
+       "id": {
+        "type": "string"
+       },
+       "name": {
+        "type": "string"
+       }
+      }
+     },
+     "vehicles": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "vehicles"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "vehiclelocations",
+     "finding": "vehiclelocations",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-route-paths": {
+   "name": "get-route-paths",
+   "purpose": "Get map paths for lines",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "lines": {
+      "type": "array",
+      "items": {
+       "type": "string"
+      }
+     }
+    },
+    "required": [
+     "city",
+     "lines"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "paths": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "paths"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "routepaths",
+     "finding": "routepaths",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-map-around": {
+   "name": "get-map-around",
+   "purpose": "Get everything Citymapper draws on the map around a point",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "near": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "size": {
+      "type": "string",
+      "enum": [
+       "small",
+       "large"
+      ],
+      "description": "tile size; small is the area around the point, large the wider network"
+     }
+    },
+    "required": [
+     "city",
+     "near",
+     "size"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "elements": {
+      "type": "array",
+      "items": {
+       "type": "object"
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "elements"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "everythingmap",
+     "finding": "everythingmap",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "get-weather": {
+   "name": "get-weather",
+   "purpose": "Get the weather at a place",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "near": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "units": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "city"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "raw": {
+      "type": "object"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    }
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "weather",
+     "finding": "weather",
+     "state": "dead",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "get-transit-score": {
+   "name": "get-transit-score",
+   "purpose": "Get Citymapper's transit score for a place",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "near": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     }
+    },
+    "required": [
+     "near"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "score": {
+      "type": [
+       "number",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    }
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "transitscore",
+     "finding": "transitscore",
+     "state": "dead",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "open-go-link": {
+   "name": "open-go-link",
+   "purpose": "Open a Meet Me Somewhere link (citymapper.com/go/<slug>)",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "slug": {
+      "type": "string"
+     }
+    },
+    "required": [
+     "slug"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "coords": {
+      "type": [
+       "array",
+       "null"
+      ],
+      "items": {
+       "type": "number"
+      }
+     },
+     "address": {
+      "type": [
+       "string",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    }
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "getshorturl",
+     "finding": "getshorturl",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "list-news": {
+   "name": "list-news",
+   "purpose": "List Citymapper news posts, or read one",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "limit": {
+      "type": "integer",
+      "minimum": 1
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "posts": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "title": {
+         "type": "string"
+        },
+        "url": {
+         "type": "string"
+        },
+        "summary": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "date": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       }
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "posts"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "news-html",
+     "finding": "news-html",
+     "state": "verified",
+     "verify_count": 4
+    },
+    {
+     "endpoint": "blog",
+     "finding": "blog",
+     "state": "verified",
+     "verify_count": 2
+    }
+   ],
+   "requests": 1
+  },
+  "get-legal": {
+   "name": "get-legal",
+   "purpose": "Read the terms of service or the privacy policy",
+   "kind": "read",
+   "tier": "rest",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "document": {
+      "type": "string",
+      "enum": [
+       "terms",
+       "privacy"
+      ]
+     }
+    },
+    "required": [
+     "document"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "title": {
+      "type": "string"
+     },
+     "text": {
+      "type": "string"
+     },
+     "url": {
+      "type": "string"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "text"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "resources",
+     "finding": "resources",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "whoami": {
+   "name": "whoami",
+   "purpose": "Show the signed-in Citymapper user, or that you are signed out",
+   "kind": "read",
+   "tier": "account",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {}
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "signed_in": {
+      "type": "boolean"
+     },
+     "user": {
+      "type": "object"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "signed_in"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "identity-user-data",
+     "finding": "identity-user-data",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 1
+  },
+  "list-saved-places": {
+   "name": "list-saved-places",
+   "purpose": "List your saved places (home, work and others)",
+   "kind": "read",
+   "tier": "account",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {}
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "places": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "name": {
+         "type": "string"
+        },
+        "role": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "address": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "coords": {
+         "type": [
+          "array",
+          "null"
+         ],
+         "items": {
+          "type": "number"
+         }
+        },
+        "region": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       }
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "places"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "identity-places-list",
+     "finding": "identity-places-list",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "list-favourites": {
+   "name": "list-favourites",
+   "purpose": "List your favourite stops, stations and lines",
+   "kind": "read",
+   "tier": "account",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "favourites": {
+      "type": "array",
+      "items": {
+       "type": "object",
+       "properties": {
+        "id": {
+         "type": "string"
+        },
+        "type": {
+         "type": "string"
+        },
+        "target_id": {
+         "type": "string"
+        },
+        "name": {
+         "type": [
+          "string",
+          "null"
+         ]
+        },
+        "region_id": {
+         "type": [
+          "string",
+          "null"
+         ]
+        }
+       }
+      }
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    },
+    "required": [
+     "favourites"
+    ]
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "identity-favorites-list",
+     "finding": "identity-favorites-list",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "pass-account": {
+   "name": "pass-account",
+   "purpose": "Show your Citymapper Pass payment account (payment methods)",
+   "kind": "read",
+   "tier": "account",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "provider": {
+      "type": "string"
+     },
+     "use_web_session_id": {
+      "type": "boolean",
+      "description": "send your web sessionid cookie as the Pass Session-Id; an unproven guess, since the real Session-Id comes from the Citymapper app"
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "raw": {
+      "type": "object"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    }
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "turnstile-userinfo",
+     "finding": "turnstile-userinfo",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "pass-session-time": {
+   "name": "pass-session-time",
+   "purpose": "Show how long the Pass session has left",
+   "kind": "read",
+   "tier": "account",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "use_web_session_id": {
+      "type": "boolean",
+      "description": "send your web sessionid cookie as the Pass Session-Id; an unproven guess, since the real Session-Id comes from the Citymapper app"
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "seconds": {
+      "type": [
+       "integer",
+       "null"
+      ]
+     },
+     "raw": {
+      "type": "object"
+     },
+     "fetched_at": {
+      "type": "string",
+      "description": "UTC time (ISO 8601) the first request behind this answer was sent; absent when the answer came only from the local cache"
+     }
+    }
+   },
+   "confirmation": null,
+   "depends_on": [
+    {
+     "endpoint": "turnstile-sessionttl",
+     "finding": "turnstile-sessionttl",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "save-place": {
+   "name": "save-place",
+   "purpose": "Save a place to your account (optionally as home or work)",
+   "kind": "write",
+   "tier": "account-writes",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "name": {
+      "type": "string"
+     },
+     "near": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "role": {
+      "type": "string",
+      "enum": [
+       "home",
+       "work"
+      ]
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "name",
+     "near",
+     "city"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "place": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-place with the returned id.",
+   "depends_on": [
+    {
+     "endpoint": "identity-places-create",
+     "finding": "identity-places-create",
+     "state": "hypothesis",
+     "verify_count": 0
+    },
+    {
+     "endpoint": "identity-places-list",
+     "finding": "identity-places-list",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 2
+  },
+  "update-place": {
+   "name": "update-place",
+   "purpose": "Rename or move a saved place",
+   "kind": "write",
+   "tier": "account-writes",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "name": {
+      "type": "string"
+     },
+     "near": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "place": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: update-place with the values read before.",
+   "depends_on": [
+    {
+     "endpoint": "identity-places-update",
+     "finding": "identity-places-update",
+     "state": "hypothesis",
+     "verify_count": 0
+    },
+    {
+     "endpoint": "identity-places-list",
+     "finding": "identity-places-list",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 2
+  },
+  "remove-place": {
+   "name": "remove-place",
+   "purpose": "Remove a saved place",
+   "kind": "write",
+   "tier": "account-writes",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "removed": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: save-place with the fields read before (the id changes).",
+   "depends_on": [
+    {
+     "endpoint": "identity-places-delete",
+     "finding": "identity-places-delete",
+     "state": "hypothesis",
+     "verify_count": 0
+    },
+    {
+     "endpoint": "identity-places-list",
+     "finding": "identity-places-list",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 2
+  },
+  "add-favourite": {
+   "name": "add-favourite",
+   "purpose": "Favourite a stop, station or line",
+   "kind": "write",
+   "tier": "account-writes",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "stop": {
+      "type": "string",
+      "description": "Stop alias (times-sq-42-st) or id (SubwayTimesSq42St)"
+     },
+     "line": {
+      "type": "string",
+      "description": "Line alias (subway-6, new-york-city-bus-m15) or route id"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "city"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "favourite": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-favourite with the returned id.",
+   "depends_on": [
+    {
+     "endpoint": "identity-favorites-create",
+     "finding": "identity-favorites-create",
+     "state": "hypothesis",
+     "verify_count": 0
+    },
+    {
+     "endpoint": "identity-favorites-list",
+     "finding": "identity-favorites-list",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 2
+  },
+  "remove-favourite": {
+   "name": "remove-favourite",
+   "purpose": "Remove a favourite stop, station or line",
+   "kind": "write",
+   "tier": "account-writes",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "id": {
+      "type": "string"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "id"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "removed": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: add-favourite with the same target.",
+   "depends_on": [
+    {
+     "endpoint": "identity-favorites-delete",
+     "finding": "identity-favorites-delete",
+     "state": "hypothesis",
+     "verify_count": 0
+    },
+    {
+     "endpoint": "identity-favorites-list",
+     "finding": "identity-favorites-list",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 2
+  },
+  "save-journey": {
+   "name": "save-journey",
+   "purpose": "Send a journey to your phone (save it to your account)",
+   "kind": "write",
+   "tier": "account-writes",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "signature": {
+      "type": "string"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "city",
+     "signature"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "document_id": {
+      "type": "string"
+     },
+     "raw": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-saved-journey with the returned document_id (no list endpoint, so the id must come from the save response).",
+   "depends_on": [
+    {
+     "endpoint": "identity-save-journey",
+     "finding": "identity-save-journey",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "remove-saved-journey": {
+   "name": "remove-saved-journey",
+   "purpose": "Remove a journey you sent to your phone",
+   "kind": "write",
+   "tier": "account-writes",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "document_id": {
+      "type": "string"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "document_id"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "removed": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Only for a document this program saved; otherwise a delete without inverse needs approval.",
+   "depends_on": [
+    {
+     "endpoint": "identity-delete-journey",
+     "finding": "identity-delete-journey",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "update-profile": {
+   "name": "update-profile",
+   "purpose": "Update your first name, last name, mobile or Pass interest",
+   "kind": "write",
+   "tier": "account-writes",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "first_name": {
+      "type": "string"
+     },
+     "last_name": {
+      "type": "string"
+     },
+     "mobile": {
+      "type": "string"
+     },
+     "interested_in_pass": {
+      "type": "boolean"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "user": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: update-profile with the values read from whoami.",
+   "depends_on": [
+    {
+     "endpoint": "identity-update-user",
+     "finding": "identity-update-user",
+     "state": "hypothesis",
+     "verify_count": 0
+    },
+    {
+     "endpoint": "identity-user-data",
+     "finding": "identity-user-data",
+     "state": "verified",
+     "verify_count": 4
+    }
+   ],
+   "requests": 2
+  },
+  "share-journey": {
+   "name": "share-journey",
+   "purpose": "Create a public share link for a journey",
+   "kind": "write",
+   "tier": "approval",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "signature": {
+      "type": "string"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "city",
+     "signature"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "url": {
+      "type": "string"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md. Visible to anyone with the link; no delete exists.",
+   "depends_on": [
+    {
+     "endpoint": "createtripurl",
+     "finding": "createtripurl",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "create-go-link": {
+   "name": "create-go-link",
+   "purpose": "Create a public Meet Me Somewhere link to a place (title and message unverified)",
+   "kind": "write",
+   "tier": "approval",
+   "live_policy": "public",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city": {
+      "type": "string",
+      "description": "City or region: slug (nyc), region id (us-nyc), city slug (jersey-city) or name (New York)"
+     },
+     "place": {
+      "type": "string",
+      "description": "'lat,lng', or text that is resolved with search-places in the same city (first item result)"
+     },
+     "title": {
+      "type": "string",
+      "description": "unverified: the web client always sends an empty title, so Citymapper may drop it"
+     },
+     "message": {
+      "type": "string",
+      "description": "unverified: the web client always sends an empty message, so Citymapper may drop it"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "city",
+     "place",
+     "title"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "url": {
+      "type": "string"
+     },
+     "slug": {
+      "type": "string"
+     },
+     "title": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the title as Citymapper echoed it back, or null"
+     },
+     "message": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "the message as Citymapper echoed it back, or null"
+     },
+     "warning": {
+      "type": [
+       "string",
+       "null"
+      ],
+      "description": "set when a title or message you sent was not echoed back"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md. Visible to anyone with the link; no delete exists.",
+   "depends_on": [
+    {
+     "endpoint": "createshorturl",
+     "finding": "createshorturl",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "vote-for-city": {
+   "name": "vote-for-city",
+   "purpose": "Vote for Citymapper to launch in a new city (sends your e-mail)",
+   "kind": "write",
+   "tier": "approval",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "city_slug": {
+      "type": "string"
+     },
+     "email": {
+      "type": "string"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "city_slug",
+     "email"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "ok": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md. Sends personal data (e-mail) to Citymapper.",
+   "depends_on": [
+    {
+     "endpoint": "city-vote",
+     "finding": "city-vote",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "sign-out": {
+   "name": "sign-out",
+   "purpose": "Sign this program's Citymapper session out",
+   "kind": "write",
+   "tier": "approval",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    }
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "signed_out": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md. No inverse: signing back in is yours to do.",
+   "depends_on": [
+    {
+     "endpoint": "identity-sessions-delete",
+     "finding": "identity-sessions-delete",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "pass-set-default-payment": {
+   "name": "pass-set-default-payment",
+   "purpose": "Set the default Citymapper Pass payment method",
+   "kind": "write",
+   "tier": "approval",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "payment_method_id": {
+      "type": "string"
+     },
+     "provider": {
+      "type": "string"
+     },
+     "use_web_session_id": {
+      "type": "boolean",
+      "description": "send your web sessionid cookie as the Pass Session-Id; an unproven guess, since the real Session-Id comes from the Citymapper app"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "payment_method_id",
+     "provider"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "raw": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md. Payment setting.",
+   "depends_on": [
+    {
+     "endpoint": "turnstile-setdefaultpaymentmethod",
+     "finding": "turnstile-setdefaultpaymentmethod",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "pass-add-payment-method": {
+   "name": "pass-add-payment-method",
+   "purpose": "Attach a payment method to Citymapper Pass",
+   "kind": "write",
+   "tier": "approval",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "payment_method_id": {
+      "type": "string"
+     },
+     "provider": {
+      "type": "string"
+     },
+     "use_web_session_id": {
+      "type": "boolean",
+      "description": "send your web sessionid cookie as the Pass Session-Id; an unproven guess, since the real Session-Id comes from the Citymapper app"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "payment_method_id",
+     "provider"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "raw": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md. Payment setting; the payment method token must come from the provider, never typed here.",
+   "depends_on": [
+    {
+     "endpoint": "turnstile-addpaymentmethod",
+     "finding": "turnstile-addpaymentmethod",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "pass-remove-payment-method": {
+   "name": "pass-remove-payment-method",
+   "purpose": "Remove a Citymapper Pass payment method",
+   "kind": "write",
+   "tier": "approval",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "payment_method_id": {
+      "type": "string"
+     },
+     "provider": {
+      "type": "string"
+     },
+     "use_web_session_id": {
+      "type": "boolean",
+      "description": "send your web sessionid cookie as the Pass Session-Id; an unproven guess, since the real Session-Id comes from the Citymapper app"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "payment_method_id",
+     "provider"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "raw": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md. Delete without inverse.",
+   "depends_on": [
+    {
+     "endpoint": "turnstile-deletepaymentmethod",
+     "finding": "turnstile-deletepaymentmethod",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  },
+  "pass-remove-all-payment-methods": {
+   "name": "pass-remove-all-payment-methods",
+   "purpose": "Remove every Citymapper Pass payment method for a provider",
+   "kind": "write",
+   "tier": "approval",
+   "live_policy": "session",
+   "input_schema": {
+    "type": "object",
+    "properties": {
+     "provider": {
+      "type": "string"
+     },
+     "use_web_session_id": {
+      "type": "boolean",
+      "description": "send your web sessionid cookie as the Pass Session-Id; an unproven guess, since the real Session-Id comes from the Citymapper app"
+     },
+     "yes": {
+      "type": "boolean"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "confirm": {
+      "type": "string",
+      "description": "the confirm value printed by the approved --dry-run; required with --yes, and nothing is sent when the request differs"
+     }
+    },
+    "required": [
+     "provider"
+    ]
+   },
+   "output_schema": {
+    "type": "object",
+    "properties": {
+     "raw": {
+      "type": "object"
+     },
+     "dry_run": {
+      "type": "boolean"
+     },
+     "request": {
+      "type": "object",
+      "properties": {
+       "method": {
+        "type": "string"
+       },
+       "url": {
+        "type": "string"
+       },
+       "body": {
+        "type": "object"
+       },
+       "finding": {
+        "type": "string"
+       }
+      }
+     },
+     "confirm": {
+      "type": "string",
+      "description": "digest of the exact request; pass it back with --confirm together with --yes"
+     }
+    }
+   },
+   "confirmation": "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md. Delete without inverse.",
+   "depends_on": [
+    {
+     "endpoint": "turnstile-deleteallpaymentmethods",
+     "finding": "turnstile-deleteallpaymentmethods",
+     "state": "hypothesis",
+     "verify_count": 0
+    }
+   ],
+   "requests": 1
+  }
+ }
+}

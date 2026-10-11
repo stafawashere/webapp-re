@@ -1,0 +1,42 @@
+{
+   "results": [
+      {
+         "name": "Routes",
+         "result_type": "heading"
+      },
+      {
+         "id": "PortvaleBus12",
+         "result_type": "route",
+         "brand_id": "PortvaleBus",
+         "display_name": "12",
+         "affinities": [
+            "bus"
+         ],
+         "live_request_types": [
+            "busstop"
+         ],
+         "description": "via Pier St",
+         "long_name": "Lighthouse - Old Town",
+         "color": "#C2322E",
+         "ui_color": "#C2322E",
+         "text_color": "#FFFFFF"
+      },
+      {
+         "id": "PortvaleBus12X",
+         "result_type": "route",
+         "brand_id": "PortvaleBus",
+         "display_name": "12X",
+         "affinities": [
+            "bus"
+         ],
+         "live_request_types": [
+            "busstop"
+         ],
+         "description": "Express via Quay Rd",
+         "long_name": "Lighthouse - Old Town",
+         "color": "#C2322E",
+         "ui_color": "#C2322E",
+         "text_color": "#FFFFFF"
+      }
+   ]
+}

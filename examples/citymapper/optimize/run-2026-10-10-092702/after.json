@@ -1,0 +1,129 @@
+{
+ "measured_at": "2026-10-10T11:35:17",
+ "root": ".",
+ "root_env": "CITYMAPPER_ROOT",
+ "metrics": [
+  {
+   "name": "tests",
+   "value": 0,
+   "unit": "exit code",
+   "seconds": 2.09,
+   "detail": "501 passed in 1.44s",
+   "command": "uv run --frozen --no-sync --project program pytest -q -p no:cacheprovider"
+  },
+  {
+   "name": "tests passed",
+   "value": 501,
+   "unit": "tests"
+  },
+  {
+   "name": "tests wall time",
+   "value": 2.09,
+   "unit": "s"
+  },
+  {
+   "name": "provenance gate",
+   "value": 0,
+   "unit": "exit code",
+   "seconds": 0.07,
+   "detail": "provenance violations: 0",
+   "command": "uv run --frozen --no-sync --project program python scripts/check_provenance.py"
+  },
+  {
+   "name": "cli --help wall time, median",
+   "value": 90,
+   "unit": "ms",
+   "detail": "samples [97, 95, 90, 84, 84]"
+  },
+  {
+   "name": "cli help command wall time, median",
+   "value": 95,
+   "unit": "ms",
+   "detail": "samples [84, 95, 99, 89, 117]"
+  },
+  {
+   "name": "import time of citymapper_client.cli",
+   "value": 56.9,
+   "unit": "ms"
+  },
+  {
+   "name": "check_scope",
+   "value": 0,
+   "unit": "exit code",
+   "seconds": 0.05,
+   "detail": "scope: 18 pages, 53 capabilities, 68 endpoints, 24 entities, 14 caveats, 6 open_questions; 0 problems",
+   "command": "uv run --script skills/webapp-re/scripts/check_scope.py scope/scope.json"
+  },
+  {
+   "name": "check_plan",
+   "value": 0,
+   "unit": "exit code",
+   "seconds": 0.05,
+   "detail": "plan: 57 commands, 8 build steps, 22 open steps, budget 44 requests; 0 problems",
+   "command": "uv run --script skills/webapp-re/scripts/check_plan.py ."
+  }
+ ],
+ "live": {
+  "budget": 60,
+  "spent": 40,
+  "commands": [
+   {
+    "command": "get-city",
+    "label": "get-city",
+    "exit": 0,
+    "ms": 92,
+    "requests": 0,
+    "items": 38
+   },
+   {
+    "command": "search-places",
+    "label": "search-places",
+    "exit": 0,
+    "ms": 4264,
+    "requests": 1,
+    "items": 6
+   },
+   {
+    "command": "get-line-status",
+    "label": "get-line-status",
+    "exit": 0,
+    "ms": 4311,
+    "requests": 1,
+    "items": 7
+   },
+   {
+    "command": "get-disruptions",
+    "label": "get-disruptions",
+    "exit": 0,
+    "ms": 4487,
+    "requests": 1,
+    "items": 35
+   },
+   {
+    "command": "find-nearby",
+    "label": "find-nearby",
+    "exit": 0,
+    "ms": 4623,
+    "requests": 1,
+    "items": 10
+   },
+   {
+    "command": "get-departures",
+    "label": "get-departures-metro",
+    "exit": 0,
+    "ms": 8214,
+    "requests": 2,
+    "items": 15
+   },
+   {
+    "command": "plan-journey",
+    "label": "plan-journey-nyc",
+    "exit": 0,
+    "ms": 10589,
+    "requests": 2,
+    "items": 7
+   }
+  ],
+  "note": "From the stage 5 live check against the real root (var/logs/verify-2026-10-10-113605.json, 38 requests over 41 runs, plus 2 for the get-legal recheck). Inputs differ from the phase 1 baseline for find-nearby (bike, 10) and plan-journey (text origin), so compare request counts, not ms; ms includes the pacing wait."
+ }
+}

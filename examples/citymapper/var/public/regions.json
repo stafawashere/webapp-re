@@ -1,0 +1,692 @@
+[
+ {
+  "slug": "athens",
+  "label": "Athens (athens)",
+  "region_id": "gr-athens",
+  "api_enabled": true
+ },
+ {
+  "slug": "atlanta",
+  "label": "Atlanta (atlanta)",
+  "region_id": "us-atlanta",
+  "api_enabled": true
+ },
+ {
+  "slug": "austin",
+  "label": "Austin (austin)",
+  "region_id": "us-austin",
+  "api_enabled": true
+ },
+ {
+  "slug": "balearics",
+  "label": "Balearic Islands (balearics)",
+  "region_id": "es-balearics",
+  "api_enabled": true
+ },
+ {
+  "slug": "barcelona",
+  "label": "Barcelona (barcelona)",
+  "region_id": "es-barcelona",
+  "api_enabled": true
+ },
+ {
+  "slug": "basquecountry",
+  "label": "Basque Country (basquecountry)",
+  "region_id": "es-basquecountry",
+  "api_enabled": true
+ },
+ {
+  "slug": "belgrade",
+  "label": "Belgrade (belgrade)",
+  "region_id": "rs-belgrade",
+  "api_enabled": true
+ },
+ {
+  "slug": "berlin",
+  "label": "Berlin (berlin)",
+  "region_id": "de-berlin",
+  "api_enabled": true
+ },
+ {
+  "slug": "bologna",
+  "label": "Bologna (bologna)",
+  "region_id": "it-bologna",
+  "api_enabled": true
+ },
+ {
+  "slug": "bordeaux",
+  "label": "Bordeaux (bordeaux)",
+  "region_id": "fr-bordeaux",
+  "api_enabled": false
+ },
+ {
+  "slug": "boston",
+  "label": "Boston (boston)",
+  "region_id": "us-boston",
+  "api_enabled": true
+ },
+ {
+  "slug": "bratislava",
+  "label": "Bratislava (bratislava)",
+  "region_id": "sk-bratislava",
+  "api_enabled": true
+ },
+ {
+  "slug": "lowersaxony",
+  "label": "Bremen, Hanover & Lower Saxony (lowersaxony)",
+  "region_id": "de-lowersaxony",
+  "api_enabled": true
+ },
+ {
+  "slug": "brisbane",
+  "label": "Brisbane (brisbane)",
+  "region_id": "au-brisbane",
+  "api_enabled": true
+ },
+ {
+  "slug": "brussels",
+  "label": "Brussels (brussels)",
+  "region_id": "be-brussels",
+  "api_enabled": true
+ },
+ {
+  "slug": "bucharest",
+  "label": "Bucharest (bucharest)",
+  "region_id": "ro-bucharest",
+  "api_enabled": true
+ },
+ {
+  "slug": "budapest",
+  "label": "Budapest (budapest)",
+  "region_id": "hu-budapest",
+  "api_enabled": true
+ },
+ {
+  "slug": "chicago",
+  "label": "Chicago (chicago)",
+  "region_id": "us-chicago",
+  "api_enabled": true
+ },
+ {
+  "slug": "df",
+  "label": "Ciudad de M\u00e9xico (df)",
+  "region_id": "mx-df",
+  "api_enabled": true
+ },
+ {
+  "slug": "copenhagen",
+  "label": "Copenhagen (copenhagen)",
+  "region_id": "dk-copenhagen",
+  "api_enabled": true
+ },
+ {
+  "slug": "dallas",
+  "label": "Dallas - Fort Worth (dallas)",
+  "region_id": "us-dallas",
+  "api_enabled": true
+ },
+ {
+  "slug": "dc",
+  "label": "DC - Baltimore (dc)",
+  "region_id": "us-dc",
+  "api_enabled": true
+ },
+ {
+  "slug": "denver",
+  "label": "Denver - Aurora (denver)",
+  "region_id": "us-denver",
+  "api_enabled": true
+ },
+ {
+  "slug": "detroit",
+  "label": "Detroit (detroit)",
+  "region_id": "us-detroit",
+  "api_enabled": true
+ },
+ {
+  "slug": "dieppe",
+  "label": "Dieppe (dieppe)",
+  "region_id": "ca-newbrunswick",
+  "api_enabled": true
+ },
+ {
+  "slug": "dublin",
+  "label": "Dublin (dublin)",
+  "region_id": "ie-dublin",
+  "api_enabled": true
+ },
+ {
+  "slug": "florence",
+  "label": "Florence (florence)",
+  "region_id": "it-florence",
+  "api_enabled": true
+ },
+ {
+  "slug": "frankfurt",
+  "label": "Frankfurt & Rhine-Main (frankfurt)",
+  "region_id": "de-frankfurt",
+  "api_enabled": true
+ },
+ {
+  "slug": "genoa",
+  "label": "Genoa (genoa)",
+  "region_id": "it-genova",
+  "api_enabled": true
+ },
+ {
+  "slug": "granada",
+  "label": "Granada (granada)",
+  "region_id": "es-granada",
+  "api_enabled": true
+ },
+ {
+  "slug": "hamburg",
+  "label": "Hamburg (hamburg)",
+  "region_id": "de-hamburg",
+  "api_enabled": true
+ },
+ {
+  "slug": "helsinki",
+  "label": "Helsinki (helsinki)",
+  "region_id": "fi-helsinki",
+  "api_enabled": true
+ },
+ {
+  "slug": "hong-kong",
+  "label": "Hong Kong (hong-kong)",
+  "region_id": "hk-hongkong",
+  "api_enabled": true
+ },
+ {
+  "slug": "honolulu",
+  "label": "Honolulu (honolulu)",
+  "region_id": "us-honolulu",
+  "api_enabled": true
+ },
+ {
+  "slug": "houston",
+  "label": "Houston (houston)",
+  "region_id": "us-houston",
+  "api_enabled": true
+ },
+ {
+  "slug": "iceland",
+  "label": "Iceland (iceland)",
+  "region_id": "is-iceland",
+  "api_enabled": true
+ },
+ {
+  "slug": "indiana",
+  "label": "Indiana (indiana)",
+  "region_id": "us-indiana",
+  "api_enabled": true
+ },
+ {
+  "slug": "istanbul",
+  "label": "Istanbul (istanbul)",
+  "region_id": "tr-istanbul",
+  "api_enabled": true
+ },
+ {
+  "slug": "kansascity",
+  "label": "Kansas City (kansascity)",
+  "region_id": "us-kansascity",
+  "api_enabled": true
+ },
+ {
+  "slug": "krakow",
+  "label": "Krakow & Katowice (krakow)",
+  "region_id": "pl-krakow",
+  "api_enabled": true
+ },
+ {
+  "slug": "lasvegas",
+  "label": "Las Vegas (lasvegas)",
+  "region_id": "us-lasvegas",
+  "api_enabled": true
+ },
+ {
+  "slug": "lille",
+  "label": "Lille (lille)",
+  "region_id": "fr-lille",
+  "api_enabled": true
+ },
+ {
+  "slug": "lisboa",
+  "label": "Lisboa (lisboa)",
+  "region_id": "pt-lisbon",
+  "api_enabled": true
+ },
+ {
+  "slug": "london",
+  "label": "London (london)",
+  "region_id": "uk-london",
+  "api_enabled": true
+ },
+ {
+  "slug": "la",
+  "label": "Los Angeles - San Diego (la)",
+  "region_id": "us-la",
+  "api_enabled": true
+ },
+ {
+  "slug": "luxembourg",
+  "label": "Luxembourg (luxembourg)",
+  "region_id": "lu-luxembourg",
+  "api_enabled": true
+ },
+ {
+  "slug": "lyon",
+  "label": "Lyon (lyon)",
+  "region_id": "fr-lyon",
+  "api_enabled": true
+ },
+ {
+  "slug": "madrid",
+  "label": "Madrid (madrid)",
+  "region_id": "es-madrid",
+  "api_enabled": true
+ },
+ {
+  "slug": "malaga",
+  "label": "Malaga (malaga)",
+  "region_id": "es-malaga",
+  "api_enabled": true
+ },
+ {
+  "slug": "marseille",
+  "label": "Marseille (marseille)",
+  "region_id": "fr-marseille",
+  "api_enabled": false
+ },
+ {
+  "slug": "melbourne",
+  "label": "Melbourne (melbourne)",
+  "region_id": "au-melbourne",
+  "api_enabled": true
+ },
+ {
+  "slug": "miami",
+  "label": "Miami (miami)",
+  "region_id": "us-miami",
+  "api_enabled": true
+ },
+ {
+  "slug": "milano",
+  "label": "Milan (milano)",
+  "region_id": "it-milan",
+  "api_enabled": true
+ },
+ {
+  "slug": "twincities",
+  "label": "Minneapolis \u2013 Saint Paul (twincities)",
+  "region_id": "us-minneapolis",
+  "api_enabled": true
+ },
+ {
+  "slug": "monaco",
+  "label": "Monaco (monaco)",
+  "region_id": "mc-monaco",
+  "api_enabled": false
+ },
+ {
+  "slug": "montreal",
+  "label": "Montr\u00e9al (montreal)",
+  "region_id": "ca-montreal",
+  "api_enabled": true
+ },
+ {
+  "slug": "moscow",
+  "label": "Moscow (moscow)",
+  "region_id": "ru-moscow",
+  "api_enabled": true
+ },
+ {
+  "slug": "munich",
+  "label": "Munich (munich)",
+  "region_id": "de-munich",
+  "api_enabled": true
+ },
+ {
+  "slug": "nantes",
+  "label": "Nantes (nantes)",
+  "region_id": "fr-nantes",
+  "api_enabled": false
+ },
+ {
+  "slug": "naples",
+  "label": "Naples (naples)",
+  "region_id": "it-naples",
+  "api_enabled": true
+ },
+ {
+  "slug": "nyc",
+  "label": "New York (nyc)",
+  "region_id": "us-nyc",
+  "api_enabled": true
+ },
+ {
+  "slug": "northcarolina",
+  "label": "North Carolina (northcarolina)",
+  "region_id": "us-northcarolina",
+  "api_enabled": true
+ },
+ {
+  "slug": "newcastle",
+  "label": "North East England (newcastle)",
+  "region_id": "uk-newcastle",
+  "api_enabled": true
+ },
+ {
+  "slug": "manchester",
+  "label": "North West & Yorkshire (manchester)",
+  "region_id": "uk-manchester",
+  "api_enabled": true
+ },
+ {
+  "slug": "arkansas",
+  "label": "Northwest Arkansas (arkansas)",
+  "region_id": "us-arkansas",
+  "api_enabled": true
+ },
+ {
+  "slug": "nuremberg",
+  "label": "Nuremberg (nuremberg)",
+  "region_id": "de-nuremberg",
+  "api_enabled": true
+ },
+ {
+  "slug": "ohio",
+  "label": "Ohio (ohio)",
+  "region_id": "us-cleveland",
+  "api_enabled": true
+ },
+ {
+  "slug": "oslo",
+  "label": "Oslo (oslo)",
+  "region_id": "no-oslo",
+  "api_enabled": true
+ },
+ {
+  "slug": "upstatenewyork",
+  "label": "Oswego County (upstatenewyork)",
+  "region_id": "us-upstatenewyork",
+  "api_enabled": true
+ },
+ {
+  "slug": "paris",
+  "label": "Paris (paris)",
+  "region_id": "fr-paris",
+  "api_enabled": true
+ },
+ {
+  "slug": "philadelphia",
+  "label": "Philadelphia (philadelphia)",
+  "region_id": "us-philadelphia",
+  "api_enabled": true
+ },
+ {
+  "slug": "phoenix",
+  "label": "Phoenix (phoenix)",
+  "region_id": "us-phoenix",
+  "api_enabled": true
+ },
+ {
+  "slug": "pittsburgh",
+  "label": "Pittsburgh (pittsburgh)",
+  "region_id": "us-pittsburgh",
+  "api_enabled": true
+ },
+ {
+  "slug": "portland",
+  "label": "Portland (portland)",
+  "region_id": "us-portland",
+  "api_enabled": true
+ },
+ {
+  "slug": "prague",
+  "label": "Prague (prague)",
+  "region_id": "cz-prague",
+  "api_enabled": true
+ },
+ {
+  "slug": "quebec",
+  "label": "Quebec (quebec)",
+  "region_id": "ca-quebec",
+  "api_enabled": true
+ },
+ {
+  "slug": "randstad",
+  "label": "Randstad (randstad)",
+  "region_id": "nl-randstad",
+  "api_enabled": true
+ },
+ {
+  "slug": "rhineruhr",
+  "label": "Rhine-Ruhr (rhineruhr)",
+  "region_id": "de-rhineruhr",
+  "api_enabled": true
+ },
+ {
+  "slug": "riga",
+  "label": "Riga (riga)",
+  "region_id": "lv-latvia",
+  "api_enabled": true
+ },
+ {
+  "slug": "roma",
+  "label": "Rome (roma)",
+  "region_id": "it-rome",
+  "api_enabled": true
+ },
+ {
+  "slug": "saltlakecity",
+  "label": "Salt Lake City (saltlakecity)",
+  "region_id": "us-saltlakecity",
+  "api_enabled": true
+ },
+ {
+  "slug": "sanantonio",
+  "label": "San Antonio (sanantonio)",
+  "region_id": "us-sanantonio",
+  "api_enabled": true
+ },
+ {
+  "slug": "sarasota",
+  "label": "Sarasota County (sarasota)",
+  "region_id": "us-westflorida",
+  "api_enabled": true
+ },
+ {
+  "slug": "edinburgh",
+  "label": "Scotland (edinburgh)",
+  "region_id": "uk-edinburgh",
+  "api_enabled": true
+ },
+ {
+  "slug": "seattle",
+  "label": "Seattle (seattle)",
+  "region_id": "us-seattle",
+  "api_enabled": true
+ },
+ {
+  "slug": "seoul",
+  "label": "Seoul (seoul)",
+  "region_id": "kr-seoul",
+  "api_enabled": true
+ },
+ {
+  "slug": "seville",
+  "label": "Seville (seville)",
+  "region_id": "es-seville",
+  "api_enabled": true
+ },
+ {
+  "slug": "sfbayarea",
+  "label": "SF Bay Area (sfbayarea)",
+  "region_id": "us-sf",
+  "api_enabled": true
+ },
+ {
+  "slug": "singapore",
+  "label": "Singapore (singapore)",
+  "region_id": "sg-singapore",
+  "api_enabled": true
+ },
+ {
+  "slug": "bristol",
+  "label": "South West & Wales (bristol)",
+  "region_id": "uk-bristol",
+  "api_enabled": true
+ },
+ {
+  "slug": "stlouis",
+  "label": "St. Louis (stlouis)",
+  "region_id": "us-stlouis",
+  "api_enabled": true
+ },
+ {
+  "slug": "sanktpeterburg",
+  "label": "St. Petersburg (sanktpeterburg)",
+  "region_id": "ru-stpetersburg",
+  "api_enabled": true
+ },
+ {
+  "slug": "stockholm",
+  "label": "Stockholm (stockholm)",
+  "region_id": "se-stockholm",
+  "api_enabled": true
+ },
+ {
+  "slug": "strasbourg",
+  "label": "Strasbourg (strasbourg)",
+  "region_id": "fr-strasbourg",
+  "api_enabled": false
+ },
+ {
+  "slug": "stuttgart",
+  "label": "Stuttgart & Baden-W\u00fcrttemberg (stuttgart)",
+  "region_id": "de-stuttgart",
+  "api_enabled": true
+ },
+ {
+  "slug": "switzerland",
+  "label": "Switzerland (switzerland)",
+  "region_id": "ch-ch",
+  "api_enabled": false
+ },
+ {
+  "slug": "sydney",
+  "label": "Sydney (sydney)",
+  "region_id": "au-sydney",
+  "api_enabled": true
+ },
+ {
+  "slug": "sao-paulo",
+  "label": "S\u00e3o Paulo (sao-paulo)",
+  "region_id": "br-saopaulo",
+  "api_enabled": true
+ },
+ {
+  "slug": "taiwan",
+  "label": "Taiwan (taiwan)",
+  "region_id": "tw-taiwan",
+  "api_enabled": true
+ },
+ {
+  "slug": "tallinn",
+  "label": "Tallinn (tallinn)",
+  "region_id": "ee-estonia",
+  "api_enabled": true
+ },
+ {
+  "slug": "birmingham",
+  "label": "The Midlands (birmingham)",
+  "region_id": "uk-birmingham",
+  "api_enabled": true
+ },
+ {
+  "slug": "tokyo",
+  "label": "Tokyo (tokyo)",
+  "region_id": "jp-tokyo",
+  "api_enabled": true
+ },
+ {
+  "slug": "toronto",
+  "label": "Toronto (toronto)",
+  "region_id": "ca-toronto",
+  "api_enabled": true
+ },
+ {
+  "slug": "toulouse",
+  "label": "Toulouse (toulouse)",
+  "region_id": "fr-toulouse",
+  "api_enabled": false
+ },
+ {
+  "slug": "turin",
+  "label": "Turin (turin)",
+  "region_id": "it-turin",
+  "api_enabled": true
+ },
+ {
+  "slug": "united-arab-emirates",
+  "label": "United Arab Emirates (united-arab-emirates)",
+  "region_id": "ae-ae",
+  "api_enabled": true
+ },
+ {
+  "slug": "utsunomiya",
+  "label": "Utsunomiya (Beta) (utsunomiya)",
+  "region_id": "jp-utsunomiya",
+  "api_enabled": true
+ },
+ {
+  "slug": "valencia",
+  "label": "Valencia (valencia)",
+  "region_id": "es-valencia",
+  "api_enabled": true
+ },
+ {
+  "slug": "vancouver",
+  "label": "Vancouver (vancouver)",
+  "region_id": "ca-vancouver",
+  "api_enabled": true
+ },
+ {
+  "slug": "venezia",
+  "label": "Venice (venezia)",
+  "region_id": "it-venice",
+  "api_enabled": true
+ },
+ {
+  "slug": "vienna",
+  "label": "Vienna (vienna)",
+  "region_id": "at-vienna",
+  "api_enabled": false
+ },
+ {
+  "slug": "lithuania",
+  "label": "Vilnius (lithuania)",
+  "region_id": "lt-lithuania",
+  "api_enabled": true
+ },
+ {
+  "slug": "warsaw",
+  "label": "Warsaw (warsaw)",
+  "region_id": "pl-warsaw",
+  "api_enabled": true
+ },
+ {
+  "slug": "zagreb",
+  "label": "Zagreb (zagreb)",
+  "region_id": "hr-zagreb",
+  "api_enabled": true
+ },
+ {
+  "slug": "zaragoza",
+  "label": "Zaragoza (zaragoza)",
+  "region_id": "es-zaragoza",
+  "api_enabled": true
+ }
+]

@@ -1,0 +1,40 @@
+{
+   "posts": [
+      {
+         "title": "Harbour Festival 3 May 2026",
+         "url": "https://content.citymapper.com/i/3104/harbour-festival-3-may-2026",
+         "share_url": "https://content.citymapper.com/i/3104/harbour-festival-3-may-2026",
+         "summary": "Road closures around the quay",
+         "has_more_content": true,
+         "post_date": "2026-04-28T09:00:00+00:00",
+         "pinned": false,
+         "post_type": "local",
+         "next_post_url": "https://content.citymapper.com/i/3088/metro-a-works",
+         "previous_post_url": "",
+         "color": "#4A90E2",
+         "contrast_color": "#FFFFFF",
+         "cover_image_url": "https://content.citymapper.com/images/harbour-festival.png",
+         "cover_image_height": 630,
+         "cover_image_width": 1200,
+         "content": "<p>Plan ahead for the festival.</p>"
+      },
+      {
+         "title": "Metro A weekend works",
+         "url": "https://content.citymapper.com/i/3088/metro-a-works",
+         "share_url": "https://content.citymapper.com/i/3088/metro-a-works",
+         "summary": "Replacement buses all weekend",
+         "has_more_content": false,
+         "post_date": "2026-04-20T12:30:00+00:00",
+         "pinned": true,
+         "post_type": "local",
+         "next_post_url": "",
+         "previous_post_url": "https://content.citymapper.com/i/3104/harbour-festival-3-may-2026",
+         "color": "#4A90E2",
+         "contrast_color": "#FFFFFF",
+         "cover_image_url": "https://content.citymapper.com/images/metro-a.png",
+         "cover_image_height": 630,
+         "cover_image_width": 1200,
+         "content": "<p>Buses replace trains.</p>"
+      }
+   ]
+}

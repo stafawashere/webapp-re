@@ -78,6 +78,9 @@ through the program. The knowledge base is plain Markdown, and `reverse` reads i
 whose endpoint was verified and replayed in the last 30 days skips the capture and goes straight
 to reproducing the call.
 
+[examples/citymapper](examples/citymapper) is a real one, for citymapper.com, run signed out. You
+can read through what each stage wrote, or use the program and its plugin directly.
+
 ## Pacing and your account
 
 The generated program keeps one request in flight, waits at least 3 seconds between requests to

@@ -1,0 +1,20 @@
+{
+   "place_result": {
+      "address": "Quay Rd, Portvale 400-0001",
+      "address_components": {
+         "FormattedAddressLines": [
+            "Quay Rd",
+            "Portvale",
+            "400-0001"
+         ]
+      },
+      "coords": [
+         10.523,
+         20.611
+      ],
+      "id": "google:ChIJFakePlaceAlpha",
+      "name": "Lantern Market",
+      "place_details_available": true,
+      "type": "place"
+   }
+}

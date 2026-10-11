@@ -1,0 +1,59 @@
+{
+   "routes": [
+      {
+         "mode": "taxi",
+         "length_meters": 4120,
+         "duration_seconds": 780,
+         "legs": [
+            {
+               "mode": "taxi",
+               "length_meters": 4120,
+               "duration_seconds": 640,
+               "path": [
+                  [
+                     10.5,
+                     20.5
+                  ],
+                  [
+                     10.6,
+                     20.7
+                  ]
+               ]
+            }
+         ]
+      }
+   ],
+   "status": 0,
+   "diagnostic": {},
+   "on_demand_model": {
+      "categories": [
+         {
+            "entries": [
+               {
+                  "action_text": "Get a Gull",
+                  "android_app_id": "com.example.gullcabs",
+                  "image_stem": "gullcabs",
+                  "ios_app_id": "100000001",
+                  "parent_service_id": "gullcabs",
+                  "service_id": "gullcabs_standard",
+                  "supports_live_times": true,
+                  "title": "Gull Standard"
+               },
+               {
+                  "action_text": "Get a Gull",
+                  "android_app_id": "com.example.gullcabs",
+                  "image_stem": "gullcabs",
+                  "ios_app_id": "100000001",
+                  "parent_service_id": "gullcabs",
+                  "service_id": "gullcabs_xl",
+                  "supports_live_times": false,
+                  "title": "Gull XL"
+               }
+            ],
+            "image_stem": "gullcabs",
+            "title": "Gull Cabs"
+         }
+      ],
+      "title": ""
+   }
+}

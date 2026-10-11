@@ -1,0 +1,110 @@
+{
+   "sections": [
+      {
+         "journeys": [
+            0,
+            1
+         ]
+      }
+   ],
+   "shared": {
+      "station_exits": [
+         {
+            "id": "MetroHarbourSq_E1",
+            "coords": [
+               10.5121,
+               20.4882
+            ],
+            "station_id": "MetroHarbourSq",
+            "name": "Quay Rd exit"
+         }
+      ]
+   },
+   "journeys": [
+      {
+         "start": {
+            "coords": [
+               10.5,
+               20.5
+            ]
+         },
+         "end": {
+            "coords": [
+               10.6,
+               20.7
+            ]
+         },
+         "walk_seconds": 2950,
+         "duration_seconds": 2950,
+         "calories": 204,
+         "legs": [
+            {
+               "duration_seconds": 2950,
+               "mode": "walk",
+               "shape": [
+                  [
+                     10.5,
+                     20.5
+                  ],
+                  [
+                     10.55,
+                     20.6
+                  ],
+                  [
+                     10.6,
+                     20.7
+                  ]
+               ],
+               "distance_meters": 3980,
+               "start_id": "MetroHarbourSq_E1"
+            }
+         ],
+         "signature": "{\"duration\": 2950, \"end\": {\"coords\": \"10.6,20.7\"}, \"jr_index\": 0}",
+         "outdoor_walk_minutes": 49,
+         "distance_meters": 3980,
+         "journey_equivalence_hash": "walkfast00000000000000001",
+         "profile_id": "fast",
+         "profile_localized_name": "Fast"
+      },
+      {
+         "start": {
+            "coords": [
+               10.5,
+               20.5
+            ]
+         },
+         "end": {
+            "coords": [
+               10.6,
+               20.7
+            ]
+         },
+         "walk_seconds": 3120,
+         "duration_seconds": 3120,
+         "calories": 216,
+         "legs": [
+            {
+               "duration_seconds": 3120,
+               "mode": "walk",
+               "shape": [
+                  [
+                     10.5,
+                     20.5
+                  ],
+                  [
+                     10.6,
+                     20.7
+                  ]
+               ],
+               "distance_meters": 4150
+            }
+         ],
+         "signature": "{\"duration\": 3120, \"end\": {\"coords\": \"10.6,20.7\"}, \"jr_index\": 1}",
+         "outdoor_walk_minutes": 52,
+         "distance_meters": 4150,
+         "journey_equivalence_hash": "walkquiet0000000000000002",
+         "profile_id": "quiet",
+         "profile_localized_name": "Quiet"
+      }
+   ]
+}

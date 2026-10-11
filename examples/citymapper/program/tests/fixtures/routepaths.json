@@ -1,0 +1,54 @@
+{
+   "routes": [
+      {
+         "name": "A",
+         "color": "#1A6FB0",
+         "text_color": "#FFFFFF",
+         "icon_name": "zz-portvale-metro-a",
+         "icon_contains_name": true,
+         "id": "A",
+         "brand_id": "PortvaleMetro",
+         "ui_color": "#1A6FB0",
+         "long_name": "Airport - Harbour",
+         "mode": "metro",
+         "affinities": [
+            "metro"
+         ],
+         "supports_paths": true,
+         "patterns": [
+            {
+               "id": "A_0_1__Stations",
+               "name": "Airport - Harbour Sq",
+               "path": [
+                  [
+                     10.21,
+                     20.11
+                  ],
+                  [
+                     10.556,
+                     20.531
+                  ],
+                  [
+                     10.512,
+                     20.488
+                  ]
+               ]
+            },
+            {
+               "id": "A_1_1__Stations",
+               "name": "Harbour Sq - Dock Rd",
+               "path": [
+                  [
+                     10.512,
+                     20.488
+                  ],
+                  [
+                     10.556,
+                     20.531
+                  ]
+               ]
+            }
+         ]
+      }
+   ]
+}

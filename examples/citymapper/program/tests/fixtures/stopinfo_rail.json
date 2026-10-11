@@ -1,0 +1,53 @@
+{
+   "stops": [
+      {
+         "id": "RailPortvaleCentral",
+         "requested_id": "portvale-central",
+         "alias": "portvale-central",
+         "name": "Portvale Central",
+         "coords": [
+            10.531,
+            20.552
+         ],
+         "route_ids": [
+            "CoastLine"
+         ],
+         "brand_ids": [
+            "CoastRail"
+         ],
+         "url": "https://citymapper.com/portvale/stop/portvale-central",
+         "sharing_urls": [
+            {
+               "departure_api": "raildepartures",
+               "url": "https://citymapper.com/portvale/stop/portvale-central"
+            }
+         ],
+         "exits": [],
+         "stop_curation_url_ids": [
+            "web_edit_station"
+         ]
+      }
+   ],
+   "routes": [
+      {
+         "id": "CoastLine",
+         "name": "Coast Line",
+         "brand_id": "CoastRail",
+         "icon_name": "zz-portvale-coast",
+         "icon_contains_name": false,
+         "color": "#2E8B57",
+         "ui_color": "#2E8B57",
+         "text_color": "#FFFFFF"
+      }
+   ],
+   "shared": {
+      "stop_curation_urls": [
+         {
+            "href": "https://citymapper.com/stop-curation/facilities",
+            "id": "web_edit_station",
+            "permission_required": "show_stop_curation",
+            "title": "Add Facilities"
+         }
+      ]
+   }
+}

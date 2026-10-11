@@ -1,0 +1,302 @@
+{
+ "list-cities": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "list-cities"
+ },
+ "get-city": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-city"
+ },
+ "list-brands": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "list-brands"
+ },
+ "search-places": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "search-places"
+ },
+ "resolve-place": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "resolve-place"
+ },
+ "reverse-geocode": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "reverse-geocode"
+ },
+ "plan-journey": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "plan-journey-london,plan-journey-nyc"
+ },
+ "plan-walk": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "plan-walk"
+ },
+ "plan-cycle": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "plan-cycle"
+ },
+ "plan-cab": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "plan-cab"
+ },
+ "get-journey": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-journey"
+ },
+ "get-travel-time": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-travel-time"
+ },
+ "find-nearby": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "find-nearby,find-nearby-london-bus"
+ },
+ "get-stop": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-stop"
+ },
+ "get-departures": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-departures-bus,get-departures-metro,get-departures-rail"
+ },
+ "get-stop-schedule": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-stop-schedule"
+ },
+ "get-line-status": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-line-status"
+ },
+ "get-disruptions": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-disruptions"
+ },
+ "get-service-message": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-service-message"
+ },
+ "find-line": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "find-line"
+ },
+ "get-line": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-line"
+ },
+ "get-lines": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-lines"
+ },
+ "get-vehicles": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-vehicles"
+ },
+ "get-route-paths": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-route-paths"
+ },
+ "get-map-around": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-map-around"
+ },
+ "list-news": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "list-news"
+ },
+ "get-legal": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-114004",
+  "log": "var/logs/verify-2026-10-10-114004.json",
+  "label": "get-legal"
+ },
+ "whoami": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "whoami"
+ },
+ "plan-vehicle-hire": {
+  "status": "blocked: retired by Citymapper (/api/7/vehiclehire answers 404 'This API is no longer supported')",
+  "checked_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json"
+ },
+ "get-shared-eta": {
+  "status": "blocked: not served on the web (/api/1/eta answers 404 Page Not Found)",
+  "checked_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json"
+ },
+ "get-weather": {
+  "status": "blocked: retired by Citymapper (/api/1/weather answers 404)",
+  "checked_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json"
+ },
+ "get-transit-score": {
+  "status": "blocked: retired by Citymapper (/api/1/transitscore answers 404)",
+  "checked_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json"
+ },
+ "list-saved-places": {
+  "status": "needs session: not yet verified live",
+  "checked_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json"
+ },
+ "list-favourites": {
+  "status": "needs session: not yet verified live",
+  "checked_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json"
+ },
+ "pass-account": {
+  "status": "blocked: needs a Citymapper Pass session from the app (Session-Id source unknown)",
+  "checked_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json"
+ },
+ "pass-session-time": {
+  "status": "blocked: needs a Citymapper Pass session from the app (Session-Id source unknown)",
+  "checked_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json"
+ },
+ "open-trip-link": {
+  "status": "blocked: needs a citymapper.com/trip/<slug> link; one comes from share-journey after your approval (an unknown slug answers 404)"
+ },
+ "open-go-link": {
+  "status": "blocked: needs a citymapper.com/go/<slug> link; one comes from create-go-link after your approval (an unknown slug answers 404)"
+ },
+ "get-journey-times": {
+  "status": "verified live",
+  "verified_at": "2026-10-10-113605",
+  "log": "var/logs/verify-2026-10-10-113605.json",
+  "label": "get-journey-times"
+ },
+ "share-journey": {
+  "status": "built, awaiting approval (dry run checked; PENDING-APPROVALS.md)",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "create-go-link": {
+  "status": "built, awaiting approval (dry run checked; PENDING-APPROVALS.md)",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "vote-for-city": {
+  "status": "needs session: then your approval (dry run checked; PENDING-APPROVALS.md)",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "sign-out": {
+  "status": "needs session: then your approval (dry run checked; PENDING-APPROVALS.md)",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "pass-set-default-payment": {
+  "status": "blocked: needs a Citymapper Pass session from the app (Session-Id source unknown); dry run checked; PENDING-APPROVALS.md",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "pass-add-payment-method": {
+  "status": "blocked: needs a Citymapper Pass session from the app (Session-Id source unknown); dry run checked; PENDING-APPROVALS.md",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "pass-remove-payment-method": {
+  "status": "blocked: needs a Citymapper Pass session from the app (Session-Id source unknown); dry run checked; PENDING-APPROVALS.md",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "pass-remove-all-payment-methods": {
+  "status": "blocked: needs a Citymapper Pass session from the app (Session-Id source unknown); dry run checked; PENDING-APPROVALS.md",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "save-place": {
+  "status": "needs session: round trip with inverse ready, dry run checked",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "update-place": {
+  "status": "needs session: round trip with inverse ready, dry run checked",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "remove-place": {
+  "status": "needs session: round trip with inverse ready, dry run checked",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "add-favourite": {
+  "status": "needs session: round trip with inverse ready, dry run checked",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "remove-favourite": {
+  "status": "needs session: round trip with inverse ready, dry run checked",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "save-journey": {
+  "status": "needs session: round trip with inverse ready, dry run checked",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "remove-saved-journey": {
+  "status": "needs session: round trip with inverse ready, dry run checked",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ },
+ "update-profile": {
+  "status": "needs session: round trip with inverse ready, dry run checked",
+  "checked_at": "2026-10-10-113554",
+  "log": "PENDING-APPROVALS.md"
+ }
+}

@@ -1,0 +1,8 @@
+city-nyc https://citymapper.com/nyc
+nearby-nyc-subway https://citymapper.com/nyc/subway/stations?name=Times%20Square&coords=40.75773%2C-73.985708
+nearby-nyc-bus https://citymapper.com/nyc/bus/stops?name=Times%20Square&coords=40.75773%2C-73.985708
+nearby-nyc-bike https://citymapper.com/nyc/bike/docks?name=Times%20Square&coords=40.75773%2C-73.985708
+line-nyc-subway-6 https://citymapper.com/nyc/subway/subway-6
+status-nyc https://citymapper.com/nyc/status
+cities https://citymapper.com/cities
+city-london https://citymapper.com/london

@@ -1,0 +1,85 @@
+{
+   "stops": [
+      {
+         "id": "MetroHarbourSq",
+         "requested_id": "harbour-sq",
+         "alias": "harbour-sq",
+         "name": "Harbour Sq",
+         "coords": [
+            10.512,
+            20.488
+         ],
+         "route_ids": [
+            "A",
+            "C"
+         ],
+         "brand_ids": [
+            "PortvaleMetro"
+         ],
+         "url": "https://citymapper.com/portvale/stop/harbour-sq",
+         "sharing_urls": [
+            {
+               "departure_api": "metrodepartures",
+               "url": "https://citymapper.com/portvale/stop/harbour-sq"
+            }
+         ],
+         "exits": [
+            {
+               "id": "MetroHarbourSq_E1",
+               "coords": [
+                  10.5121,
+                  20.4882
+               ],
+               "station_id": "MetroHarbourSq",
+               "name": "Quay Rd exit"
+            },
+            {
+               "id": "MetroHarbourSq_E2",
+               "coords": [
+                  10.5118,
+                  20.4879
+               ],
+               "station_id": "MetroHarbourSq",
+               "short_name": "2",
+               "indicator": "2",
+               "name": "Market St exit"
+            }
+         ],
+         "stop_curation_url_ids": [
+            "web_edit_station"
+         ]
+      }
+   ],
+   "routes": [
+      {
+         "id": "A",
+         "name": "A",
+         "brand_id": "PortvaleMetro",
+         "icon_name": "zz-portvale-metro-a",
+         "icon_contains_name": true,
+         "color": "#1A6FB0",
+         "ui_color": "#1A6FB0",
+         "text_color": "#FFFFFF"
+      },
+      {
+         "id": "C",
+         "name": "C",
+         "brand_id": "PortvaleMetro",
+         "icon_name": "zz-portvale-metro-c",
+         "icon_contains_name": true,
+         "color": "#E0812B",
+         "ui_color": "#E0812B",
+         "text_color": "#FFFFFF"
+      }
+   ],
+   "shared": {
+      "stop_curation_urls": [
+         {
+            "href": "https://citymapper.com/stop-curation/facilities",
+            "id": "web_edit_station",
+            "permission_required": "show_stop_curation",
+            "title": "Add Facilities"
+         }
+      ]
+   }
+}

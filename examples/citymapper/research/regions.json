@@ -1,0 +1,7604 @@
+{
+ "source": "window.citymapper.regions and citiesInRegions in https://citymapper.com/nyc HTML, captured 2026-10-10",
+ "regions": [
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     42.1,
+     -69.7
+    ],
+    "southwest_corner_coords": [
+     40.02,
+     -75.5
+    ]
+   },
+   "default_place": {
+    "coords": [
+     40.75773,
+     -73.985708
+    ]
+   },
+   "region_dude": "yankees",
+   "region_growth_percent": 100,
+   "region_id": "us-nyc",
+   "region_is_launched": true,
+   "region_name": "New York",
+   "region_name_aliases": [
+    "NYC",
+    "Jersey City",
+    "Newark",
+    "Stamford"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_NYC",
+   "region_slug": "nyc",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     40.46,
+     -73.95
+    ],
+    "southwest_corner_coords": [
+     38.43,
+     -76.15
+    ]
+   },
+   "default_place": {
+    "coords": [
+     39.951409,
+     -75.155864
+    ]
+   },
+   "region_dude": "philadelphia",
+   "region_growth_percent": 100,
+   "region_id": "us-philadelphia",
+   "region_is_launched": true,
+   "region_name": "Philadelphia",
+   "region_name_localization_key": "DL_REGION_NAME_PHILADELPHIA",
+   "region_slug": "philadelphia",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     42.86,
+     -69.63
+    ],
+    "southwest_corner_coords": [
+     41.12,
+     -72.12
+    ]
+   },
+   "default_place": {
+    "coords": [
+     42.359784,
+     -71.054525
+    ]
+   },
+   "region_dude": "redsock",
+   "region_growth_percent": 100,
+   "region_id": "us-boston",
+   "region_is_launched": true,
+   "region_name": "Boston",
+   "region_name_aliases": [
+    "Harvard"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BOSTON",
+   "region_slug": "boston",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     39.68,
+     -75.95
+    ],
+    "southwest_corner_coords": [
+     38.17,
+     -78.18
+    ]
+   },
+   "default_place": {
+    "coords": [
+     38.8977,
+     -77.0366
+    ]
+   },
+   "region_dude": "lincoln",
+   "region_growth_percent": 100,
+   "region_id": "us-dc",
+   "region_is_launched": true,
+   "region_name": "DC - Baltimore",
+   "region_name_aliases": [
+    "washington",
+    "baltimore"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_DC_BALTIMORE",
+   "region_slug": "dc",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     43.65,
+     -74.93
+    ],
+    "southwest_corner_coords": [
+     42.29,
+     -76.83
+    ]
+   },
+   "default_place": {
+    "coords": [
+     43.46581086071348,
+     -76.50825536618223
+    ]
+   },
+   "region_dude": "us-upstatenewyork",
+   "region_growth_percent": 100,
+   "region_id": "us-upstatenewyork",
+   "region_is_launched": true,
+   "region_name": "Oswego County",
+   "region_name_localization_key": "DL_REGION_NAME_UPSTATENEWYORK",
+   "region_slug": "upstatenewyork",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     41.1,
+     -78.1
+    ],
+    "southwest_corner_coords": [
+     40.01,
+     -80.9
+    ]
+   },
+   "default_place": {
+    "coords": [
+     40.446838,
+     -80.006309
+    ]
+   },
+   "region_dude": "pittsburgh",
+   "region_growth_percent": 100,
+   "region_id": "us-pittsburgh",
+   "region_is_launched": true,
+   "region_name": "Pittsburgh",
+   "region_name_aliases": [
+    "Altoona"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_PITTSBURGH",
+   "region_slug": "pittsburgh",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     46.7,
+     -72.8
+    ],
+    "southwest_corner_coords": [
+     45.0,
+     -74.4
+    ]
+   },
+   "default_place": {
+    "coords": [
+     45.514851,
+     -73.559654
+    ]
+   },
+   "region_dude": "montreal",
+   "region_growth_percent": 100,
+   "region_id": "ca-montreal",
+   "region_is_launched": true,
+   "region_name": "Montr\u00e9al",
+   "region_name_localization_key": "DL_REGION_NAME_MONTREAL",
+   "region_slug": "montreal",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     44.95,
+     -78.22
+    ],
+    "southwest_corner_coords": [
+     42.89,
+     -80.81
+    ]
+   },
+   "default_place": {
+    "coords": [
+     43.65633,
+     -79.38112
+    ]
+   },
+   "region_dude": "timmy",
+   "region_growth_percent": 100,
+   "region_id": "ca-toronto",
+   "region_is_launched": true,
+   "region_name": "Toronto",
+   "region_name_aliases": [
+    "Hamilton",
+    "York Region"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_TORONTO",
+   "region_slug": "toronto",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     41.9,
+     -80.5
+    ],
+    "southwest_corner_coords": [
+     38.0,
+     -84.9
+    ]
+   },
+   "default_place": {
+    "coords": [
+     41.484404,
+     -81.703153
+    ]
+   },
+   "region_dude": "cleveland",
+   "region_growth_percent": 100,
+   "region_id": "us-cleveland",
+   "region_is_launched": true,
+   "region_name": "Ohio",
+   "region_name_aliases": [
+    "Cleveland",
+    "Akron",
+    "Dayton",
+    "Columbus",
+    "Cincinnati",
+    "Canton",
+    "Charleston",
+    "Youngstown",
+    "Sandusky",
+    "Mansfield",
+    "Lancaster"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_OHIO",
+   "region_slug": "ohio",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     47.36,
+     -70.52
+    ],
+    "southwest_corner_coords": [
+     46.37,
+     -71.95
+    ]
+   },
+   "default_place": {
+    "coords": [
+     46.812627,
+     -71.205802
+    ]
+   },
+   "region_dude": "ca-quebec",
+   "region_growth_percent": 100,
+   "region_id": "ca-quebec",
+   "region_is_launched": true,
+   "region_name": "Quebec",
+   "region_name_aliases": [
+    "L\u00e9vis"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_QUEBEC",
+   "region_slug": "quebec",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     45.3,
+     -82.7
+    ],
+    "southwest_corner_coords": [
+     41.4,
+     -86.1
+    ]
+   },
+   "default_place": {
+    "coords": [
+     42.3364411,
+     -83.04881916521705
+    ]
+   },
+   "region_dude": "us-detroit",
+   "region_growth_percent": 100,
+   "region_id": "us-detroit",
+   "region_is_launched": true,
+   "region_name": "Detroit",
+   "region_name_aliases": [
+    "Windsor",
+    "Grand Rapids",
+    "Kalamazoo",
+    "Lansing",
+    "Traverse City",
+    "Port Huron",
+    "Toledo",
+    "Ann Arbor"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_DETROIT",
+   "region_slug": "detroit",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     35.6,
+     -80.5
+    ],
+    "southwest_corner_coords": [
+     34.8,
+     -81.4
+    ]
+   },
+   "default_place": {
+    "coords": [
+     35.2263813,
+     -80.841588
+    ]
+   },
+   "region_dude": "us-northcarolina",
+   "region_growth_percent": 100,
+   "region_id": "us-northcarolina",
+   "region_is_launched": true,
+   "region_name": "North Carolina",
+   "region_name_aliases": [
+    "Charlotte"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_NORTHCAROLINA",
+   "region_slug": "northcarolina",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     46.18,
+     -64.64
+    ],
+    "southwest_corner_coords": [
+     46.03,
+     -64.9
+    ]
+   },
+   "default_place": {
+    "coords": [
+     46.094982,
+     -64.748998
+    ]
+   },
+   "region_dude": "ca-newbrunswick",
+   "region_growth_percent": 100,
+   "region_id": "ca-newbrunswick",
+   "region_is_launched": true,
+   "region_name": "Dieppe",
+   "region_name_aliases": [
+    "Newbrunswick",
+    "Moncton",
+    "Ville de Dieppe"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_NEWBRUNSWICK",
+   "region_slug": "dieppe",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     40.5,
+     -85.9
+    ],
+    "southwest_corner_coords": [
+     37.8,
+     -87.8
+    ]
+   },
+   "default_place": {
+    "coords": [
+     39.7685835,
+     -86.158085
+    ]
+   },
+   "region_growth_percent": 100,
+   "region_dude": "us-indiana",
+   "region_id": "us-indiana",
+   "region_is_launched": true,
+   "region_name": "Indiana",
+   "region_name_aliases": [
+    "Indianapolis",
+    "Lafayette",
+    "Evansville"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_INDIANA",
+   "region_slug": "indiana",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     42.5,
+     -86.22
+    ],
+    "southwest_corner_coords": [
+     41.29,
+     -88.68
+    ]
+   },
+   "default_place": {
+    "coords": [
+     41.88265,
+     -87.6233
+    ]
+   },
+   "region_dude": "windywendy",
+   "region_growth_percent": 100,
+   "region_id": "us-chicago",
+   "region_is_launched": true,
+   "region_name": "Chicago",
+   "region_name_aliases": [
+    "The University of Chicago"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_CHICAGO",
+   "region_slug": "chicago",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     34.32,
+     -83.66
+    ],
+    "southwest_corner_coords": [
+     33.28,
+     -85.13
+    ]
+   },
+   "default_place": {
+    "coords": [
+     33.761949,
+     -84.393622
+    ]
+   },
+   "region_dude": "atlanta",
+   "region_growth_percent": 100,
+   "region_id": "us-atlanta",
+   "region_is_launched": true,
+   "region_name": "Atlanta",
+   "region_name_aliases": [
+    "ATL"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_ATLANTA",
+   "region_slug": "atlanta",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     39.13,
+     -89.33
+    ],
+    "southwest_corner_coords": [
+     38.15,
+     -90.87
+    ]
+   },
+   "default_place": {
+    "coords": [
+     38.624456,
+     -90.184021
+    ]
+   },
+   "region_dude": "stlouis",
+   "region_growth_percent": 100,
+   "region_id": "us-stlouis",
+   "region_is_launched": true,
+   "region_name": "St. Louis",
+   "region_name_aliases": [
+    "St Louis"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_STLOUIS",
+   "region_slug": "stlouis",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     45.4,
+     -92.3
+    ],
+    "southwest_corner_coords": [
+     43.9,
+     -93.8
+    ]
+   },
+   "default_place": {
+    "coords": [
+     44.958437,
+     -93.273097
+    ]
+   },
+   "region_dude": "minneapolis",
+   "region_growth_percent": 100,
+   "region_id": "us-minneapolis",
+   "region_is_launched": true,
+   "region_name": "Minneapolis \u2013 Saint Paul",
+   "region_name_aliases": [
+    "St Paul",
+    "Twin Cities",
+    "Rochester"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_MINNEAPOLIS",
+   "region_slug": "twincities",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     27.9,
+     -82.0
+    ],
+    "southwest_corner_coords": [
+     26.8,
+     -82.8
+    ]
+   },
+   "default_place": {
+    "coords": [
+     27.336479,
+     -82.540683
+    ]
+   },
+   "region_dude": "us-westflorida-sarasota",
+   "region_growth_percent": 100,
+   "region_id": "us-westflorida",
+   "region_is_launched": true,
+   "region_name": "Sarasota County",
+   "region_name_aliases": [
+    "Bradenton",
+    "Venice",
+    "North Port",
+    "Englewood",
+    "Longboat Key"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SARASOTA",
+   "region_slug": "sarasota",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     27.05,
+     -80.01
+    ],
+    "southwest_corner_coords": [
+     24.5,
+     -82.03
+    ]
+   },
+   "default_place": {
+    "coords": [
+     25.772255,
+     -80.187677
+    ]
+   },
+   "region_dude": "miami",
+   "region_growth_percent": 100,
+   "region_id": "us-miami",
+   "region_is_launched": true,
+   "region_name": "Miami",
+   "region_name_localization_key": "DL_REGION_NAME_MIAMI",
+   "region_slug": "miami",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     39.35,
+     -94.38
+    ],
+    "southwest_corner_coords": [
+     38.87,
+     -94.85
+    ]
+   },
+   "default_place": {
+    "coords": [
+     39.0991,
+     -94.583
+    ]
+   },
+   "region_growth_percent": 100,
+   "region_dude": "us-kansascity",
+   "region_id": "us-kansascity",
+   "region_is_launched": true,
+   "region_name": "Kansas City",
+   "region_name_localization_key": "DL_REGION_NAME_KANSASCITY",
+   "region_slug": "kansascity",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     36.5,
+     -94.0
+    ],
+    "southwest_corner_coords": [
+     35.9,
+     -94.4
+    ]
+   },
+   "default_place": {
+    "coords": [
+     36.068663455736974,
+     -94.1748471053391
+    ]
+   },
+   "region_dude": "us-ar-ozark",
+   "region_growth_percent": 100,
+   "region_id": "us-arkansas",
+   "region_is_launched": true,
+   "region_name": "Northwest Arkansas",
+   "region_name_localization_key": "DL_REGION_NAME_ARKANSAS",
+   "region_slug": "arkansas",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     33.32,
+     -96.42
+    ],
+    "southwest_corner_coords": [
+     32.45,
+     -97.8
+    ]
+   },
+   "default_place": {
+    "coords": [
+     32.77497,
+     -96.809132
+    ]
+   },
+   "region_dude": "dallas",
+   "region_growth_percent": 100,
+   "region_id": "us-dallas",
+   "region_is_launched": true,
+   "region_name": "Dallas - Fort Worth",
+   "region_name_aliases": [
+    "Fort Worth",
+    "Arlington",
+    "Plano",
+    "Garland",
+    "Irving"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_DALLAS",
+   "region_slug": "dallas",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     30.44,
+     -94.43
+    ],
+    "southwest_corner_coords": [
+     28.85,
+     -96.17
+    ]
+   },
+   "default_place": {
+    "coords": [
+     29.762485,
+     -95.3623
+    ]
+   },
+   "region_dude": "houston",
+   "region_growth_percent": 100,
+   "region_id": "us-houston",
+   "region_is_launched": true,
+   "region_name": "Houston",
+   "region_name_localization_key": "DL_REGION_NAME_HOUSTON",
+   "region_slug": "houston",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     30.65,
+     -97.34
+    ],
+    "southwest_corner_coords": [
+     30.09,
+     -98.11
+    ]
+   },
+   "default_place": {
+    "coords": [
+     30.273424,
+     -97.739707
+    ]
+   },
+   "region_dude": "austintx",
+   "region_growth_percent": 100,
+   "region_id": "us-austin",
+   "region_is_launched": true,
+   "region_name": "Austin",
+   "region_name_localization_key": "DL_REGION_NAME_AUSTIN",
+   "region_slug": "austin",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     29.69,
+     -98.16
+    ],
+    "southwest_corner_coords": [
+     29.13,
+     -98.82
+    ]
+   },
+   "default_place": {
+    "coords": [
+     29.426294,
+     -98.486442
+    ]
+   },
+   "region_dude": "sanantonio",
+   "region_growth_percent": 100,
+   "region_id": "us-sanantonio",
+   "region_is_launched": true,
+   "region_name": "San Antonio",
+   "region_name_localization_key": "DL_REGION_NAME_SANANTONIO",
+   "region_slug": "sanantonio",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     40.24,
+     -104.59
+    ],
+    "southwest_corner_coords": [
+     39.17,
+     -106.45
+    ]
+   },
+   "default_place": {
+    "coords": [
+     39.739295,
+     -104.988881
+    ]
+   },
+   "region_dude": "denver",
+   "region_growth_percent": 100,
+   "region_id": "us-denver",
+   "region_is_launched": true,
+   "region_name": "Denver - Aurora",
+   "region_name_localization_key": "DL_REGION_NAME_DENVER",
+   "region_slug": "denver",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     41.58,
+     -111.4
+    ],
+    "southwest_corner_coords": [
+     39.94,
+     -112.54
+    ]
+   },
+   "default_place": {
+    "coords": [
+     40.771019,
+     -111.891629
+    ]
+   },
+   "region_dude": "saltlakecity",
+   "region_growth_percent": 100,
+   "region_id": "us-saltlakecity",
+   "region_is_launched": true,
+   "region_name": "Salt Lake City",
+   "region_name_aliases": [
+    "SLC"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SALT_LAKE_CITY",
+   "region_slug": "saltlakecity",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     19.98,
+     -98.68
+    ],
+    "southwest_corner_coords": [
+     18.93,
+     -100.0
+    ]
+   },
+   "default_place": {
+    "coords": [
+     19.435999,
+     -99.14198
+    ]
+   },
+   "region_dude": "aztec",
+   "region_growth_percent": 100,
+   "region_id": "mx-df",
+   "region_is_launched": true,
+   "region_name": "Ciudad de M\u00e9xico",
+   "region_name_localization_key": "DL_REGION_NAME_MX_DF",
+   "region_slug": "df",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     33.8,
+     -111.41
+    ],
+    "southwest_corner_coords": [
+     33.01,
+     -112.77
+    ]
+   },
+   "default_place": {
+    "coords": [
+     33.472467,
+     -112.073189
+    ]
+   },
+   "region_dude": "phoenix",
+   "region_growth_percent": 100,
+   "region_id": "us-phoenix",
+   "region_is_launched": true,
+   "region_name": "Phoenix",
+   "region_name_localization_key": "DL_REGION_NAME_PHOENIX",
+   "region_slug": "phoenix",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     36.33,
+     -114.77
+    ],
+    "southwest_corner_coords": [
+     35.94,
+     -115.46
+    ]
+   },
+   "default_place": {
+    "coords": [
+     36.158284,
+     -115.153615
+    ]
+   },
+   "region_dude": "lasvegas",
+   "region_growth_percent": 100,
+   "region_id": "us-lasvegas",
+   "region_is_launched": true,
+   "region_name": "Las Vegas",
+   "region_name_localization_key": "DL_REGION_NAME_LAS_VEGAS",
+   "region_slug": "lasvegas",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     48.74,
+     -121.52
+    ],
+    "southwest_corner_coords": [
+     46.86,
+     -123.15
+    ]
+   },
+   "default_place": {
+    "coords": [
+     47.620477,
+     -122.349261
+    ]
+   },
+   "minimum_android_version": "6.8",
+   "minimum_ios_version": "5.19.5",
+   "region_dude": "seattle",
+   "region_growth_percent": 100,
+   "region_id": "us-seattle",
+   "region_is_launched": true,
+   "region_name": "Seattle",
+   "region_name_aliases": [
+    "Tacoma"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SEATTLE",
+   "region_slug": "seattle",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     49.54,
+     -122.16
+    ],
+    "southwest_corner_coords": [
+     48.65,
+     -124.62
+    ]
+   },
+   "default_place": {
+    "coords": [
+     49.285687,
+     -123.111773
+    ]
+   },
+   "region_dude": "vancouver",
+   "region_growth_percent": 100,
+   "region_id": "ca-vancouver",
+   "region_is_launched": true,
+   "region_name": "Vancouver",
+   "region_name_aliases": [
+    "YVR"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_VANCOUVER",
+   "region_slug": "vancouver",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     45.94,
+     -122.15
+    ],
+    "southwest_corner_coords": [
+     45.12,
+     -123.29
+    ]
+   },
+   "default_place": {
+    "coords": [
+     45.518905,
+     -122.679273
+    ]
+   },
+   "region_dude": "portland",
+   "region_growth_percent": 100,
+   "region_id": "us-portland",
+   "region_is_launched": true,
+   "region_name": "Portland",
+   "region_name_localization_key": "DL_REGION_NAME_PORTLAND",
+   "region_slug": "portland",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     34.8,
+     -116.7
+    ],
+    "southwest_corner_coords": [
+     32.5,
+     -119.9
+    ]
+   },
+   "default_place": {
+    "coords": [
+     34.0556242,
+     -118.2341124
+    ]
+   },
+   "region_dude": "los-angeles",
+   "region_growth_percent": 100,
+   "region_id": "us-la",
+   "region_is_launched": true,
+   "region_name": "Los Angeles - San Diego",
+   "region_name_aliases": [
+    "LA",
+    "SD"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_LA",
+   "region_slug": "la",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     38.89,
+     -120.58
+    ],
+    "southwest_corner_coords": [
+     35.51,
+     -123.55
+    ]
+   },
+   "default_place": {
+    "coords": [
+     37.7842,
+     -122.4077
+    ]
+   },
+   "region_dude": "rifthack",
+   "region_growth_percent": 100,
+   "region_id": "us-sf",
+   "region_is_launched": true,
+   "region_name": "SF Bay Area",
+   "region_name_aliases": [
+    "SF"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SAN_FRANCISCO",
+   "region_slug": "sfbayarea",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     66.82,
+     -12.92
+    ],
+    "southwest_corner_coords": [
+     62.95,
+     -25.09
+    ]
+   },
+   "default_place": {
+    "coords": [
+     64.146187,
+     -21.942474
+    ]
+   },
+   "region_dude": "iceland",
+   "region_growth_percent": 100,
+   "region_id": "is-iceland",
+   "region_is_launched": true,
+   "region_name": "Iceland",
+   "region_name_aliases": [
+    "\u00cdsland",
+    "Island",
+    "Reykjav\u00edk"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_ICELAND",
+   "region_slug": "iceland",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     53.86,
+     -5.97
+    ],
+    "southwest_corner_coords": [
+     52.6,
+     -7.98
+    ]
+   },
+   "default_place": {
+    "coords": [
+     53.342822,
+     -6.267815
+    ]
+   },
+   "region_dude": "dublin",
+   "region_growth_percent": 100,
+   "region_id": "ie-dublin",
+   "region_is_launched": true,
+   "region_name": "Dublin",
+   "region_name_localization_key": "DL_REGION_NAME_DUBLIN",
+   "region_slug": "dublin",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     56.57,
+     -1.8
+    ],
+    "southwest_corner_coords": [
+     55.34,
+     -5.03
+    ]
+   },
+   "default_place": {
+    "coords": [
+     55.9487,
+     -3.1982
+    ]
+   },
+   "region_dude": "edinburgh",
+   "region_growth_percent": 100,
+   "region_id": "uk-edinburgh",
+   "region_is_launched": true,
+   "region_name": "Scotland",
+   "region_name_aliases": [
+    "Dundee",
+    "Edinburgh",
+    "Glasgow"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SCOTLAND",
+   "region_slug": "edinburgh",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     55.21,
+     -0.32
+    ],
+    "southwest_corner_coords": [
+     54.16,
+     -2.14
+    ]
+   },
+   "default_place": {
+    "coords": [
+     54.973801,
+     -1.61314
+    ]
+   },
+   "region_dude": "newcastle",
+   "region_growth_percent": 100,
+   "region_id": "uk-newcastle",
+   "region_is_launched": true,
+   "region_name": "North East England",
+   "region_name_aliases": [
+    "Gateshead",
+    "Middlesbrough",
+    "Newcastle",
+    "Durham",
+    "Sunderland",
+    "Teeside",
+    "Tyne and Wear",
+    "Tyneside"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_NORTH_EAST",
+   "region_slug": "newcastle",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     54.03,
+     -0.72
+    ],
+    "southwest_corner_coords": [
+     53.03,
+     -3.22
+    ]
+   },
+   "default_place": {
+    "coords": [
+     53.480493,
+     -2.236452
+    ]
+   },
+   "region_dude": "uk-north-west-yorkshire",
+   "region_growth_percent": 100,
+   "region_id": "uk-manchester",
+   "region_is_launched": true,
+   "region_name": "North West & Yorkshire",
+   "region_name_aliases": [
+    "Blackpool",
+    "Bradford",
+    "Chester",
+    "Crewe",
+    "Doncaster",
+    "Huddersfield",
+    "Lancaster",
+    "Leeds",
+    "Liverpool",
+    "Merseyside",
+    "Manchester",
+    "Preston",
+    "Rotherham",
+    "Barnsley",
+    "Salford",
+    "Sheffield",
+    "South Yorkshire",
+    "Wakefield",
+    "York"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_NORTH_WEST_YORKSHIRE",
+   "region_slug": "manchester",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     52.1,
+     -0.5
+    ],
+    "southwest_corner_coords": [
+     49.8,
+     -6.0
+    ]
+   },
+   "default_place": {
+    "coords": [
+     51.450002,
+     -2.594911
+    ]
+   },
+   "region_dude": "uk-south-west-wales",
+   "region_growth_percent": 100,
+   "region_id": "uk-bristol",
+   "region_is_launched": true,
+   "region_name": "South West & Wales",
+   "region_name_aliases": [
+    "Swansea",
+    "Exeter",
+    "Bristol",
+    "Bath",
+    "Plymouth",
+    "Bournemouth",
+    "Swindon",
+    "Cardiff",
+    "Cornwall",
+    "Southampton",
+    "Portsmouth",
+    "Isle of Wight",
+    "Solent"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SOUTH_WEST_WALES",
+   "region_slug": "bristol",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     39.1,
+     -8.45
+    ],
+    "southwest_corner_coords": [
+     38.41,
+     -9.5
+    ]
+   },
+   "default_place": {
+    "coords": [
+     38.713956,
+     -9.1393597
+    ]
+   },
+   "region_dude": "vasco",
+   "region_growth_percent": 100,
+   "region_id": "pt-lisbon",
+   "region_is_launched": true,
+   "region_name": "Lisboa",
+   "region_name_localization_key": "DL_REGION_NAME_LISBOA",
+   "region_slug": "lisboa",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     53.8,
+     0.41
+    ],
+    "southwest_corner_coords": [
+     51.7,
+     -3.6
+    ]
+   },
+   "default_place": {
+    "coords": [
+     52.479752,
+     -1.902536
+    ]
+   },
+   "region_dude": "uk-midlands",
+   "region_growth_percent": 100,
+   "region_id": "uk-birmingham",
+   "region_is_launched": true,
+   "region_name": "The Midlands",
+   "region_name_aliases": [
+    "Birmingham",
+    "Bromsgrove",
+    "Coventry",
+    "Derby",
+    "Leicester",
+    "Lincoln",
+    "Lincolnshire",
+    "Hereford",
+    "Herefordshire",
+    "Northampton",
+    "Nottingham",
+    "Peterborough",
+    "Shropshire",
+    "Shrewsbury",
+    "Stoke on Trent",
+    "Telford",
+    "Wolverhampton",
+    "Worcester",
+    "Worcestershire"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_MIDLANDS",
+   "region_slug": "birmingham",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     52.49,
+     1.58
+    ],
+    "southwest_corner_coords": [
+     50.7,
+     -1.51
+    ]
+   },
+   "default_place": {
+    "coords": [
+     51.500755,
+     -0.124626
+    ]
+   },
+   "region_dude": "top-hat",
+   "region_growth_percent": 100,
+   "region_id": "uk-london",
+   "region_is_launched": true,
+   "region_name": "London",
+   "region_name_aliases": [
+    "Bedford",
+    "Brighton",
+    "Cambridge",
+    "Chelmsford",
+    "Colchester",
+    "Milton Keynes",
+    "Oxford",
+    "Reading",
+    "St Albans"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_LONDON",
+   "region_slug": "london",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": false,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     47.79,
+     -0.71
+    ],
+    "southwest_corner_coords": [
+     46.61,
+     -2.33
+    ]
+   },
+   "default_place": {
+    "coords": [
+     47.206206,
+     -1.564418
+    ]
+   },
+   "region_dude": "nantes",
+   "region_growth_percent": 100,
+   "region_id": "fr-nantes",
+   "region_is_launched": true,
+   "region_name": "Nantes",
+   "region_name_localization_key": "DL_REGION_NAME_NANTES",
+   "region_slug": "nantes",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     43.57,
+     -0.76
+    ],
+    "southwest_corner_coords": [
+     42.47,
+     -3.46
+    ]
+   },
+   "default_place": {
+    "coords": [
+     43.263071,
+     -2.9349735
+    ]
+   },
+   "region_dude": "basquecountry",
+   "region_growth_percent": 100,
+   "region_id": "es-basquecountry",
+   "region_is_launched": true,
+   "region_name": "Basque Country",
+   "region_name_aliases": [
+    "Euskadi",
+    "Bilbao",
+    "San Sebasti\u00e1n",
+    "Donosti",
+    "Vitoria-Gasteiz",
+    "Irun",
+    "Labourd",
+    "\u00c1lava",
+    "Guip\u00fazcoa",
+    "Vizcaya",
+    "Araba",
+    "Gipuzkoa",
+    "Bizkaia"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BASQUECOUNTRY",
+   "region_slug": "basquecountry",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     37.95,
+     -5.5
+    ],
+    "southwest_corner_coords": [
+     36.87,
+     -6.36
+    ]
+   },
+   "default_place": {
+    "coords": [
+     37.385904,
+     -5.993101
+    ]
+   },
+   "region_dude": "seville",
+   "region_growth_percent": 100,
+   "region_id": "es-seville",
+   "region_is_launched": true,
+   "region_name": "Seville",
+   "region_name_aliases": [
+    "Dos Hermanas"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SEVILLE",
+   "region_slug": "seville",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     41.2,
+     -2.8
+    ],
+    "southwest_corner_coords": [
+     39.7,
+     -4.9
+    ]
+   },
+   "default_place": {
+    "coords": [
+     40.4169,
+     -3.7036
+    ]
+   },
+   "region_dude": "chulapo",
+   "region_growth_percent": 100,
+   "region_id": "es-madrid",
+   "region_is_launched": true,
+   "region_name": "Madrid",
+   "region_name_aliases": [
+    "Toledo",
+    "Guadalajara",
+    "Alcal\u00e1 de Henares",
+    "\u00c1vila",
+    "Segovia"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_MADRID",
+   "region_slug": "madrid",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": false,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     45.63,
+     -0.01
+    ],
+    "southwest_corner_coords": [
+     44.28,
+     -1.27
+    ]
+   },
+   "default_place": {
+    "coords": [
+     44.84138,
+     -0.569942
+    ]
+   },
+   "region_dude": "bordeaux",
+   "region_growth_percent": 100,
+   "region_id": "fr-bordeaux",
+   "region_is_launched": true,
+   "region_name": "Bordeaux",
+   "region_name_localization_key": "DL_REGION_NAME_BORDEAUX",
+   "region_slug": "bordeaux",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     51.2,
+     4.4
+    ],
+    "southwest_corner_coords": [
+     48.8,
+     1.3
+    ]
+   },
+   "default_place": {
+    "coords": [
+     50.636813,
+     3.063915
+    ]
+   },
+   "region_dude": "lille",
+   "region_growth_percent": 100,
+   "region_id": "fr-lille",
+   "region_is_launched": true,
+   "region_name": "Lille",
+   "region_name_aliases": [
+    "Lille",
+    "Douai",
+    "Lens",
+    "B\u00e9thune",
+    "Valenciennes",
+    "Amiens",
+    "Dunkerque",
+    "Maubeuge",
+    "Calais",
+    "Arras",
+    "Boulogne-sur-Mer"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_LILLE",
+   "region_slug": "lille",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     49.47,
+     3.53
+    ],
+    "southwest_corner_coords": [
+     47.86,
+     1.14
+    ]
+   },
+   "default_place": {
+    "coords": [
+     48.8582,
+     2.2945
+    ]
+   },
+   "region_dude": "parisienne",
+   "region_growth_percent": 100,
+   "region_id": "fr-paris",
+   "region_is_launched": true,
+   "region_name": "Paris",
+   "region_name_localization_key": "DL_REGION_NAME_PARIS",
+   "region_slug": "paris",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     53.76,
+     7.33
+    ],
+    "southwest_corner_coords": [
+     50.65,
+     3.28
+    ]
+   },
+   "default_place": {
+    "coords": [
+     52.378171,
+     4.89978
+    ]
+   },
+   "region_dude": "randstadgirl",
+   "region_growth_percent": 100,
+   "region_id": "nl-randstad",
+   "region_is_launched": true,
+   "region_name": "Randstad",
+   "region_name_aliases": [
+    "NL",
+    "Amsterdam",
+    "Rotterdam",
+    "The Hague",
+    "Den Haag",
+    "Utrecht",
+    "Delft",
+    "Haarlem",
+    "Mijnvlakkeland",
+    "Mokum",
+    "Roffa",
+    "Agga",
+    "Damsco",
+    "Utca",
+    "Eindhoven",
+    "Groningen",
+    "Tilburg",
+    "Almere",
+    "Breda",
+    "Nijmegen",
+    "Enschede",
+    "Alkmaar",
+    "Arnhem",
+    "Den Bosch",
+    "Leiden",
+    "Maastricht",
+    "Zoetermeer",
+    "Zwolle",
+    "Deventer",
+    "Gouda",
+    "Ede",
+    "Assen"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_RANDSTAD",
+   "region_slug": "randstad",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     37.0,
+     -4.23
+    ],
+    "southwest_corner_coords": [
+     36.48,
+     -4.83
+    ]
+   },
+   "default_place": {
+    "coords": [
+     36.720114,
+     -4.420064
+    ]
+   },
+   "region_dude": "malaga",
+   "region_growth_percent": 100,
+   "region_id": "es-malaga",
+   "region_is_launched": true,
+   "region_name": "Malaga",
+   "region_name_localization_key": "DL_REGION_NAME_MALAGA",
+   "region_slug": "malaga",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     51.5,
+     6.42
+    ],
+    "southwest_corner_coords": [
+     49.49,
+     2.54
+    ]
+   },
+   "default_place": {
+    "coords": [
+     50.846975,
+     4.351816
+    ]
+   },
+   "region_dude": "mep",
+   "region_growth_percent": 100,
+   "region_id": "be-brussels",
+   "region_is_launched": true,
+   "region_name": "Brussels",
+   "region_name_aliases": [
+    "BXL",
+    "Bruxelles",
+    "Brussels",
+    "Brussel",
+    "Antwerpen",
+    "Antwerp",
+    "Charleroi",
+    "Li\u00e8ge",
+    "Luik",
+    "Namur",
+    "Namen",
+    "Bruges",
+    "Brugge",
+    "Ghent",
+    "Gent",
+    "Gand",
+    "Louvain",
+    "Leuven"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BRUSSELS",
+   "region_slug": "brussels",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     60.42,
+     11.79
+    ],
+    "southwest_corner_coords": [
+     59.76,
+     10.18
+    ]
+   },
+   "default_place": {
+    "coords": [
+     59.9131,
+     10.7467
+    ]
+   },
+   "region_dude": "oslo",
+   "region_growth_percent": 100,
+   "region_id": "no-oslo",
+   "region_is_launched": true,
+   "region_name": "Oslo",
+   "region_name_localization_key": "DL_REGION_NAME_OSLO",
+   "region_slug": "oslo",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     41.86,
+     -0.55
+    ],
+    "southwest_corner_coords": [
+     41.5,
+     -1.11
+    ]
+   },
+   "default_place": {
+    "coords": [
+     41.656,
+     -0.8781
+    ]
+   },
+   "region_dude": "zaragoza",
+   "region_growth_percent": 100,
+   "region_id": "es-zaragoza",
+   "region_is_launched": true,
+   "region_name": "Zaragoza",
+   "region_name_aliases": [
+    "Saragossa",
+    "Aragon",
+    "ZAZ",
+    "ZGZ"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_ZARAGOZA",
+   "region_slug": "zaragoza",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     37.42,
+     -3.39
+    ],
+    "southwest_corner_coords": [
+     36.96,
+     -3.97
+    ]
+   },
+   "default_place": {
+    "coords": [
+     37.17216,
+     -3.59863
+    ]
+   },
+   "region_dude": "granada",
+   "region_growth_percent": 100,
+   "region_id": "es-granada",
+   "region_is_launched": true,
+   "region_name": "Granada",
+   "region_name_localization_key": "DL_REGION_NAME_GRANADA",
+   "region_slug": "granada",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": false,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     43.89,
+     2.03
+    ],
+    "southwest_corner_coords": [
+     43.05,
+     0.51
+    ]
+   },
+   "default_place": {
+    "coords": [
+     43.604,
+     1.443
+    ]
+   },
+   "region_dude": "toulouse",
+   "region_growth_percent": 100,
+   "region_id": "fr-toulouse",
+   "region_is_launched": true,
+   "region_name": "Toulouse",
+   "region_name_localization_key": "DL_REGION_NAME_TOULOUSE",
+   "region_slug": "toulouse",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     52.05,
+     7.87
+    ],
+    "southwest_corner_coords": [
+     50.57,
+     5.67
+    ]
+   },
+   "default_place": {
+    "coords": [
+     50.941185,
+     6.958241
+    ]
+   },
+   "minimum_android_version": "6.13",
+   "minimum_ios_version": "6.4",
+   "region_dude": "rhine-ruhr",
+   "region_growth_percent": 100,
+   "region_id": "de-rhineruhr",
+   "region_is_launched": true,
+   "region_name": "Rhine-Ruhr",
+   "region_name_aliases": [
+    "K\u00f6ln",
+    "Cologne",
+    "Ruhrgebiet",
+    "Bochum",
+    "Essen",
+    "Duisburg",
+    "D\u00fcsseldorf",
+    "Bonn",
+    "Wuppertal",
+    "Leverkusen",
+    "Oberhausen",
+    "Bottrop",
+    "M\u00fclheim",
+    "Gelsenkirchen",
+    "M\u00f6nchengladbach"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_RHINERUHR",
+   "region_slug": "rhineruhr",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     50.43,
+     7.37
+    ],
+    "southwest_corner_coords": [
+     49.03,
+     5.09
+    ]
+   },
+   "default_place": {
+    "coords": [
+     49.610741,
+     6.132639
+    ]
+   },
+   "region_dude": "luxembourg",
+   "region_growth_percent": 100,
+   "region_id": "lu-luxembourg",
+   "region_is_launched": true,
+   "region_name": "Luxembourg",
+   "region_name_aliases": [
+    "Luxemburg"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_LUXEMBOURG",
+   "region_slug": "luxembourg",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     41.1,
+     0.6
+    ],
+    "southwest_corner_coords": [
+     37.8,
+     -1.6
+    ]
+   },
+   "default_place": {
+    "coords": [
+     39.47049,
+     -0.376479
+    ]
+   },
+   "region_dude": "valencia",
+   "region_growth_percent": 100,
+   "region_id": "es-valencia",
+   "region_is_launched": true,
+   "region_name": "Valencia",
+   "region_name_aliases": [
+    "Castell\u00f3",
+    "Alicante",
+    "Alacant",
+    "Elche",
+    "Elx"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_VALENCIA",
+   "region_slug": "valencia",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     54.01,
+     11.48
+    ],
+    "southwest_corner_coords": [
+     51.3,
+     6.55
+    ]
+   },
+   "default_place": {
+    "coords": [
+     53.0760668,
+     8.807737566891287
+    ]
+   },
+   "region_dude": "lowersaxony",
+   "region_growth_percent": 100,
+   "region_id": "de-lowersaxony",
+   "region_is_launched": true,
+   "region_name": "Bremen, Hanover & Lower Saxony",
+   "region_name_aliases": [
+    "G\u00f6ttingen",
+    "Goslar",
+    "L\u00fcneburg",
+    "Niedersachsen",
+    "Hannover",
+    "Braunschweig",
+    "Brunswick",
+    "Oldenburg",
+    "Osnabr\u00fcck",
+    "Uelzen",
+    "Wolfsburg"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_LOWERSAXONY",
+   "region_slug": "lowersaxony",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     53.91,
+     10.92
+    ],
+    "southwest_corner_coords": [
+     52.86,
+     9.03
+    ]
+   },
+   "default_place": {
+    "coords": [
+     53.550383,
+     9.992369
+    ]
+   },
+   "region_dude": "hamburg",
+   "region_growth_percent": 100,
+   "region_id": "de-hamburg",
+   "region_is_launched": true,
+   "region_name": "Hamburg",
+   "region_name_aliases": [
+    "HH"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_HAMBURG",
+   "region_slug": "hamburg",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     45.93,
+     5.11
+    ],
+    "southwest_corner_coords": [
+     45.53,
+     4.52
+    ]
+   },
+   "default_place": {
+    "coords": [
+     45.7579,
+     4.8322
+    ]
+   },
+   "region_dude": "lyon",
+   "region_growth_percent": 100,
+   "region_id": "fr-lyon",
+   "region_is_launched": true,
+   "region_name": "Lyon",
+   "region_name_aliases": [
+    "Grenoble",
+    "Saint-\u00c9tienne",
+    "Clermont",
+    "Clermont-Ferrand",
+    "Chamb\u00e9ry",
+    "Annecy",
+    "Valence",
+    "Thonon-les-Bains",
+    "Roanne",
+    "Vichy",
+    "Bourg-en-Bresse",
+    "Mont\u00e9limar"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_LYON",
+   "region_slug": "lyon",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     42.86,
+     3.33
+    ],
+    "southwest_corner_coords": [
+     40.5,
+     0.16
+    ]
+   },
+   "default_place": {
+    "coords": [
+     41.38702,
+     2.17007
+    ]
+   },
+   "region_dude": "barcelonagirl",
+   "region_growth_percent": 100,
+   "region_id": "es-barcelona",
+   "region_is_launched": true,
+   "region_name": "Barcelona",
+   "region_name_aliases": [
+    "Tarragona",
+    "Lleida",
+    "Girona",
+    "L\u00e9rida",
+    "Gerona"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BARCELONA",
+   "region_slug": "barcelona",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     56.27,
+     14.57
+    ],
+    "southwest_corner_coords": [
+     54.68,
+     10.77
+    ]
+   },
+   "default_place": {
+    "coords": [
+     55.6758,
+     12.5691
+    ]
+   },
+   "minimum_android_version": "6.10",
+   "minimum_ios_version": "6.0.1",
+   "region_dude": "copenhagen",
+   "region_growth_percent": 100,
+   "region_id": "dk-copenhagen",
+   "region_is_launched": true,
+   "region_name": "Copenhagen",
+   "region_name_aliases": [
+    "CPH",
+    "Copenhagen",
+    "Koebenhavn",
+    "K\u00f8benhavn",
+    "Malm\u00f6",
+    "Helsingborg",
+    "Zealand",
+    "Roskilde",
+    "Fredensborg",
+    "Helsinge",
+    "Tisvilde",
+    "Borup",
+    "K\u00f8ge",
+    "Frederiksberg",
+    "Lejre",
+    "Greve",
+    "Solr\u00f8d",
+    "Stevns"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_COPENHAGEN",
+   "region_slug": "copenhagen",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     50.93,
+     10.09
+    ],
+    "southwest_corner_coords": [
+     49.39,
+     7.08
+    ]
+   },
+   "default_place": {
+    "coords": [
+     50.1137833,
+     8.6792621
+    ]
+   },
+   "region_dude": "frankfurt",
+   "region_growth_percent": 100,
+   "region_id": "de-frankfurt",
+   "region_is_launched": true,
+   "region_name": "Frankfurt & Rhine-Main",
+   "region_name_aliases": [
+    "Hessen",
+    "Mainz",
+    "Wiesbaden",
+    "Darmstadt",
+    "Koblenz",
+    "Gie\u00dfen",
+    "Marburg"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_FRANKFURT",
+   "region_slug": "frankfurt",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": false,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     49.07,
+     8.25
+    ],
+    "southwest_corner_coords": [
+     48.14,
+     7.0
+    ]
+   },
+   "default_place": {
+    "coords": [
+     48.5836324,
+     7.7469278
+    ]
+   },
+   "region_dude": "strasbourg",
+   "region_growth_percent": 100,
+   "region_id": "fr-strasbourg",
+   "region_is_launched": true,
+   "region_name": "Strasbourg",
+   "region_name_localization_key": "DL_REGION_NAME_STRASBOURG",
+   "region_slug": "strasbourg",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     40.47,
+     4.49
+    ],
+    "southwest_corner_coords": [
+     38.34,
+     0.97
+    ]
+   },
+   "default_place": {
+    "coords": [
+     39.567494,
+     2.648305
+    ]
+   },
+   "region_dude": "balearics",
+   "region_growth_percent": 100,
+   "region_id": "es-balearics",
+   "region_is_launched": true,
+   "region_name": "Balearic Islands",
+   "region_name_aliases": [
+    "Balearics",
+    "Mallorca",
+    "Majorca",
+    "Ibiza",
+    "Eivissa",
+    "Menorca",
+    "Minorca",
+    "Palma",
+    "Baleares",
+    "Illes Balears"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BALEARICS",
+   "region_slug": "balearics",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     49.82,
+     10.53
+    ],
+    "southwest_corner_coords": [
+     47.51,
+     7.47
+    ]
+   },
+   "default_place": {
+    "coords": [
+     48.77859,
+     9.179668
+    ]
+   },
+   "region_dude": "stuttgart",
+   "region_growth_percent": 100,
+   "region_id": "de-stuttgart",
+   "region_is_launched": true,
+   "region_name": "Stuttgart & Baden-W\u00fcrttemberg",
+   "region_name_aliases": [
+    "Stuttgart",
+    "Baden-W\u00fcrttemberg",
+    "Mannheim",
+    "Heidelberg",
+    "Karlsruhe",
+    "Freiburg",
+    "Ulm"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_STUTTGART",
+   "region_slug": "stuttgart",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": false,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     43.85,
+     5.77
+    ],
+    "southwest_corner_coords": [
+     43.14,
+     4.35
+    ]
+   },
+   "default_place": {
+    "coords": [
+     43.296278,
+     5.373975
+    ]
+   },
+   "region_dude": "marseille",
+   "region_growth_percent": 100,
+   "region_id": "fr-marseille",
+   "region_is_launched": true,
+   "region_name": "Marseille",
+   "region_name_localization_key": "DL_REGION_NAME_MARSEILLE",
+   "region_slug": "marseille",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": false,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     47.82,
+     10.51
+    ],
+    "southwest_corner_coords": [
+     45.81,
+     5.9
+    ]
+   },
+   "default_place": {
+    "coords": [
+     47.377,
+     8.54
+    ]
+   },
+   "region_dude": "switzerland",
+   "region_growth_percent": 100,
+   "region_id": "ch-ch",
+   "region_is_launched": true,
+   "region_name": "Switzerland",
+   "region_name_aliases": [
+    "CH",
+    "Z\u00fcri",
+    "Zurigo",
+    "Z\u00fcrich",
+    "Zurich",
+    "Gen\u00e8ve",
+    "Gen\u00e8va",
+    "Genf",
+    "Ginevra",
+    "Bern",
+    "Berna",
+    "Berne",
+    "Basel",
+    "B\u00e2le",
+    "Basilea",
+    "Lausanne",
+    "Lugano",
+    "Locarno",
+    "Lucerne",
+    "Luzern",
+    "Biel",
+    "Bienne",
+    "Winterthur",
+    "Tessin",
+    "Ticino"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SWITZERLAND",
+   "region_slug": "switzerland",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     59.94,
+     19.37
+    ],
+    "southwest_corner_coords": [
+     58.38,
+     15.6
+    ]
+   },
+   "default_place": {
+    "coords": [
+     59.324943,
+     18.096471
+    ]
+   },
+   "minimum_android_version": "6.10",
+   "minimum_ios_version": "6.0.1",
+   "region_dude": "stockholm",
+   "region_growth_percent": 100,
+   "region_id": "se-stockholm",
+   "region_is_launched": true,
+   "region_name": "Stockholm",
+   "region_name_localization_key": "DL_REGION_NAME_STOCKHOLM",
+   "region_slug": "stockholm",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     46.5,
+     9.26
+    ],
+    "southwest_corner_coords": [
+     44.03,
+     6.58
+    ]
+   },
+   "default_place": {
+    "coords": [
+     45.070312,
+     7.686856
+    ]
+   },
+   "region_dude": "turin",
+   "region_growth_percent": 100,
+   "region_id": "it-turin",
+   "region_is_launched": true,
+   "region_name": "Turin",
+   "region_name_aliases": [
+    "Torino",
+    "Cuneo",
+    "Piemonte",
+    "Asti",
+    "Alessandria",
+    "Biella",
+    "Novara",
+    "Vercelli"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_TURIN",
+   "region_slug": "turin",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     53.57,
+     14.81
+    ],
+    "southwest_corner_coords": [
+     51.36,
+     11.24
+    ]
+   },
+   "default_place": {
+    "coords": [
+     52.521985,
+     13.410444
+    ]
+   },
+   "region_dude": "bearlin",
+   "region_growth_percent": 100,
+   "region_id": "de-berlin",
+   "region_is_launched": true,
+   "region_name": "Berlin",
+   "region_name_aliases": [
+    "VBB",
+    "BVG",
+    "Potsdam",
+    "Cottbus",
+    "Brandenburg",
+    "Frankfurt an der Oder"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BERLIN",
+   "region_slug": "berlin",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     50.15,
+     12.84
+    ],
+    "southwest_corner_coords": [
+     48.9,
+     9.66
+    ]
+   },
+   "default_place": {
+    "coords": [
+     49.4536843,
+     11.077270322457705
+    ]
+   },
+   "region_dude": "nuremberg",
+   "region_growth_percent": 100,
+   "region_id": "de-nuremberg",
+   "region_is_launched": true,
+   "region_name": "Nuremberg",
+   "region_name_aliases": [
+    "N\u00fcrnberg",
+    "Franken",
+    "W\u00fcrzburg",
+    "Regensburg",
+    "Niederbayern"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_NUREMBERG",
+   "region_slug": "nuremberg",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": false,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     43.8,
+     7.6
+    ],
+    "southwest_corner_coords": [
+     43.6,
+     7.1
+    ]
+   },
+   "default_place": {
+    "coords": [
+     43.73938,
+     7.427553
+    ]
+   },
+   "region_dude": "carabinier",
+   "region_growth_percent": 100,
+   "region_id": "mc-monaco",
+   "region_is_launched": true,
+   "region_name": "Monaco",
+   "region_name_localization_key": "DL_REGION_NAME_MONACO",
+   "region_slug": "monaco",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     46.43,
+     11.44
+    ],
+    "southwest_corner_coords": [
+     44.68,
+     8.16
+    ]
+   },
+   "default_place": {
+    "coords": [
+     45.46419,
+     9.18961
+    ]
+   },
+   "region_dude": "highfashion",
+   "region_growth_percent": 100,
+   "region_id": "it-milan",
+   "region_is_launched": true,
+   "region_name": "Milan",
+   "region_name_localization_key": "DL_REGION_NAME_MILAN",
+   "region_slug": "milano",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     48.93,
+     12.5
+    ],
+    "southwest_corner_coords": [
+     47.1,
+     9.48
+    ]
+   },
+   "default_place": {
+    "coords": [
+     48.1394857,
+     11.565622
+    ]
+   },
+   "region_dude": "munich",
+   "region_growth_percent": 100,
+   "region_id": "de-munich",
+   "region_is_launched": true,
+   "region_name": "Munich",
+   "region_name_aliases": [
+    "M\u00fcnchen",
+    "Munich",
+    "MVV",
+    "Augsburg",
+    "Oberbayern",
+    "Ingolstadt",
+    "Bavaria",
+    "Bayern",
+    "Allg\u00e4u und Bayerisch-Schwaben",
+    "Krumbach",
+    "G\u00fcnzburg",
+    "Burgau",
+    "Ichenhausen",
+    "Thannhausen",
+    "Babenhausen",
+    "Pfaffenhausen",
+    "Mindelheim",
+    "T\u00fcrkheim",
+    "Bad W\u00f6rishofen",
+    "Marktoberdorf",
+    "VVM"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_MUNICH",
+   "region_slug": "munich",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     44.67,
+     9.57
+    ],
+    "southwest_corner_coords": [
+     44.2,
+     8.56
+    ]
+   },
+   "default_place": {
+    "coords": [
+     44.4073263,
+     8.9338797
+    ]
+   },
+   "region_dude": "genova",
+   "region_growth_percent": 100,
+   "region_id": "it-genova",
+   "region_is_launched": true,
+   "region_name": "Genoa",
+   "region_name_localization_key": "DL_REGION_NAME_GENOA",
+   "region_slug": "genoa",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     50.61,
+     15.4
+    ],
+    "southwest_corner_coords": [
+     49.51,
+     13.4
+    ]
+   },
+   "default_place": {
+    "coords": [
+     50.0875,
+     14.4211
+    ]
+   },
+   "region_dude": "prague",
+   "region_growth_percent": 100,
+   "region_id": "cz-prague",
+   "region_is_launched": true,
+   "region_name": "Prague",
+   "region_name_aliases": [
+    "Praha"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_PRAGUE",
+   "region_slug": "prague",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     60.65,
+     25.51
+    ],
+    "southwest_corner_coords": [
+     59.98,
+     24.0
+    ]
+   },
+   "default_place": {
+    "coords": [
+     60.1676,
+     24.9536
+    ]
+   },
+   "region_dude": "helsinki",
+   "region_growth_percent": 100,
+   "region_id": "fi-helsinki",
+   "region_is_launched": true,
+   "region_name": "Helsinki",
+   "region_name_aliases": [
+    "Helsinki",
+    "HKI",
+    "Espoo",
+    "Vantaa"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_HELSINKI",
+   "region_slug": "helsinki",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     59.68,
+     26.11
+    ],
+    "southwest_corner_coords": [
+     58.91,
+     23.53
+    ]
+   },
+   "default_place": {
+    "coords": [
+     59.436143,
+     24.751875
+    ]
+   },
+   "region_dude": "tallinn",
+   "region_growth_percent": 100,
+   "region_id": "ee-estonia",
+   "region_is_launched": true,
+   "region_name": "Tallinn",
+   "region_name_aliases": [
+    "TLL",
+    "Estonia"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_TALLINN",
+   "region_slug": "tallinn",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     44.98,
+     12.76
+    ],
+    "southwest_corner_coords": [
+     43.74,
+     10.71
+    ]
+   },
+   "default_place": {
+    "coords": [
+     44.4937544,
+     11.3430945
+    ]
+   },
+   "region_dude": "bologna",
+   "region_growth_percent": 100,
+   "region_id": "it-bologna",
+   "region_is_launched": true,
+   "region_name": "Bologna",
+   "region_name_aliases": [
+    "Bologna",
+    "Ferrara",
+    "Rimini",
+    "Ravenna",
+    "Romagna"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BOLOGNA",
+   "region_slug": "bologna",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     45.6,
+     12.48
+    ],
+    "southwest_corner_coords": [
+     45.15,
+     11.98
+    ]
+   },
+   "default_place": {
+    "coords": [
+     45.433889,
+     12.338056
+    ]
+   },
+   "region_dude": "venice",
+   "region_growth_percent": 100,
+   "region_id": "it-venice",
+   "region_is_launched": true,
+   "region_name": "Venice",
+   "region_name_aliases": [
+    "Venice",
+    "Venise",
+    "Veneto",
+    "Venetia",
+    "Mestre"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_VENICE",
+   "region_slug": "venezia",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     44.47,
+     12.37
+    ],
+    "southwest_corner_coords": [
+     42.2,
+     9.69
+    ]
+   },
+   "default_place": {
+    "coords": [
+     43.773101749999995,
+     11.256574661697908
+    ]
+   },
+   "region_dude": "florence",
+   "region_growth_percent": 100,
+   "region_id": "it-florence",
+   "region_is_launched": true,
+   "region_name": "Florence",
+   "region_name_aliases": [
+    "Firenze",
+    "Siena",
+    "Pisa",
+    "Prato",
+    "Livorno",
+    "Lucca",
+    "Massa",
+    "Carrara",
+    "Toscana",
+    "Tuscany"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_FLORENCE",
+   "region_slug": "florence",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     57.31,
+     24.83
+    ],
+    "southwest_corner_coords": [
+     56.72,
+     23.47
+    ]
+   },
+   "default_place": {
+    "coords": [
+     56.949023,
+     24.104703
+    ]
+   },
+   "region_dude": "riga",
+   "region_growth_percent": 100,
+   "region_id": "lv-latvia",
+   "region_is_launched": true,
+   "region_name": "Riga",
+   "region_name_aliases": [
+    "R\u012bga",
+    "Latvija",
+    "Latvia"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_RIGA",
+   "region_slug": "riga",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": false,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     48.64,
+     16.9
+    ],
+    "southwest_corner_coords": [
+     47.67,
+     15.5
+    ]
+   },
+   "default_place": {
+    "coords": [
+     48.20898,
+     16.372888
+    ]
+   },
+   "region_dude": "vienna",
+   "region_growth_percent": 100,
+   "region_id": "at-vienna",
+   "region_is_launched": true,
+   "region_name": "Vienna",
+   "region_name_localization_key": "DL_REGION_NAME_VIENNA",
+   "region_slug": "vienna",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     48.25,
+     17.26
+    ],
+    "southwest_corner_coords": [
+     48.01,
+     16.97
+    ]
+   },
+   "default_place": {
+    "coords": [
+     48.1434654,
+     17.108241750938753
+    ]
+   },
+   "region_dude": "bratislava",
+   "region_growth_percent": 100,
+   "region_id": "sk-bratislava",
+   "region_is_launched": true,
+   "region_name": "Bratislava",
+   "region_name_aliases": [
+    "Bratislavsk\u00fd"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BRATISLAVA",
+   "region_slug": "bratislava",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     52.6,
+     21.5
+    ],
+    "southwest_corner_coords": [
+     51.9,
+     20.4
+    ]
+   },
+   "default_place": {
+    "coords": [
+     52.2318821,
+     21.0061066
+    ]
+   },
+   "region_dude": "warsaw",
+   "region_growth_percent": 100,
+   "region_id": "pl-warsaw",
+   "region_is_launched": true,
+   "region_name": "Warsaw",
+   "region_name_aliases": [
+    "Warszawa"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_WARSAW",
+   "region_slug": "warsaw",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     42.92,
+     14.04
+    ],
+    "southwest_corner_coords": [
+     41.18,
+     11.33
+    ]
+   },
+   "default_place": {
+    "coords": [
+     41.889815,
+     12.493942
+    ]
+   },
+   "region_dude": "vespa",
+   "region_growth_percent": 100,
+   "region_id": "it-rome",
+   "region_is_launched": true,
+   "region_name": "Rome",
+   "region_name_localization_key": "DL_REGION_NAME_ROME",
+   "region_slug": "roma",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     60.28,
+     31.18
+    ],
+    "southwest_corner_coords": [
+     59.53,
+     29.39
+    ]
+   },
+   "default_place": {
+    "coords": [
+     59.93996,
+     30.329521
+    ]
+   },
+   "minimum_android_version": "6.0",
+   "minimum_ios_version": "5.14",
+   "region_dude": "stpete",
+   "region_growth_percent": 100,
+   "region_id": "ru-stpetersburg",
+   "region_is_launched": true,
+   "region_name": "St. Petersburg",
+   "region_name_localization_key": "DL_REGION_NAME_ST_PETERSBURG",
+   "region_slug": "sanktpeterburg",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     45.99,
+     16.27
+    ],
+    "southwest_corner_coords": [
+     45.52,
+     15.65
+    ]
+   },
+   "default_place": {
+    "coords": [
+     45.813107,
+     15.977394
+    ]
+   },
+   "region_dude": "zagreb",
+   "region_growth_percent": 100,
+   "region_id": "hr-zagreb",
+   "region_is_launched": true,
+   "region_name": "Zagreb",
+   "region_name_aliases": [
+    "ZG"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_ZAGREB",
+   "region_slug": "zagreb",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     50.59,
+     20.35
+    ],
+    "southwest_corner_coords": [
+     49.89,
+     18.37
+    ]
+   },
+   "default_place": {
+    "coords": [
+     50.055083,
+     19.936571
+    ]
+   },
+   "region_dude": "krakow",
+   "region_growth_percent": 100,
+   "region_id": "pl-krakow",
+   "region_is_launched": true,
+   "region_name": "Krakow & Katowice",
+   "region_name_aliases": [
+    "Krak\u00f3w",
+    "Katowice"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_KRAKOW",
+   "region_slug": "krakow",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     54.84,
+     25.48
+    ],
+    "southwest_corner_coords": [
+     54.57,
+     25.01
+    ]
+   },
+   "default_place": {
+    "coords": [
+     54.6796,
+     25.277983
+    ]
+   },
+   "region_dude": "vilnius",
+   "region_growth_percent": 100,
+   "region_id": "lt-lithuania",
+   "region_is_launched": true,
+   "region_name": "Vilnius",
+   "region_name_aliases": [
+    "Lietuva",
+    "Vilnius"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_VILNIUS",
+   "region_slug": "lithuania",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     47.67,
+     19.39
+    ],
+    "southwest_corner_coords": [
+     47.33,
+     18.83
+    ]
+   },
+   "default_place": {
+    "coords": [
+     47.500751,
+     19.085438
+    ]
+   },
+   "region_dude": "budapest",
+   "region_growth_percent": 100,
+   "region_id": "hu-budapest",
+   "region_is_launched": true,
+   "region_name": "Budapest",
+   "region_name_localization_key": "DL_REGION_NAME_BUDAPEST",
+   "region_slug": "budapest",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     40.98,
+     14.56
+    ],
+    "southwest_corner_coords": [
+     40.61,
+     14.02
+    ]
+   },
+   "default_place": {
+    "coords": [
+     40.8507622,
+     14.2741005
+    ]
+   },
+   "region_dude": "naples",
+   "region_growth_percent": 100,
+   "region_id": "it-naples",
+   "region_is_launched": true,
+   "region_name": "Naples",
+   "region_name_aliases": [
+    "Napoli",
+    "Napuli"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_NAPLES",
+   "region_slug": "naples",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     45.1,
+     20.76
+    ],
+    "southwest_corner_coords": [
+     44.55,
+     20.03
+    ]
+   },
+   "default_place": {
+    "coords": [
+     44.80249055,
+     20.466312162991045
+    ]
+   },
+   "region_dude": "belgrade",
+   "region_growth_percent": 100,
+   "region_id": "rs-belgrade",
+   "region_is_launched": true,
+   "region_name": "Belgrade",
+   "region_name_aliases": [
+    "Beograd",
+    "BG",
+    "\u0411\u0435\u043e\u0433\u0440\u0430\u0434",
+    "\u0411\u0413"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BELGRADE",
+   "region_slug": "belgrade",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     56.97,
+     40.22
+    ],
+    "southwest_corner_coords": [
+     54.24,
+     35.11
+    ]
+   },
+   "default_place": {
+    "coords": [
+     55.754022,
+     37.620137
+    ]
+   },
+   "region_dude": "moscow",
+   "region_growth_percent": 100,
+   "region_id": "ru-moscow",
+   "region_is_launched": true,
+   "region_name": "Moscow",
+   "region_name_aliases": [
+    "MSK"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_MOSCOW",
+   "region_slug": "moscow",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     -23.15,
+     -46.14
+    ],
+    "southwest_corner_coords": [
+     -23.88,
+     -47.06
+    ]
+   },
+   "default_place": {
+    "coords": [
+     -23.550377,
+     -46.633962
+    ]
+   },
+   "region_dude": "ayrton",
+   "region_growth_percent": 100,
+   "region_id": "br-saopaulo",
+   "region_is_launched": true,
+   "region_name": "S\u00e3o Paulo",
+   "region_name_aliases": [
+    "SP"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SAO_PAULO",
+   "region_slug": "sao-paulo",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     44.75,
+     26.4
+    ],
+    "southwest_corner_coords": [
+     44.25,
+     25.86
+    ]
+   },
+   "default_place": {
+    "coords": [
+     44.4346236,
+     26.0944249
+    ]
+   },
+   "region_dude": "bucharest",
+   "region_growth_percent": 100,
+   "region_id": "ro-bucharest",
+   "region_is_launched": true,
+   "region_name": "Bucharest",
+   "region_name_aliases": [
+    "Bucure\u0219ti",
+    "Bucuresti"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BUCHAREST",
+   "region_slug": "bucharest",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     38.19,
+     24.04
+    ],
+    "southwest_corner_coords": [
+     37.71,
+     23.41
+    ]
+   },
+   "default_place": {
+    "coords": [
+     37.971083,
+     23.725808
+    ]
+   },
+   "region_dude": "athens",
+   "region_growth_percent": 100,
+   "region_id": "gr-athens",
+   "region_is_launched": true,
+   "region_name": "Athens",
+   "region_name_aliases": [
+    "\u1f08\u03b8\u03ae\u03bd\u03b1",
+    "Ath\u00edna"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_ATHENS",
+   "region_slug": "athens",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     21.73,
+     -157.64
+    ],
+    "southwest_corner_coords": [
+     21.24,
+     -158.3
+    ]
+   },
+   "default_place": {
+    "coords": [
+     21.279397,
+     -157.82973
+    ]
+   },
+   "region_dude": "honolulu",
+   "region_growth_percent": 100,
+   "region_id": "us-honolulu",
+   "region_is_launched": true,
+   "region_name": "Honolulu",
+   "region_name_localization_key": "DL_REGION_NAME_HONOLULU",
+   "region_slug": "honolulu",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     41.59,
+     29.97
+    ],
+    "southwest_corner_coords": [
+     40.75,
+     27.97
+    ]
+   },
+   "default_place": {
+    "coords": [
+     41.008585,
+     28.980103
+    ]
+   },
+   "minimum_android_version": "6.17",
+   "minimum_ios_version": "6.11",
+   "region_dude": "istanbul",
+   "region_growth_percent": 100,
+   "region_id": "tr-istanbul",
+   "region_is_launched": true,
+   "region_name": "Istanbul",
+   "region_name_localization_key": "DL_REGION_NAME_ISTANBUL",
+   "region_slug": "istanbul",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     37.16,
+     140.29
+    ],
+    "southwest_corner_coords": [
+     36.19,
+     139.31
+    ]
+   },
+   "default_place": {
+    "coords": [
+     36.5591,
+     139.8982
+    ]
+   },
+   "region_dude": "jp-utsunomiya",
+   "region_growth_percent": 100,
+   "region_id": "jp-utsunomiya",
+   "region_is_launched": true,
+   "region_name": "Utsunomiya (Beta)",
+   "region_name_aliases": [
+    "\u3046\u3064\u306e\u307f\u3084",
+    "\u6803\u6728\u770c",
+    "\u3068\u3061\u304e\u3051\u3093",
+    "Tochigi",
+    "\u90a3\u9808\u70cf\u5c71\u5e02",
+    "\u306a\u3059\u304b\u3089\u3059\u3084\u307e",
+    "Nasukarasuyama",
+    "\u6803\u6728\u5e02",
+    "\u3068\u3061\u304e",
+    "\u9e7f\u6cbc\u5e02",
+    "\u304b\u306c\u307e",
+    "Kanuma",
+    "\u5c0f\u5c71\u5e02",
+    "\u304a\u3084\u307e",
+    "Oyama",
+    "\u8db3\u5229\u5e02",
+    "\u3042\u3057\u304b\u304c",
+    "Ashikaga",
+    "\u65e5\u5149\u5e02",
+    "\u306b\u3063\u3053\u3046",
+    "Nikko",
+    "\u5927\u7530\u539f\u5e02",
+    "\u304a\u304a\u305f\u308f\u3089",
+    "Otawara",
+    "\u90a3\u73c2\u5ddd\u753a",
+    "\u306a\u304b\u304c\u308f",
+    "Nakagawa",
+    "\u90a3\u9808\u5869\u539f\u5e02",
+    "\u306a\u3059\u3057\u304a\u3070\u3089",
+    "Nasushiobara",
+    "\u90a3\u9808\u753a",
+    "\u306a\u3059",
+    "Nasu"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_JP_UTSUNOMIYA",
+   "region_slug": "utsunomiya",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     36.3,
+     140.6
+    ],
+    "southwest_corner_coords": [
+     35.0,
+     138.9
+    ]
+   },
+   "default_place": {
+    "coords": [
+     35.681382,
+     139.766084
+    ]
+   },
+   "region_growth_percent": 0,
+   "region_id": "jp-tokyo",
+   "region_is_launched": true,
+   "region_name": "Tokyo",
+   "region_name_aliases": [
+    "Chiba",
+    "\u5343\u8449",
+    "\u3061\u3070",
+    "Kawasaki",
+    "\u5ddd\u5d0e",
+    "\u304b\u308f\u3055\u304d",
+    "Sagamihara",
+    "\u76f8\u6a21\u539f",
+    "\u3055\u304c\u307f\u306f\u3089",
+    "Saitama",
+    "\u57fc\u7389",
+    "\u3055\u3044\u305f\u307e",
+    "Tokyo",
+    "\u6771\u4eac",
+    "\u3068\u3046\u304d\u3087\u3046",
+    "Yokohama",
+    "\u6a2a\u6d5c",
+    "\u3088\u3053\u306f\u307e"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_TOKYO",
+   "region_slug": "tokyo",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     26.1,
+     56.5
+    ],
+    "southwest_corner_coords": [
+     22.6,
+     51.4
+    ]
+   },
+   "default_place": {
+    "coords": [
+     25.2,
+     55.27
+    ]
+   },
+   "region_dude": "uae",
+   "region_growth_percent": 100,
+   "region_id": "ae-ae",
+   "region_is_launched": true,
+   "region_name": "United Arab Emirates",
+   "region_name_aliases": [
+    "UAE",
+    "Dubai",
+    "Abu Dhabi",
+    "Sharjah",
+    "Ajman",
+    "Fujairah",
+    "Ras Al Khaimah",
+    "Al Ain",
+    "\u062f\u0628\u064a",
+    "\u0623\u0628\u0648\u0638\u0628\u064a",
+    "\u0627\u0644\u0634\u0627\u0631\u0642\u0629",
+    "\u0639\u062c\u0645\u0627\u0646",
+    "\u0627\u0644\u0641\u062c\u064a\u0631\u0629",
+    "\u0631\u0623\u0633 \u0627\u0644\u062e\u064a\u0645\u0629",
+    "\u0627\u0644\u0639\u064a\u0646"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_UAE",
+   "region_slug": "united-arab-emirates",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     38.28,
+     127.86
+    ],
+    "southwest_corner_coords": [
+     36.88,
+     126.12
+    ]
+   },
+   "default_place": {
+    "coords": [
+     37.559955,
+     126.975307
+    ]
+   },
+   "minimum_android_version": "6.0",
+   "minimum_ios_version": "5.14",
+   "region_dude": "seoul",
+   "region_growth_percent": 100,
+   "region_id": "kr-seoul",
+   "region_is_launched": true,
+   "region_name": "Seoul",
+   "region_name_localization_key": "DL_REGION_NAME_SEOUL",
+   "region_slug": "seoul",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     26.41,
+     122.32
+    ],
+    "southwest_corner_coords": [
+     21.67,
+     118.13
+    ]
+   },
+   "default_place": {
+    "coords": [
+     25.03368625,
+     121.56481033101315
+    ]
+   },
+   "region_dude": "taiwan",
+   "region_growth_percent": 100,
+   "region_id": "tw-taiwan",
+   "region_is_launched": true,
+   "region_name": "Taiwan",
+   "region_name_aliases": [
+    "\u53f0\u7063",
+    "\u65b0\u5317\u5e02",
+    "\u81fa\u4e2d\u5e02",
+    "\u53f0\u4e2d\u5e02",
+    "\u81fa\u5317\u5e02",
+    "\u53f0\u5317\u5e02",
+    "\u6843\u5712\u5e02",
+    "\u81fa\u5357\u5e02",
+    "\u53f0\u5357\u5e02",
+    "\u9ad8\u96c4\u5e02",
+    "\u65b0\u7af9\u5e02",
+    "\u57fa\u9686\u5e02",
+    "\u5609\u7fa9\u5e02",
+    "New Taipei",
+    "Taichung",
+    "Taipei",
+    "Taoyuan",
+    "Tainan",
+    "Kaohsiung",
+    "Hsinchu",
+    "Keelung",
+    "Chiayi",
+    "TW"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_TAIWAN",
+   "region_slug": "taiwan",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     22.56,
+     114.47
+    ],
+    "southwest_corner_coords": [
+     22.13,
+     113.81
+    ]
+   },
+   "default_place": {
+    "coords": [
+     22.285,
+     114.1592
+    ]
+   },
+   "region_dude": "dragonboat",
+   "region_growth_percent": 100,
+   "region_id": "hk-hongkong",
+   "region_is_launched": true,
+   "region_name": "Hong Kong",
+   "region_name_aliases": [
+    "HK"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_HONGKONG",
+   "region_slug": "hong-kong",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     1.51,
+     104.09
+    ],
+    "southwest_corner_coords": [
+     1.15,
+     103.58
+    ]
+   },
+   "default_place": {
+    "coords": [
+     1.284081,
+     103.851461
+    ]
+   },
+   "region_dude": "ahbeng",
+   "region_growth_percent": 100,
+   "region_id": "sg-singapore",
+   "region_is_launched": true,
+   "region_name": "Singapore",
+   "region_name_aliases": [
+    "SGP"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_SINGAPORE",
+   "region_slug": "singapore",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     -26.1,
+     153.6
+    ],
+    "southwest_corner_coords": [
+     -28.3,
+     152.0
+    ]
+   },
+   "default_place": {
+    "coords": [
+     -27.46833,
+     153.02417
+    ]
+   },
+   "region_dude": "au-brisbane",
+   "region_growth_percent": 100,
+   "region_id": "au-brisbane",
+   "region_is_launched": true,
+   "region_name": "Brisbane",
+   "region_name_aliases": [
+    "Gold Coast",
+    "Sunshine Coast"
+   ],
+   "region_name_localization_key": "DL_REGION_NAME_BRISBANE",
+   "region_slug": "brisbane",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     -32.54,
+     152.24
+    ],
+    "southwest_corner_coords": [
+     -35.1,
+     150.01
+    ]
+   },
+   "default_place": {
+    "coords": [
+     -33.861311,
+     151.210816
+    ]
+   },
+   "minimum_android_version": "6.9",
+   "minimum_ios_version": "5.19.61",
+   "region_dude": "sydney",
+   "region_growth_percent": 100,
+   "region_id": "au-sydney",
+   "region_is_launched": true,
+   "region_name": "Sydney",
+   "region_name_localization_key": "DL_REGION_NAME_SYDNEY",
+   "region_slug": "sydney",
+   "web_enabled": true
+  },
+  {
+   "api_enabled": true,
+   "bounding_box": {
+    "northeast_corner_coords": [
+     -37.26,
+     146.68
+    ],
+    "southwest_corner_coords": [
+     -39.02,
+     143.49
+    ]
+   },
+   "default_place": {
+    "coords": [
+     -37.817915,
+     144.968489
+    ]
+   },
+   "minimum_android_version": "6.9",
+   "minimum_ios_version": "5.19.61",
+   "region_dude": "melbourne",
+   "region_growth_percent": 100,
+   "region_id": "au-melbourne",
+   "region_is_launched": true,
+   "region_name": "Melbourne",
+   "region_name_localization_key": "DL_REGION_NAME_MELBOURNE",
+   "region_slug": "melbourne",
+   "web_enabled": true
+  }
+ ],
+ "cities": {
+  "abudhabi": {
+   "city_name": "Abu Dhabi",
+   "city_id": "city-ae-abudhabi",
+   "city_name_localization_key": "DL_CITY_NAME_AE_ABUDHABI",
+   "city_slug": "abudhabi",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Abu Dhabi",
+    "coords": [
+     24.4539,
+     54.3773
+    ],
+    "address": "Abu Dhabi, United Arab Emirates"
+   },
+   "region_id": "ae-ae"
+  },
+  "fujairah": {
+   "city_name": "Fujairah",
+   "city_id": "city-ae-fujairah",
+   "city_name_localization_key": "DL_CITY_NAME_AE_FUJAIRAH",
+   "city_slug": "fujairah",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Fujairah",
+    "coords": [
+     25.1288,
+     56.3265
+    ],
+    "address": "Fujairah, United Arab Emirates"
+   },
+   "region_id": "ae-ae"
+  },
+  "ajman": {
+   "city_name": "Ajman",
+   "city_id": "city-ae-ajman",
+   "city_name_localization_key": "DL_CITY_NAME_AE_AJMAN",
+   "city_slug": "ajman",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Ajman",
+    "coords": [
+     25.4052,
+     55.5136
+    ],
+    "address": "Ajman, United Arab Emirates"
+   },
+   "region_id": "ae-ae"
+  },
+  "dubai": {
+   "city_name": "Dubai",
+   "city_id": "city-ae-dubai",
+   "city_name_localization_key": "DL_CITY_NAME_AE_DUBAI",
+   "city_slug": "dubai",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Dubai",
+    "coords": [
+     25.2048,
+     55.2708
+    ],
+    "address": "Dubai, United Arab Emirates"
+   },
+   "region_id": "ae-ae"
+  },
+  "sharjah": {
+   "city_name": "Sharjah",
+   "city_id": "city-ae-sharjah",
+   "city_name_localization_key": "DL_CITY_NAME_AE_SHARJAH",
+   "city_slug": "sharjah",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Sharjah",
+    "coords": [
+     25.3463,
+     55.4209
+    ],
+    "address": "Sharjah, United Arab Emirates"
+   },
+   "region_id": "ae-ae"
+  },
+  "alain": {
+   "city_name": "Al Ain",
+   "city_id": "city-ae-alain",
+   "city_name_localization_key": "DL_CITY_NAME_AE_ALAIN",
+   "city_slug": "alain",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Al Ain",
+    "coords": [
+     24.1912,
+     55.7606
+    ],
+    "address": "Al Ain, Abu Dhabi, United Arab Emirates"
+   },
+   "region_id": "ae-ae"
+  },
+  "rasalkhaimah": {
+   "city_name": "Ras Al Khaimah",
+   "city_id": "city-ae-rasalkhaimah",
+   "city_name_localization_key": "DL_CITY_NAME_AE_RASALKHAIMAH",
+   "city_slug": "rasalkhaimah",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Ras Al Khaimah",
+    "coords": [
+     25.7895,
+     55.9432
+    ],
+    "address": "Ras Al Khaimah, United Arab Emirates"
+   },
+   "region_id": "ae-ae"
+  },
+  "city-au-goldcoast": {
+   "city_name": "Gold Coast",
+   "city_id": "city-au-goldcoast",
+   "city_name_localization_key": "DL_CITY_NAME_AU_BRISBANE",
+   "default_place": {
+    "name": "Surfers Paradise Sign",
+    "coords": [
+     -28.002261,
+     153.431195
+    ],
+    "address": "2 Esplanade, Surfers Paradise QLD 4217, Australia"
+   },
+   "region_id": "au-brisbane",
+   "city_slug": "city-au-goldcoast"
+  },
+  "irving": {
+   "city_name": "Irving",
+   "city_id": "city-us-irving",
+   "city_name_localization_key": "DL_CITY_NAME_US_IRVING",
+   "city_slug": "irving",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Irving City Hall",
+    "coords": [
+     32.8137,
+     -96.9489
+    ],
+    "address": "825 W Irving Blvd, Irving, TX 75060, United States"
+   },
+   "region_id": "us-dallas"
+  },
+  "city-be-antwerp": {
+   "city_name": "Antwerp",
+   "city_id": "city-be-antwerp",
+   "city_name_localization_key": "DL_CITY_NAME_BE_ANTWERP",
+   "region_id": "be-brussels",
+   "city_slug": "city-be-antwerp",
+   "default_place": {
+    "coords": [
+     51.247516076923084,
+     4.675592025641026
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-be-brugge": {
+   "city_name": "Brugge",
+   "city_id": "city-be-brugge",
+   "city_name_localization_key": "DL_CITY_NAME_BE_BRUGGE",
+   "region_id": "be-brussels",
+   "city_slug": "city-be-brugge",
+   "default_place": {
+    "coords": [
+     51.242764526086965,
+     3.200282313043478
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-be-brussels": {
+   "city_name": "Brussels",
+   "city_id": "city-be-brussels",
+   "city_name_localization_key": "DL_CITY_NAME_BE_BRUSSELS",
+   "region_id": "be-brussels",
+   "city_slug": "city-be-brussels",
+   "default_place": {
+    "coords": [
+     50.833632335714285,
+     4.37629635
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-be-charleroi": {
+   "city_name": "Charleroi",
+   "city_id": "city-be-charleroi",
+   "city_name_localization_key": "DL_CITY_NAME_BE_CHARLEROI",
+   "region_id": "be-brussels",
+   "city_slug": "city-be-charleroi",
+   "default_place": {
+    "coords": [
+     50.412279356250004,
+     4.438053712500001
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-be-ghent": {
+   "city_name": "Ghent",
+   "city_id": "city-be-ghent",
+   "city_name_localization_key": "DL_CITY_NAME_BE_GHENT",
+   "region_id": "be-brussels",
+   "city_slug": "city-be-ghent",
+   "default_place": {
+    "coords": [
+     51.090742208695644,
+     3.7552012782608695
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-be-liege": {
+   "city_name": "Li\u00e8ge",
+   "city_id": "city-be-liege",
+   "city_name_localization_key": "DL_CITY_NAME_BE_LIEGE",
+   "region_id": "be-brussels",
+   "city_slug": "city-be-liege",
+   "default_place": {
+    "coords": [
+     50.599963244897964,
+     5.654388655102041
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "dieppe": {
+   "city_name": "Dieppe",
+   "city_id": "city-ca-newbrunswick",
+   "city_name_localization_key": "DL_CITY_NAME_CA_NEWBRUNSWICK",
+   "city_greenie": "ca-newbrunswick",
+   "city_slug": "dieppe",
+   "show_in_city_switcher": true,
+   "region_id": "ca-newbrunswick",
+   "default_place": {
+    "name": "Dieppe City Hall",
+    "coords": [
+     46.094968,
+     -64.748884
+    ],
+    "address": "333 Acadie Ave, Dieppe, NB E1A 1G9, Canada"
+   }
+  },
+  "city-ca-hamilton": {
+   "city_name": "Hamilton",
+   "city_id": "city-ca-hamilton",
+   "city_name_localization_key": "DL_CITY_NAME_CA_HAMILTON",
+   "region_id": "ca-toronto",
+   "city_slug": "city-ca-hamilton",
+   "default_place": {
+    "coords": [
+     43.292723452941175,
+     -79.93442691764706
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ca-toronto": {
+   "city_name": "Toronto",
+   "city_id": "city-ca-toronto",
+   "city_name_localization_key": "DL_CITY_NAME_CA_TORONTO",
+   "region_id": "ca-toronto",
+   "city_slug": "city-ca-toronto",
+   "default_place": {
+    "coords": [
+     43.668133999999995,
+     -79.4248869625
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ca-waterloo": {
+   "city_name": "Waterloo",
+   "city_id": "city-ca-waterloo",
+   "city_name_localization_key": "DL_CITY_NAME_CA_WATERLOO",
+   "region_id": "ca-toronto",
+   "city_slug": "city-ca-waterloo",
+   "default_place": {
+    "coords": [
+     43.489803125,
+     -80.5309143125
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "ca-york": {
+   "city_name": "York Region",
+   "city_id": "city-ca-york",
+   "city_name_localization_key": "DL_CITY_NAME_CA_YORK",
+   "city_slug": "ca-york",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "York Region",
+    "coords": [
+     43.690994,
+     -79.48191
+    ],
+    "address": "Clearview Heights, Keelesdale, York South\u2014Weston, York, Toronto, Golden Horseshoe, Ontario, M6M 5E6, Canada"
+   },
+   "region_id": "ca-toronto"
+  },
+  "city-ca-fraser-valley": {
+   "city_name": "Fraser Valley Regional District",
+   "city_id": "city-ca-fraser-valley",
+   "city_name_localization_key": "DL_CITY_NAME_CA_FRASER_VALLEY",
+   "region_id": "ca-vancouver",
+   "city_slug": "city-ca-fraser-valley",
+   "default_place": {
+    "coords": [
+     49.11448931802445,
+     -122.30776708489758
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ca-nanaimo": {
+   "city_name": "Nanaimo",
+   "city_id": "city-ca-nanaimo",
+   "city_name_localization_key": "DL_CITY_NAME_CA_NANAIMO",
+   "region_id": "ca-vancouver",
+   "city_slug": "city-ca-nanaimo",
+   "default_place": {
+    "coords": [
+     49.16498129268291,
+     -123.93524841463417
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ca-vancouver": {
+   "city_name": "Vancouver",
+   "city_id": "city-ca-vancouver",
+   "city_name_localization_key": "DL_CITY_NAME_CA_VANCOUVER",
+   "region_id": "ca-vancouver",
+   "city_slug": "city-ca-vancouver",
+   "default_place": {
+    "coords": [
+     49.265218925,
+     -123.15201774166667
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ch-basel": {
+   "city_name": "Basel",
+   "city_id": "city-ch-basel",
+   "city_name_localization_key": "DL_CITY_NAME_CH_BASEL",
+   "region_id": "ch-ch",
+   "city_slug": "city-ch-basel",
+   "default_place": {
+    "coords": [
+     47.5535325125,
+     7.5871794
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ch-bern": {
+   "city_name": "Bern",
+   "city_id": "city-ch-bern",
+   "city_name_localization_key": "DL_CITY_NAME_CH_BERN",
+   "region_id": "ch-ch",
+   "city_slug": "city-ch-bern",
+   "default_place": {
+    "coords": [
+     46.95549737188423,
+     7.388752248710119
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ch-geneva": {
+   "city_name": "Geneva",
+   "city_id": "city-ch-geneva",
+   "city_name_localization_key": "DL_CITY_NAME_CH_GENEVA",
+   "region_id": "ch-ch",
+   "city_slug": "city-ch-geneva",
+   "default_place": {
+    "coords": [
+     46.21273418571428,
+     6.1417617571428575
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ch-lausanne": {
+   "city_name": "Lausanne",
+   "city_id": "city-ch-lausanne",
+   "city_name_localization_key": "DL_CITY_NAME_CH_LAUSANNE",
+   "region_id": "ch-ch",
+   "city_slug": "city-ch-lausanne",
+   "default_place": {
+    "coords": [
+     46.55163175833334,
+     6.653584991666668
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ch-lucerne": {
+   "city_name": "Lucerne",
+   "city_id": "city-ch-lucerne",
+   "city_name_localization_key": "DL_CITY_NAME_CH_LUCERNE",
+   "region_id": "ch-ch",
+   "city_slug": "city-ch-lucerne",
+   "default_place": {
+    "coords": [
+     47.05198005,
+     8.277221970000001
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ch-lugano": {
+   "city_name": "Lugano",
+   "city_id": "city-ch-lugano",
+   "city_name_localization_key": "DL_CITY_NAME_CH_LUGANO",
+   "region_id": "ch-ch",
+   "city_slug": "city-ch-lugano",
+   "default_place": {
+    "coords": [
+     46.02480459130435,
+     8.979557886956522
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-ch-zurich": {
+   "city_name": "Zurich",
+   "city_id": "city-ch-zurich",
+   "city_name_localization_key": "DL_CITY_NAME_CH_ZURICH",
+   "region_id": "ch-ch",
+   "city_slug": "city-ch-zurich",
+   "default_place": {
+    "coords": [
+     47.38512786363637,
+     8.531251827272728
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-berlin": {
+   "city_name": "Berlin",
+   "city_id": "city-de-berlin",
+   "city_name_localization_key": "DL_CITY_NAME_DE_BERLIN",
+   "region_id": "de-berlin",
+   "city_slug": "city-de-berlin",
+   "default_place": {
+    "coords": [
+     52.49855545283019,
+     13.41746675471698
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-potsdam": {
+   "city_name": "Potsdam",
+   "city_id": "city-de-potsdam",
+   "city_name_localization_key": "DL_CITY_NAME_DE_POTSDAM",
+   "region_id": "de-berlin",
+   "city_slug": "city-de-potsdam",
+   "default_place": {
+    "coords": [
+     52.42709643913043,
+     13.062768239130433
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-darmstadt": {
+   "city_name": "Darmstadt",
+   "city_id": "city-de-darmstadt",
+   "city_name_localization_key": "DL_CITY_NAME_DE_DARMSTADT",
+   "region_id": "de-frankfurt",
+   "city_slug": "city-de-darmstadt",
+   "default_place": {
+    "coords": [
+     49.86723578749999,
+     8.644961700000001
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-frankfurt": {
+   "city_name": "Frankfurt",
+   "city_id": "city-de-frankfurt",
+   "city_name_localization_key": "DL_CITY_NAME_DE_FRANKFURT",
+   "region_id": "de-frankfurt",
+   "city_slug": "city-de-frankfurt",
+   "default_place": {
+    "coords": [
+     50.109720511999996,
+     8.636923251999997
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-mainz": {
+   "city_name": "Mainz",
+   "city_id": "city-de-mainz",
+   "city_name_localization_key": "DL_CITY_NAME_DE_MAINZ",
+   "region_id": "de-frankfurt",
+   "city_slug": "city-de-mainz",
+   "default_place": {
+    "coords": [
+     49.96864781666667,
+     8.229212766666668
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-bremen": {
+   "city_name": "Bremen",
+   "city_id": "city-de-bremen",
+   "city_name_localization_key": "DL_CITY_NAME_DE_BREMEN",
+   "region_id": "de-lowersaxony",
+   "city_slug": "city-de-bremen",
+   "default_place": {
+    "coords": [
+     53.11101895618485,
+     8.788117343631292
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-hanover": {
+   "city_name": "Hanover",
+   "city_id": "city-de-hanover",
+   "city_name_localization_key": "DL_CITY_NAME_DE_HANOVER",
+   "region_id": "de-lowersaxony",
+   "city_slug": "city-de-hanover",
+   "default_place": {
+    "coords": [
+     52.38744465517242,
+     9.757857527586207
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-hamburg": {
+   "city_name": "Hamburg",
+   "city_id": "city-de-hamburg",
+   "city_name_localization_key": "DL_CITY_NAME_DE_HAMBURG",
+   "region_id": "de-hamburg",
+   "city_slug": "city-de-hamburg",
+   "default_place": {
+    "coords": [
+     53.54579570205895,
+     10.015634294836094
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-augsburg": {
+   "city_name": "Augsburg",
+   "city_id": "city-de-augsburg",
+   "city_name_localization_key": "DL_CITY_NAME_DE_AUGSBURG",
+   "region_id": "de-munich",
+   "city_slug": "city-de-augsburg",
+   "default_place": {
+    "coords": [
+     48.35706991666667,
+     10.87389152777778
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-ingolstadt": {
+   "city_name": "Ingolstadt",
+   "city_id": "city-de-ingolstadt",
+   "city_name_localization_key": "DL_CITY_NAME_DE_INGOLSTADT",
+   "region_id": "de-munich",
+   "city_slug": "city-de-ingolstadt",
+   "default_place": {
+    "coords": [
+     48.749242186666656,
+     11.406834473333332
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-munich": {
+   "city_name": "Munich",
+   "city_id": "city-de-munich",
+   "city_name_localization_key": "DL_CITY_NAME_DE_MUNICH",
+   "region_id": "de-munich",
+   "city_slug": "city-de-munich",
+   "default_place": {
+    "coords": [
+     48.155925207863476,
+     11.547753999481698
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "krumbach": {
+   "city_name": "Allg\u00e4u and Bavarian Swabia",
+   "city_id": "city-de-krumbach",
+   "city_name_localization_key": "DL_CITY_NAME_DE_KRUMBACH",
+   "city_greenie": "de-krumbach",
+   "city_slug": "krumbach",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Krumbach",
+    "coords": [
+     48.2434957,
+     10.3588919
+    ],
+    "address": "Bahnhofstr. 55, 86381 Krumbach, Deutschland"
+   },
+   "region_id": "de-munich",
+   "cobranding": {
+    "branding_partner_id": "cfc-area-krumbach",
+    "disable_advertising": false,
+    "logo_credit_line_localization_key": "COBRANDING_CREDIT_LINE_IN_PARTNERSHIP",
+    "images": {
+     "logo_on_dark": {
+      "resources": [
+       "cobranding-on-dark-de-krumbach.svg",
+       "cobranding-on-dark-de-krumbach@3x.png",
+       "cobranding-on-dark-de-krumbach@2x.png"
+      ],
+      "width": 160,
+      "height": 60
+     }
+    }
+   }
+  },
+  "city-de-nuremberg": {
+   "city_name": "Nuremberg",
+   "city_id": "city-de-nuremberg",
+   "city_name_localization_key": "DL_CITY_NAME_DE_NUREMBERG",
+   "region_id": "de-nuremberg",
+   "city_slug": "city-de-nuremberg",
+   "default_place": {
+    "coords": [
+     49.463726933666045,
+     11.078193765379659
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-regensburg": {
+   "city_name": "Regensburg",
+   "city_id": "city-de-regensburg",
+   "city_name_localization_key": "DL_CITY_NAME_DE_REGENSBURG",
+   "region_id": "de-nuremberg",
+   "city_slug": "city-de-regensburg",
+   "default_place": {
+    "coords": [
+     49.02333733125,
+     12.10659034375
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-wurzburg": {
+   "city_name": "W\u00fcrzburg",
+   "city_id": "city-de-wurzburg",
+   "city_name_localization_key": "DL_CITY_NAME_DE_W\u00dcRZBURG",
+   "region_id": "de-nuremberg",
+   "city_slug": "city-de-wurzburg",
+   "default_place": {
+    "coords": [
+     49.78681191875,
+     9.92015316875
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-bonn": {
+   "city_name": "Bonn",
+   "city_id": "city-de-bonn",
+   "city_name_localization_key": "DL_CITY_NAME_DE_BONN",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-bonn",
+   "default_place": {
+    "coords": [
+     50.70565101764705,
+     7.107693552941176
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-bochum": {
+   "city_name": "Bochum",
+   "city_id": "city-de-bochum",
+   "city_name_localization_key": "DL_CITY_NAME_DE_BOCHUM",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-bochum",
+   "default_place": {
+    "coords": [
+     51.46933333333333,
+     7.213300000000001
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-cologne": {
+   "city_name": "Cologne",
+   "city_id": "city-de-cologne",
+   "city_name_localization_key": "DL_CITY_NAME_DE_COLOGNE",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-cologne",
+   "default_place": {
+    "coords": [
+     50.96761563846155,
+     6.961541826923077
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-dortmund": {
+   "city_name": "Dortmund",
+   "city_id": "city-de-dortmund",
+   "city_name_localization_key": "DL_CITY_NAME_DE_DORTMUND",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-dortmund",
+   "default_place": {
+    "coords": [
+     51.51650112,
+     7.486611975999999
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-duisburg": {
+   "city_name": "Duisburg",
+   "city_id": "city-de-duisburg",
+   "city_name_localization_key": "DL_CITY_NAME_DE_DUISBURG",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-duisburg",
+   "default_place": {
+    "coords": [
+     51.45321457083333,
+     6.717728270833334
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-dusseldorf": {
+   "city_name": "D\u00fcsseldorf",
+   "city_id": "city-de-dusseldorf",
+   "city_name_localization_key": "DL_CITY_NAME_DE_D\u00dcSSELDORF",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-dusseldorf",
+   "default_place": {
+    "coords": [
+     51.24108464642857,
+     6.815158592857142
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-essen": {
+   "city_name": "Essen",
+   "city_id": "city-de-essen",
+   "city_name_localization_key": "DL_CITY_NAME_DE_ESSEN",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-essen",
+   "default_place": {
+    "coords": [
+     51.43738091666666,
+     7.014896122222223
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-gelsenkirchen": {
+   "city_name": "Gelsenkirchen",
+   "city_id": "city-de-gelsenkirchen",
+   "city_name_localization_key": "DL_CITY_NAME_DE_GELSENKIRCHEN",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-gelsenkirchen",
+   "default_place": {
+    "coords": [
+     51.55846666666667,
+     7.063733333333333
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-oberhausen": {
+   "city_name": "Oberhausen",
+   "city_id": "city-de-oberhausen",
+   "city_name_localization_key": "DL_CITY_NAME_DE_OBERHAUSEN",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-oberhausen",
+   "default_place": {
+    "coords": [
+     51.514192307692305,
+     6.848884615384614
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-mulheim": {
+   "city_name": "M\u00fclheim",
+   "city_id": "city-de-mulheim",
+   "city_name_localization_key": "DL_CITY_NAME_DE_MULHEIM",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-mulheim",
+   "default_place": {
+    "coords": [
+     51.41684375000001,
+     6.867624999999999
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-vrr-main": {
+   "city_name": "VRR (Main)",
+   "city_id": "city-de-vrr-main",
+   "city_name_localization_key": "DL_REGION_NAME_RHINERUHR",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-vrr-main",
+   "default_place": {
+    "coords": [
+     51.5248900589881,
+     6.817119700328548
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-vrr-unna-hagen": {
+   "city_name": "VRR (Unna-Hagen-Remscheid)",
+   "city_id": "city-de-vrr-unna-hagen",
+   "city_name_localization_key": "DL_REGION_NAME_RHINERUHR",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-vrr-unna-hagen",
+   "default_place": {
+    "coords": [
+     51.352342811879915,
+     7.429122400502254
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-vrr-witten-solingen": {
+   "city_name": "VRR (Witten-Solingen)",
+   "city_id": "city-de-vrr-witten-solingen",
+   "city_name_localization_key": "DL_REGION_NAME_RHINERUHR",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-vrr-witten-solingen",
+   "default_place": {
+    "coords": [
+     51.317536376515726,
+     7.077178400800986
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-wuppertal": {
+   "city_name": "Wuppertal",
+   "city_id": "city-de-wuppertal",
+   "city_name_localization_key": "DL_CITY_NAME_DE_WUPPERTAL",
+   "region_id": "de-rhineruhr",
+   "city_slug": "city-de-wuppertal",
+   "default_place": {
+    "coords": [
+     51.242269230769224,
+     7.169884615384614
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-freiburg": {
+   "city_name": "Freiburg",
+   "city_id": "city-de-freiburg",
+   "city_name_localization_key": "DL_CITY_NAME_DE_FREIBURG",
+   "region_id": "de-stuttgart",
+   "city_slug": "city-de-freiburg",
+   "default_place": {
+    "coords": [
+     47.98646947,
+     7.773767255
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-karlsruhe": {
+   "city_name": "Karlsruhe",
+   "city_id": "city-de-karlsruhe",
+   "city_name_localization_key": "DL_CITY_NAME_DE_KARLSRUHE",
+   "region_id": "de-stuttgart",
+   "city_slug": "city-de-karlsruhe",
+   "default_place": {
+    "coords": [
+     49.0204604090909,
+     8.420630700000002
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-mannheim": {
+   "city_name": "Mannheim",
+   "city_id": "city-de-mannheim",
+   "city_name_localization_key": "DL_CITY_NAME_DE_MANNHEIM",
+   "region_id": "de-stuttgart",
+   "city_slug": "city-de-mannheim",
+   "default_place": {
+    "coords": [
+     49.49004727142857,
+     8.506233742857143
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-de-stuttgart": {
+   "city_name": "Stuttgart",
+   "city_id": "city-de-stuttgart",
+   "city_name_localization_key": "DL_CITY_NAME_DE_STUTTGART",
+   "region_id": "de-stuttgart",
+   "city_slug": "city-de-stuttgart",
+   "default_place": {
+    "coords": [
+     48.79639353999998,
+     9.170189093333333
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-dk-copenhagen": {
+   "city_name": "Copenhagen",
+   "city_id": "city-dk-copenhagen",
+   "city_name_localization_key": "DL_CITY_NAME_DK_COPENHAGEN",
+   "region_id": "dk-copenhagen",
+   "city_slug": "city-dk-copenhagen",
+   "default_place": {
+    "coords": [
+     55.67980333333333,
+     12.564842083333334
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-dk-helsingborgs": {
+   "city_name": "Helsingborgs",
+   "city_id": "city-dk-helsingborgs",
+   "city_name_localization_key": "DL_CITY_NAME_DK_HELSINGBORGS",
+   "region_id": "dk-copenhagen",
+   "city_slug": "city-dk-helsingborgs",
+   "default_place": {
+    "coords": [
+     56.0839926,
+     12.814661339393938
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-dk-lund": {
+   "city_name": "Lund",
+   "city_id": "city-dk-lund",
+   "city_name_localization_key": "DL_CITY_NAME_DK_LUND",
+   "region_id": "dk-copenhagen",
+   "city_slug": "city-dk-lund",
+   "default_place": {
+    "coords": [
+     55.71326333,
+     13.22145543
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-dk-malmo": {
+   "city_name": "Malmo",
+   "city_id": "city-dk-malmo",
+   "city_name_localization_key": "DL_CITY_NAME_DK_MALMO",
+   "region_id": "dk-copenhagen",
+   "city_slug": "city-dk-malmo",
+   "default_place": {
+    "coords": [
+     55.60395226470589,
+     13.033082741176472
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-ibiza": {
+   "city_name": "Ibiza",
+   "city_id": "city-es-ibiza",
+   "region_id": "es-balearics",
+   "city_slug": "city-es-ibiza",
+   "default_place": {
+    "coords": [
+     38.98300833333333,
+     1.3483263333333333
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-mallorca": {
+   "city_name": "Mallorca",
+   "city_id": "city-es-mallorca",
+   "region_id": "es-balearics",
+   "city_slug": "city-es-mallorca",
+   "default_place": {
+    "coords": [
+     39.592935714285716,
+     2.8709582857142855
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-menorca": {
+   "city_name": "Menorca",
+   "city_id": "city-es-menorca",
+   "region_id": "es-balearics",
+   "city_slug": "city-es-menorca",
+   "default_place": {
+    "coords": [
+     39.96713833333334,
+     4.035910666666666
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-barcelona": {
+   "city_name": "Barcelona",
+   "city_id": "city-es-barcelona",
+   "city_name_localization_key": "DL_CITY_NAME_ES_BARCELONA",
+   "region_id": "es-barcelona",
+   "city_slug": "city-es-barcelona",
+   "default_place": {
+    "coords": [
+     41.822795375,
+     1.9330543541666667
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-girona": {
+   "city_name": "Girona",
+   "city_id": "city-es-girona",
+   "city_name_localization_key": "DL_CITY_NAME_ES_GIRONA",
+   "region_id": "es-barcelona",
+   "city_slug": "city-es-girona",
+   "default_place": {
+    "coords": [
+     42.13677265517241,
+     2.5633843793103446
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-lleida": {
+   "city_name": "Lleida",
+   "city_id": "city-es-lleida",
+   "city_name_localization_key": "DL_CITY_NAME_ES_LLEIDA",
+   "region_id": "es-barcelona",
+   "city_slug": "city-es-lleida",
+   "default_place": {
+    "coords": [
+     41.945088043478265,
+     1.1071345652173914
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-tarragona": {
+   "city_name": "Tarragona",
+   "city_id": "city-es-tarragona",
+   "city_name_localization_key": "DL_CITY_NAME_ES_TARRAGONA",
+   "region_id": "es-barcelona",
+   "city_slug": "city-es-tarragona",
+   "default_place": {
+    "coords": [
+     41.04429078260869,
+     0.8666249565217392
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-bayonne": {
+   "city_name": "Bayonne",
+   "city_id": "city-es-bayonne",
+   "city_name_localization_key": "DL_CITY_NAME_ES_BAYONNE",
+   "region_id": "es-basquecountry",
+   "city_slug": "city-es-bayonne",
+   "default_place": {
+    "coords": [
+     43.4891886,
+     -1.4625339125
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-biarritz": {
+   "city_name": "Biarritz",
+   "city_id": "city-es-biarritz",
+   "city_name_localization_key": "DL_CITY_NAME_ES_BIARRITZ",
+   "region_id": "es-basquecountry",
+   "city_slug": "city-es-biarritz",
+   "default_place": {
+    "coords": [
+     43.47370769230769,
+     -1.5599784230769234
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-bilbao": {
+   "city_name": "Gran Bilbao",
+   "city_id": "city-es-bilbao",
+   "city_name_localization_key": "DL_CITY_NAME_ES_BILBAO",
+   "region_id": "es-basquecountry",
+   "city_slug": "city-es-bilbao",
+   "default_place": {
+    "coords": [
+     43.2985985,
+     -2.9302526666666666
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-san-sebastian": {
+   "city_name": "San Sebasti\u00e1n",
+   "city_id": "city-es-san-sebastian",
+   "city_name_localization_key": "DL_CITY_NAME_ES_SAN_SEBASTIAN",
+   "region_id": "es-basquecountry",
+   "city_slug": "city-es-san-sebastian",
+   "default_place": {
+    "coords": [
+     43.31109577551019,
+     -1.981362204081632
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-vitoria-gasteiz": {
+   "city_name": "Vitoria-Gasteiz",
+   "city_id": "city-es-vitoria-gasteiz",
+   "city_name_localization_key": "DL_CITY_NAME_ES_VITORIA_GASTEIZ",
+   "region_id": "es-basquecountry",
+   "city_slug": "city-es-vitoria-gasteiz",
+   "default_place": {
+    "coords": [
+     42.868264849999996,
+     -2.682628134615385
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-alcala-de-henares": {
+   "city_name": "Alcal\u00e1 de Henares",
+   "city_id": "city-es-alcala-de-henares",
+   "city_name_localization_key": "DL_CITY_NAME_ES_ALCALA_DE_HENARES",
+   "region_id": "es-madrid",
+   "city_slug": "city-es-alcala-de-henares",
+   "default_place": {
+    "coords": [
+     40.502255500000004,
+     -3.3714056416666662
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "avila": {
+   "city_name": "Avila",
+   "city_id": "city-es-avila",
+   "city_name_localization_key": "DL_CITY_NAME_ES_AVILA",
+   "city_slug": "avila",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Avila",
+    "coords": [
+     40.656495,
+     -4.700185
+    ],
+    "address": "Plaza del Mercado Chico, 05001 \u00c1vila, \u00c1vila, Espana"
+   },
+   "region_id": "es-madrid"
+  },
+  "city-es-guadalajara": {
+   "city_name": "Guadalajara",
+   "city_id": "city-es-guadalajara",
+   "city_name_localization_key": "DL_CITY_NAME_ES_GUADALAJARA",
+   "region_id": "es-madrid",
+   "city_slug": "city-es-guadalajara",
+   "default_place": {
+    "coords": [
+     40.599068078947354,
+     -3.135746243859648
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-madrid": {
+   "city_name": "Madrid",
+   "city_id": "city-es-madrid",
+   "city_name_localization_key": "DL_CITY_NAME_ES_MADRID",
+   "region_id": "es-madrid",
+   "city_slug": "city-es-madrid",
+   "default_place": {
+    "coords": [
+     40.476421843749996,
+     -3.6847035781249997
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "segovia": {
+   "city_name": "Segovia",
+   "city_id": "city-es-segovia",
+   "city_name_localization_key": "DL_CITY_NAME_ES_SEGOVIA",
+   "city_slug": "segovia",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Segovia",
+    "coords": [
+     40.947968,
+     -4.118024
+    ],
+    "address": "Plaza Azoguejo, 1, 40001 Segovia, Espana"
+   },
+   "region_id": "es-madrid"
+  },
+  "city-es-toledo": {
+   "city_name": "Toledo",
+   "city_id": "city-es-toledo",
+   "city_name_localization_key": "DL_CITY_NAME_ES_TOLEDO",
+   "region_id": "es-madrid",
+   "city_slug": "city-es-toledo",
+   "default_place": {
+    "coords": [
+     39.86719141333333,
+     -4.01685935
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-seville": {
+   "city_name": "Seville",
+   "city_id": "city-es-seville",
+   "city_name_localization_key": "DL_CITY_NAME_ES_SEVILLE",
+   "region_id": "es-seville",
+   "city_slug": "city-es-seville",
+   "default_place": {
+    "coords": [
+     37.39984615714286,
+     -5.971119142857143
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "oswego": {
+   "city_name": "Oswego County",
+   "city_id": "city-us-oswego",
+   "city_name_localization_key": "DL_CITY_NAME_US_OSWEGO",
+   "city_slug": "oswego",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Fort Ontario State Historic Site",
+    "coords": [
+     43.46581086071348,
+     -76.50825536618223
+    ],
+    "address": "Fort Ontatio State Historic Site, 1 East Fourth Street, Oswego, NY 13126"
+   },
+   "region_id": "us-upstatenewyork"
+  },
+  "city-es-dos-hermanas": {
+   "city_name": "Dos Hermanas",
+   "city_id": "city-es-dos-hermanas",
+   "city_name_localization_key": "DL_CITY_NAME_ES_DOS_HERMANAS",
+   "region_id": "es-seville",
+   "city_slug": "city-es-dos-hermanas",
+   "default_place": {
+    "coords": [
+     37.245486717948715,
+     -5.969087102564103
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-castello": {
+   "city_name": "Castell\u00f3",
+   "city_id": "city-es-castello",
+   "city_name_localization_key": "DL_CITY_NAME_ES_CASTELLO",
+   "region_id": "es-valencia",
+   "city_slug": "city-es-castello",
+   "default_place": {
+    "coords": [
+     40.252196774,
+     -0.21641953599999997
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-es-valencia": {
+   "city_name": "Valencia",
+   "city_id": "city-es-valencia",
+   "city_name_localization_key": "DL_CITY_NAME_ES_VALENCIA",
+   "region_id": "es-valencia",
+   "city_slug": "city-es-valencia",
+   "default_place": {
+    "coords": [
+     39.252922999999996,
+     -0.7126327500000001
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "lille": {
+   "city_name": "Lille",
+   "city_id": "city-fr-lille",
+   "city_name_localization_key": "DL_CITY_NAME_FR_LILLE",
+   "city_slug": "lille",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Lille",
+    "coords": [
+     50.636813,
+     3.063915
+    ],
+    "address": "Place Charles de Gaulle, 59800 Lille, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "valenciennes": {
+   "city_name": "Valenciennes",
+   "city_id": "city-fr-valenciennes",
+   "city_name_localization_key": "DL_CITY_NAME_FR_VALENCIENNES",
+   "city_slug": "valenciennes",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Valenciennes",
+    "coords": [
+     50.3571,
+     3.5183
+    ],
+    "address": "51-27 Rue de Paris, 59300 Valenciennes, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "amiens": {
+   "city_name": "Amiens",
+   "city_id": "city-fr-amiens",
+   "city_name_localization_key": "DL_CITY_NAME_FR_AMIENS",
+   "city_slug": "amiens",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Amiens",
+    "coords": [
+     49.894627,
+     2.294492
+    ],
+    "address": "15 Rue L\u00e9on Blum, 80000 Amiens, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "arras": {
+   "city_name": "Arras",
+   "city_id": "city-fr-arras",
+   "city_name_localization_key": "DL_CITY_NAME_FR_ARRAS",
+   "city_slug": "arras",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Arras",
+    "coords": [
+     50.289017,
+     2.776935
+    ],
+    "address": "4 Pt Rue Saint-Jean, 62000 Arras, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "bethune": {
+   "city_name": "B\u00e9thune",
+   "city_id": "city-fr-bethune",
+   "city_name_localization_key": "DL_CITY_NAME_FR_BETHUNE",
+   "city_slug": "bethune",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Bethune",
+    "coords": [
+     50.530092,
+     2.640213
+    ],
+    "address": "73-1 Av. Jean Jaur\u00e8s, 62400 B\u00e9thune, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "boulogne-sur-mer": {
+   "city_name": "Boulogne-sur-Mer",
+   "city_id": "city-fr-boulogne-sur-mer",
+   "city_name_localization_key": "DL_CITY_NAME_FR_BOULOGNE_SUR_MER",
+   "city_slug": "boulogne-sur-mer",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Boulogne-sur-Mer",
+    "coords": [
+     50.722707,
+     1.610511
+    ],
+    "address": "25-5 Rue de l'Ancien Rivage, 62200 Boulogne-sur-Mer, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "calais": {
+   "city_name": "Calais",
+   "city_id": "city-fr-calais",
+   "city_name_localization_key": "DL_CITY_NAME_FR_CALAIS",
+   "city_slug": "calais",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Calais",
+    "coords": [
+     50.948734,
+     1.866724
+    ],
+    "address": "51-1 Rue Louis Garneray, 62100 Calais, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "douai": {
+   "city_name": "Douai",
+   "city_id": "city-fr-douai",
+   "city_name_localization_key": "DL_CITY_NAME_FR_DOUAI",
+   "city_slug": "douai",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Douai",
+    "coords": [
+     50.36737,
+     3.080683
+    ],
+    "address": "2-98 Rue Francis Godin, 59500 Douai, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "lens": {
+   "city_name": "Lens",
+   "city_id": "city-fr-lens",
+   "city_name_localization_key": "DL_CITY_NAME_FR_LENS",
+   "city_slug": "lens",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Lens",
+    "coords": [
+     50.428554,
+     2.832595
+    ],
+    "address": "7-1 Rue du Havre, 62300 Lens, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "dunkerque": {
+   "city_name": "Dunkerque",
+   "city_id": "city-fr-dunkerque",
+   "city_name_localization_key": "DL_CITY_NAME_FR_DUNKERQUE",
+   "city_slug": "dunkerque",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Dunkerque",
+    "coords": [
+     51.032051,
+     2.378864
+    ],
+    "address": "49-15 Rue de Soubise, 59140 Dunkerque, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "maubeuge": {
+   "city_name": "Maubeuge",
+   "city_id": "city-fr-maubeuge",
+   "city_name_localization_key": "DL_CITY_NAME_FR_MAUBEUGE",
+   "city_slug": "maubeuge",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Maubeuge",
+    "coords": [
+     50.279253,
+     3.968063
+    ],
+    "address": "Pl. de l'H\u00f4tel de ville, 59600 Maubeuge, France"
+   },
+   "region_id": "fr-lille"
+  },
+  "valencia": {
+   "city_name": "Alicante",
+   "city_id": "city-es-alicante",
+   "city_name_localization_key": "DL_CITY_NAME_ES_ALICANTE",
+   "city_slug": "valencia",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Alicante",
+    "coords": [
+     38.346002,
+     -0.490682
+    ],
+    "address": "Av. Alfonso El Sabio, Alicante, Valencian Community, 03004, Spain"
+   },
+   "region_id": "es-valencia"
+  },
+  "city-fi-espoo": {
+   "city_name": "Espoo",
+   "city_id": "city-fi-espoo",
+   "city_name_localization_key": "DL_CITY_NAME_FI_ESPOO",
+   "region_id": "fi-helsinki",
+   "city_slug": "city-fi-espoo",
+   "default_place": {
+    "coords": [
+     60.19198542592594,
+     24.66842528148148
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-fi-helsinki": {
+   "city_name": "Helsinki",
+   "city_id": "city-fi-helsinki",
+   "city_name_localization_key": "DL_CITY_NAME_FI_HELSINKI",
+   "region_id": "fi-helsinki",
+   "city_slug": "city-fi-helsinki",
+   "default_place": {
+    "coords": [
+     60.19564953333333,
+     25.059013937499998
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-fi-vantaa": {
+   "city_name": "Vantaa",
+   "city_id": "city-fi-vantaa",
+   "city_name_localization_key": "DL_CITY_NAME_FI_VANTAA",
+   "region_id": "fi-helsinki",
+   "city_slug": "city-fi-vantaa",
+   "default_place": {
+    "coords": [
+     60.30993011739129,
+     25.02429770869565
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-fr-aix-en-provence": {
+   "city_name": "Aix-en-Provence",
+   "city_id": "city-fr-aix-en-provence",
+   "city_name_localization_key": "DL_CITY_NAME_FR_AIX_EN_PROVENCE",
+   "region_id": "fr-marseille",
+   "city_slug": "city-fr-aix-en-provence",
+   "default_place": {
+    "coords": [
+     43.53966925,
+     5.403636283333334
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-fr-arles": {
+   "city_name": "Arles",
+   "city_id": "city-fr-arles",
+   "city_name_localization_key": "DL_CITY_NAME_FR_ARLES",
+   "region_id": "fr-marseille",
+   "city_slug": "city-fr-arles",
+   "default_place": {
+    "coords": [
+     43.54576176842106,
+     4.650190960526316
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-fr-marseille": {
+   "city_name": "Marseille",
+   "city_id": "city-fr-marseille",
+   "city_name_localization_key": "DL_CITY_NAME_FR_MARSEILLE",
+   "region_id": "fr-marseille",
+   "city_slug": "city-fr-marseille",
+   "default_place": {
+    "coords": [
+     43.316437111111114,
+     5.492763472222222
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-bologna": {
+   "city_name": "Bologna",
+   "city_id": "city-it-bologna",
+   "city_name_localization_key": "DL_CITY_NAME_IT_BOLOGNA",
+   "region_id": "it-bologna",
+   "city_slug": "city-it-bologna",
+   "default_place": {
+    "coords": [
+     44.39602515384616,
+     11.32216509230769
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-ferrara": {
+   "city_name": "Ferrara",
+   "city_id": "city-it-ferrara",
+   "city_name_localization_key": "DL_CITY_NAME_IT_FERRARA",
+   "region_id": "it-bologna",
+   "city_slug": "city-it-ferrara",
+   "default_place": {
+    "coords": [
+     44.79936684603175,
+     11.83187073650793
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-ravenna": {
+   "city_name": "Ravenna",
+   "city_id": "city-it-ravenna",
+   "city_name_localization_key": "DL_CITY_NAME_IT_RAVENNA",
+   "region_id": "it-bologna",
+   "city_slug": "city-it-ravenna",
+   "default_place": {
+    "coords": [
+     44.340296026760555,
+     11.950369369014082
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-rimini": {
+   "city_name": "Rimini",
+   "city_id": "city-it-rimini",
+   "city_name_localization_key": "DL_CITY_NAME_IT_RIMINI",
+   "region_id": "it-bologna",
+   "city_slug": "city-it-rimini",
+   "default_place": {
+    "coords": [
+     43.902554204166655,
+     12.425125029166663
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-florence": {
+   "city_name": "Florence",
+   "city_id": "city-it-florence",
+   "city_name_localization_key": "DL_CITY_NAME_IT_FLORENCE",
+   "region_id": "it-florence",
+   "city_slug": "city-it-florence",
+   "default_place": {
+    "coords": [
+     43.807361625000006,
+     11.206979759090911
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-livorno": {
+   "city_name": "Livorno",
+   "city_id": "city-it-livorno",
+   "city_name_localization_key": "DL_CITY_NAME_IT_LIVORNO",
+   "region_id": "it-florence",
+   "city_slug": "city-it-livorno",
+   "default_place": {
+    "coords": [
+     43.25916833333334,
+     10.558935129629628
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-pisa": {
+   "city_name": "Pisa",
+   "city_id": "city-it-pisa",
+   "city_name_localization_key": "DL_CITY_NAME_IT_PISA",
+   "region_id": "it-florence",
+   "city_slug": "city-it-pisa",
+   "default_place": {
+    "coords": [
+     43.45566048875001,
+     10.693639683750007
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-siena": {
+   "city_name": "Siena",
+   "city_id": "city-it-siena",
+   "city_name_localization_key": "DL_CITY_NAME_IT_SIENA",
+   "region_id": "it-florence",
+   "city_slug": "city-it-siena",
+   "default_place": {
+    "coords": [
+     43.17786665733335,
+     11.435671315999999
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-bergamo": {
+   "city_name": "Bergamo",
+   "city_id": "city-it-bergamo",
+   "city_name_localization_key": "DL_CITY_NAME_IT_BERGAMO",
+   "region_id": "it-milan",
+   "city_slug": "city-it-bergamo",
+   "default_place": {
+    "coords": [
+     45.761132167187505,
+     9.799256240625
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-brescia": {
+   "city_name": "Brescia",
+   "city_id": "city-it-brescia",
+   "city_name_localization_key": "DL_CITY_NAME_IT_BRESCIA",
+   "region_id": "it-milan",
+   "city_slug": "city-it-brescia",
+   "default_place": {
+    "coords": [
+     45.72755417252748,
+     10.335317197802201
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-milan": {
+   "city_name": "Milan",
+   "city_id": "city-it-milan",
+   "city_name_localization_key": "DL_CITY_NAME_IT_MILAN",
+   "region_id": "it-milan",
+   "city_slug": "city-it-milan",
+   "default_place": {
+    "coords": [
+     45.4677212,
+     9.131905483098592
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-rome": {
+   "city_name": "Rome",
+   "city_id": "city-it-rome",
+   "city_name_localization_key": "DL_CITY_NAME_IT_ROME",
+   "region_id": "it-rome",
+   "city_slug": "city-it-rome",
+   "default_place": {
+    "coords": [
+     41.89312802131149,
+     12.529558275409837
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-it-latina": {
+   "city_name": "Latina",
+   "city_id": "city-it-latina",
+   "city_name_localization_key": "DL_CITY_NAME_IT_LATINA",
+   "region_id": "it-rome",
+   "city_slug": "city-it-latina",
+   "default_place": {
+    "coords": [
+     41.4412804137931,
+     13.213984310344827
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "chiba": {
+   "city_name": "Chiba",
+   "city_id": "city-jp-chiba",
+   "city_name_localization_key": "DL_CITY_NAME_JP_CHIBA",
+   "city_slug": "chiba",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Chiba Port Tower",
+    "coords": [
+     35.60024515217254,
+     140.09793834132876
+    ],
+    "address": "Chuoko 1, Chuo Word, Chiba, 260-0024, Japan",
+    "place_id": "ChIJe3k5T1SDImAR16wmAYRZvHQ"
+   },
+   "region_id": "jp-tokyo"
+  },
+  "kawasaki": {
+   "city_name": "Kawasaki",
+   "city_id": "city-jp-kawasaki",
+   "city_name_localization_key": "DL_CITY_NAME_JP_KAWASAKI",
+   "city_slug": "kawasaki",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Kawasaki Daishi",
+    "coords": [
+     35.534632,
+     139.729791
+    ],
+    "address": "Daishimachi 4-48, Kawasaki Ward, Kawasaki, Kanagawa, 210-8521, Japan",
+    "place_id": "ChIJ9ehQK9hgGGARKsKq5_em5HI"
+   },
+   "region_id": "jp-tokyo"
+  },
+  "sagamihara": {
+   "city_name": "Sagamihara",
+   "city_id": "city-jp-sagamihara",
+   "city_name_localization_key": "DL_CITY_NAME_JP_SAGAMIHARA",
+   "city_slug": "sagamihara",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Sagamihara City Museum",
+    "coords": [
+     35.558983264655865,
+     139.3933988957232
+    ],
+    "address": "Takane 3-1-15, Chuo Ward, Sagamihara, Kanagawa, 252-0221, Japan",
+    "place_id": "ChIJZ-xbzLv9GGARZeYw1hzHhi4"
+   },
+   "region_id": "jp-tokyo"
+  },
+  "saitama": {
+   "city_name": "Saitama",
+   "city_id": "city-jp-saitama",
+   "city_name_localization_key": "DL_CITY_NAME_JP_SAITAMA",
+   "city_slug": "saitama",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "The Railway Museum",
+    "coords": [
+     35.92142184246067,
+     139.61791993970598
+    ],
+    "address": "Onaricho 3-47, Omiya Ward, Saitama, 330-0852, Japan",
+    "place_id": "ChIJkzQuFK3GGGARTgA4_Z3ySGY"
+   },
+   "region_id": "jp-tokyo"
+  },
+  "tokyo": {
+   "city_name": "Tokyo",
+   "city_id": "city-jp-tokyo",
+   "city_name_localization_key": "DL_CITY_NAME_JP_TOKYO",
+   "city_slug": "tokyo",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Tokyo Metro Museum",
+    "coords": [
+     35.66356468725038,
+     139.8734382463296
+    ],
+    "address": "Higashikasai 6-3-1, Edogawa City, Tokyo, 134-0084, Japan",
+    "place_id": "ChIJ4ceO6vKHGGARufa4mF3NCgU"
+   },
+   "region_id": "jp-tokyo"
+  },
+  "yokohama": {
+   "city_name": "Yokohama",
+   "city_id": "city-jp-yokohama",
+   "city_name_localization_key": "DL_CITY_NAME_JP_YOKOHAMA",
+   "city_slug": "yokohama",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Keikyu Museum",
+    "coords": [
+     35.46222569523974,
+     139.62625932671585
+    ],
+    "address": "Takashima 1-2-8, Nishi Ward, Yokohama, Kanagawa, 220-0011, Japan",
+    "place_id": "ChIJK8ukjbZdGGARimuGIbA3tmc"
+   },
+   "region_id": "jp-tokyo"
+  },
+  "city-mc-monaco": {
+   "city_name": "Monaco",
+   "city_id": "city-mc-monaco",
+   "city_name_localization_key": "DL_CITY_NAME_MC_MONACO",
+   "region_id": "mc-monaco",
+   "city_slug": "city-mc-monaco",
+   "default_place": {
+    "coords": [
+     43.73065334370595,
+     7.350607661193815
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-nl-amsterdam": {
+   "city_name": "Amsterdam",
+   "city_id": "city-nl-amsterdam",
+   "city_name_localization_key": "DL_CITY_NAME_NL_AMSTERDAM",
+   "region_id": "nl-randstad",
+   "city_slug": "city-nl-amsterdam",
+   "default_place": {
+    "coords": [
+     52.380125988888885,
+     4.895875866666667
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-nl-eindhoven": {
+   "city_name": "Eindhoven",
+   "city_id": "city-nl-eindhoven",
+   "city_name_localization_key": "DL_CITY_NAME_NL_EINDHOVEN",
+   "region_id": "nl-randstad",
+   "city_slug": "city-nl-eindhoven",
+   "default_place": {
+    "coords": [
+     51.44350747272727,
+     5.448664927272727
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-nl-groningen": {
+   "city_name": "Groningen",
+   "city_id": "city-nl-groningen",
+   "city_name_localization_key": "DL_CITY_NAME_NL_GRONINGEN",
+   "region_id": "nl-randstad",
+   "city_slug": "city-nl-groningen",
+   "default_place": {
+    "coords": [
+     53.22182166,
+     6.646254116
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-nl-rotterdam": {
+   "city_name": "Rotterdam",
+   "city_id": "city-nl-rotterdam",
+   "city_name_localization_key": "DL_CITY_NAME_NL_ROTTERDAM",
+   "region_id": "nl-randstad",
+   "city_slug": "city-nl-rotterdam",
+   "default_place": {
+    "coords": [
+     51.92701907941177,
+     4.376457117647059
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-nl-the-hague": {
+   "city_name": "The Hague",
+   "city_id": "city-nl-the-hague",
+   "city_name_localization_key": "DL_CITY_NAME_NL_THE_HAGUE",
+   "region_id": "nl-randstad",
+   "city_slug": "city-nl-the-hague",
+   "default_place": {
+    "coords": [
+     52.06118470000001,
+     4.330112361904762
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-nl-utrecht": {
+   "city_name": "Utrecht",
+   "city_id": "city-nl-utrecht",
+   "city_name_localization_key": "DL_CITY_NAME_NL_UTRECHT",
+   "region_id": "nl-randstad",
+   "city_slug": "city-nl-utrecht",
+   "default_place": {
+    "coords": [
+     52.08587384782611,
+     5.166705063768118
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-pl-gliwice": {
+   "city_name": "Gliwice",
+   "city_id": "city-pl-gliwice",
+   "city_name_localization_key": "DL_CITY_NAME_PL_GLIWICE",
+   "region_id": "pl-krakow",
+   "city_slug": "city-pl-gliwice",
+   "default_place": {
+    "coords": [
+     50.30763515652175,
+     18.630982908695653
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-pl-katowice": {
+   "city_name": "Katowice",
+   "city_id": "city-pl-katowice",
+   "city_name_localization_key": "DL_CITY_NAME_PL_KATOWICE",
+   "region_id": "pl-krakow",
+   "city_slug": "city-pl-katowice",
+   "default_place": {
+    "coords": [
+     50.22702065000001,
+     19.01592816666667
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-pl-krakow": {
+   "city_name": "Krak\u00f3w",
+   "city_id": "city-pl-krakow",
+   "city_name_localization_key": "DL_CITY_NAME_PL_KRAKOW",
+   "region_id": "pl-krakow",
+   "city_slug": "city-pl-krakow",
+   "default_place": {
+    "coords": [
+     50.05860723076924,
+     19.967399342307694
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-pt-cascais": {
+   "city_name": "Cascais",
+   "city_id": "city-pt-cascais",
+   "city_name_localization_key": "DL_CITY_NAME_PT_CASCAIS",
+   "region_id": "pt-lisbon",
+   "city_slug": "city-pt-cascais",
+   "default_place": {
+    "coords": [
+     38.72479892533454,
+     -9.387673309164638
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-pt-lisbon": {
+   "city_name": "Lisbon",
+   "city_id": "city-pt-lisbon",
+   "city_name_localization_key": "DL_CITY_NAME_PT_LISBON",
+   "region_id": "pt-lisbon",
+   "city_slug": "city-pt-lisbon",
+   "default_place": {
+    "coords": [
+     38.752745493750005,
+     -9.1550822625
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-pt-setubal": {
+   "city_name": "Set\u00fabal",
+   "city_id": "city-pt-setubal",
+   "city_name_localization_key": "DL_CITY_NAME_PT_SETUBAL",
+   "region_id": "pt-lisbon",
+   "city_slug": "city-pt-setubal",
+   "default_place": {
+    "coords": [
+     38.52316142857143,
+     -8.882292485714284
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-pt-sintra": {
+   "city_name": "Sintra",
+   "city_id": "city-pt-sintra",
+   "city_name_localization_key": "DL_CITY_NAME_PT_SINTRA",
+   "region_id": "pt-lisbon",
+   "city_slug": "city-pt-sintra",
+   "default_place": {
+    "coords": [
+     38.79989462906669,
+     -9.329747794954127
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-sg-singapore": {
+   "city_name": "Singapore",
+   "city_id": "city-sg-singapore",
+   "city_name_localization_key": "DL_CITY_NAME_SG_SINGAPORE",
+   "region_id": "sg-singapore",
+   "city_slug": "city-sg-singapore",
+   "default_place": {
+    "coords": [
+     1.3963924098766065,
+     103.84700001897039
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-bath": {
+   "city_name": "Bath",
+   "city_id": "city-uk-bath",
+   "city_name_localization_key": "DL_CITY_NAME_UK_BATH",
+   "region_id": "uk-bristol",
+   "city_slug": "city-uk-bath",
+   "default_place": {
+    "coords": [
+     51.380878475,
+     -2.3590075374999997
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-bristol": {
+   "city_name": "Bristol",
+   "city_id": "city-uk-bristol",
+   "city_name_localization_key": "DL_CITY_NAME_UK_BRISTOL",
+   "region_id": "uk-bristol",
+   "city_slug": "city-uk-bristol",
+   "default_place": {
+    "coords": [
+     51.467879393333334,
+     -2.5932846800000005
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-cardiff": {
+   "city_name": "Cardiff",
+   "city_id": "city-uk-cardiff",
+   "city_name_localization_key": "DL_CITY_NAME_UK_CARDIFF",
+   "region_id": "uk-bristol",
+   "city_slug": "city-uk-cardiff",
+   "default_place": {
+    "coords": [
+     51.5095187,
+     -3.204857641666667
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-swansea": {
+   "city_name": "Swansea",
+   "city_id": "city-uk-swansea",
+   "city_name_localization_key": "DL_CITY_NAME_UK_SWANSEA",
+   "region_id": "uk-bristol",
+   "city_slug": "city-uk-swansea",
+   "default_place": {
+    "coords": [
+     51.63438736428572,
+     -4.087322014285714
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "isle of wight": {
+   "city_name": "Isle of Wight",
+   "city_id": "city-uk-isleofwight",
+   "city_name_localization_key": "DL_CITY_NAME_UK_ISLEOFWIGHT",
+   "city_slug": "isle of wight",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Isle of Wight",
+    "coords": [
+     50.733021,
+     -1.159806
+    ],
+    "address": "Ryde Esplanade station, The Esplanade, Ryde, Isle of Wight, PO33 2HE, United Kingdom"
+   },
+   "region_id": "uk-bristol"
+  },
+  "southampton": {
+   "city_name": "Southampton",
+   "city_id": "city-uk-southampton",
+   "city_name_localization_key": "DL_CITY_NAME_UK_SOUTHAMPTON",
+   "city_slug": "southampton",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Southampton",
+    "coords": [
+     50.902655,
+     -1.404219
+    ],
+    "address": "The Bargate, High St, Southampton, SO14 2DJ, United Kingdom"
+   },
+   "region_id": "uk-bristol"
+  },
+  "portsmouth": {
+   "city_name": "Portsmouth",
+   "city_id": "city-uk-portsmouth",
+   "city_name_localization_key": "DL_CITY_NAME_UK_PORTSMOUTH",
+   "city_slug": "portsmouth",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Portsmouth",
+    "coords": [
+     50.795566,
+     -1.108517
+    ],
+    "address": "Spinnaker Tower, Gunwharf Quays, Portsmouth, Hampshire, PO1 3TT, United Kingdom"
+   },
+   "region_id": "uk-bristol"
+  },
+  "the south": {
+   "city_name": "The South",
+   "city_id": "city-uk-thesouth",
+   "city_name_localization_key": "DL_CITY_NAME_UK_THESOUTH",
+   "city_slug": "the south",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "The South",
+    "coords": [
+     51.060679,
+     -1.313143
+    ],
+    "address": "Winchester Cathedral, 9 The Cl, Winchester SO23 9LS, United Kingdom"
+   },
+   "region_id": "uk-bristol"
+  },
+  "city-uk-edinburgh": {
+   "city_name": "Edinburgh",
+   "city_id": "city-uk-edinburgh",
+   "city_name_localization_key": "DL_CITY_NAME_UK_EDINBURGH",
+   "region_id": "uk-edinburgh",
+   "city_slug": "city-uk-edinburgh",
+   "default_place": {
+    "coords": [
+     55.9198889142857,
+     -3.3297667904761905
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-dundee": {
+   "city_name": "Dundee",
+   "city_id": "city-uk-dundee",
+   "city_name_localization_key": "DL_CITY_NAME_UK_DUNDEE",
+   "region_id": "uk-edinburgh",
+   "city_slug": "city-uk-dundee",
+   "default_place": {
+    "coords": [
+     56.4721959,
+     -2.980555961538461
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-glasgow": {
+   "city_name": "Glasgow",
+   "city_id": "city-uk-glasgow",
+   "city_name_localization_key": "DL_CITY_NAME_UK_GLASGOW",
+   "region_id": "uk-edinburgh",
+   "city_slug": "city-uk-glasgow",
+   "default_place": {
+    "coords": [
+     55.85805160909091,
+     -4.2544105909090915
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-oxford": {
+   "city_name": "Oxford",
+   "city_id": "city-uk-oxford",
+   "city_name_localization_key": "DL_CITY_NAME_UK_OXFORD",
+   "region_id": "uk-london",
+   "city_slug": "city-uk-oxford",
+   "default_place": {
+    "coords": [
+     51.74682790559458,
+     -1.238264385644065
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-reading": {
+   "city_name": "Reading",
+   "city_id": "city-uk-reading",
+   "city_name_localization_key": "DL_CITY_NAME_UK_READING",
+   "region_id": "uk-london",
+   "city_slug": "city-uk-reading",
+   "default_place": {
+    "coords": [
+     51.451557665533414,
+     -0.9629985380097882
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-milton-keynes": {
+   "city_name": "Milton Keynes",
+   "city_id": "city-uk-milton-keynes",
+   "city_name_localization_key": "DL_CITY_NAME_UK_MILTON_KEYNES",
+   "region_id": "uk-london",
+   "city_slug": "city-uk-milton-keynes",
+   "default_place": {
+    "coords": [
+     52.03937564705882,
+     -0.7567128
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "chattanooga": {
+   "city_name": "Chattanooga",
+   "city_id": "city-us-us-carta",
+   "city_greenie": "us-tn-chattanooga",
+   "city_name_localization_key": "DL_CITY_NAME_US_CHATTANOOGA",
+   "city_slug": "chattanooga",
+   "show_in_city_switcher": true,
+   "region_id": "us-tennessee",
+   "default_place": {
+    "coords": [
+     35.04404301174123,
+     -85.25635145812925
+    ],
+    "name": "Sample Place"
+   },
+   "cobranding": {
+    "branding_partner_id": "cfc-area-us-carta",
+    "disable_advertising": false,
+    "logo_credit_line_localization_key": "COBRANDING_CREDIT_LINE_IN_PARTNERSHIP",
+    "images": {
+     "logo_on_dark": {
+      "resources": [
+       "cobranding-on-dark-us-carta.svg",
+       "cobranding-on-dark-us-carta@3x.png",
+       "cobranding-on-dark-us-carta@2x.png"
+      ],
+      "width": 160,
+      "height": 60
+     }
+    }
+   }
+  },
+  "charlotte": {
+   "city_name": "Charlotte",
+   "city_id": "city-us-charlotte",
+   "city_name_localization_key": "DL_CITY_NAME_US_CHARLOTTE",
+   "city_slug": "charlotte",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "The Ritz-Carlton, Charlotte",
+    "coords": [
+     35.2263813,
+     -80.841588
+    ],
+    "place_id": "ChIJK4YupSWgVogRd7iKaVNd6QQ",
+    "address": "201 East Trade Street, Charlotte, NC, USA 28202"
+   },
+   "region_id": "us-northcarolina"
+  },
+  "city-cfc-university-us-chicago": {
+   "city_name": "The University of Chicago",
+   "city_id": "city-cfc-university-us-chicago",
+   "city_name_localization_key": "DL_CITY_NAME_EXPANSION_us-chicago",
+   "region_id": "us-chicago",
+   "city_greenie": "us-chicago-uoc",
+   "city_slug": "city-cfc-university-us-chicago",
+   "default_place": {
+    "coords": [
+     41.78940242857142,
+     -87.59860676190476
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-evansville": {
+   "city_name": "Evansville",
+   "city_id": "city-us-evansville",
+   "city_name_localization_key": "DL_CITY_NAME_EXPANSION_US_EVANSVILLE",
+   "default_place": {
+    "name": "Soldiers and Sailors Memorial Coliseum",
+    "coords": [
+     37.974161,
+     -87.573224
+    ],
+    "place_id": "ChIJx5DfZh3VcYgRn0KYnq0h13A",
+    "address": "350 Court St, Evansville, IN 47708"
+   },
+   "region_id": "us-indiana",
+   "city_slug": "city-us-evansville"
+  },
+  "city-us-lafayette": {
+   "city_name": "Lafayette",
+   "city_id": "city-us-lafayette",
+   "city_name_localization_key": "DL_CITY_NAME_EXPANSION_US_LAFAYETTE",
+   "default_place": {
+    "name": "Art Museum of Greater Lafayette",
+    "coords": [
+     40.4164113,
+     -86.885875
+    ],
+    "place_id": "ChIJ35_DwUYdE4gRHOI9Ynomn8c",
+    "address": "102 S 10th St, Lafayette, IN 47905"
+   },
+   "region_id": "us-indiana",
+   "city_slug": "city-us-lafayette"
+  },
+  "city-us-indianapolis": {
+   "city_name": "Indianapolis",
+   "city_id": "city-us-indianapolis",
+   "city_name_localization_key": "DL_CITY_NAME_EXPANSION_US_INDIANAPOLIS",
+   "default_place": {
+    "name": "Soldiers & Sailors Monument",
+    "coords": [
+     39.7685835,
+     -86.158085
+    ],
+    "place_id": "ChIJkRIaJrxQa4gR6Ruza5aW-04",
+    "address": "1 Monument Cir, Indianapolis, IN 46204"
+   },
+   "region_id": "us-indiana",
+   "city_slug": "city-us-indianapolis"
+  },
+  "altoona": {
+   "city_name": "Altoona",
+   "city_id": "city-us-altoona-pa",
+   "city_name_localization_key": "DL_CITY_NAME_US_ALTOONA",
+   "city_slug": "altoona",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Altoona",
+    "coords": [
+     40.517225,
+     -78.402324
+    ],
+    "address": "1301 12th St, Altoona, PA 16601, United States"
+   },
+   "region_id": "us-pittsburgh"
+  },
+  "city-us-atlanta": {
+   "city_name": "Atlanta",
+   "city_id": "city-us-atlanta",
+   "city_name_localization_key": "DL_CITY_NAME_US_ATLANTA",
+   "region_id": "us-atlanta",
+   "city_slug": "city-us-atlanta",
+   "default_place": {
+    "coords": [
+     33.740643875,
+     -84.43983507499999
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-sandy-springs": {
+   "city_name": "Sandy Springs",
+   "city_id": "city-us-sandy-springs",
+   "city_name_localization_key": "DL_CITY_NAME_US_SANDY_SPRINGS",
+   "region_id": "us-atlanta",
+   "city_slug": "city-us-sandy-springs",
+   "default_place": {
+    "coords": [
+     33.955071963636364,
+     -84.35795308181818
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-boston": {
+   "city_name": "Boston",
+   "city_id": "city-us-boston",
+   "city_name_localization_key": "DL_CITY_NAME_US_BOSTON",
+   "region_id": "us-boston",
+   "city_slug": "city-us-boston",
+   "default_place": {
+    "coords": [
+     42.35498677723352,
+     -71.11566438948076
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-providence": {
+   "city_name": "Providence",
+   "city_id": "city-us-providence",
+   "city_name_localization_key": "DL_CITY_NAME_US_PROVIDENCE",
+   "region_id": "us-boston",
+   "city_slug": "city-us-providence",
+   "default_place": {
+    "coords": [
+     41.82269846,
+     -71.41470102000001
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "harvard": {
+   "city_name": "Harvard",
+   "city_id": "city-us-harvard",
+   "city_slug": "harvard",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Harvard Square",
+    "coords": [
+     42.373616,
+     -71.118943
+    ],
+    "address": "Harvard Square, Cambridge, MA 02138, United States"
+   },
+   "region_id": "us-boston"
+  },
+  "city-us-arlington": {
+   "city_name": "Arlington",
+   "city_id": "city-us-arlington",
+   "city_name_localization_key": "DL_CITY_NAME_US_ARLINGTON",
+   "region_id": "us-dallas",
+   "city_slug": "city-us-arlington",
+   "default_place": {
+    "coords": [
+     32.7069272,
+     -97.12568278571429
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "dentoncounty": {
+   "city_name": "Denton County",
+   "city_id": "city-us-dentoncounty",
+   "city_name_localization_key": "DL_CITY_NAME_US_DENTONCOUNTY",
+   "city_slug": "dentoncounty",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Denton County",
+    "coords": [
+     33.2149878,
+     -97.133128
+    ],
+    "address": "317 W Mulberry St, Denton, Texas, 76201, United States"
+   },
+   "region_id": "us-dallas"
+  },
+  "cleveland": {
+   "city_name": "Cleveland",
+   "city_id": "city-us-cleveland-oh",
+   "city_slug": "cleveland",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Cleveland",
+    "coords": [
+     41.4996119,
+     -81.693658
+    ],
+    "address": "50 Public Square Suite 1910, Cleveland, Ohio, 44113, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "akron": {
+   "city_name": "Akron",
+   "city_id": "city-us-akron-oh",
+   "city_slug": "akron",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Akron",
+    "coords": [
+     41.0806779,
+     -81.520377
+    ],
+    "address": "Akron Civic Theatre, 182 S Main St, Akron, Ohio, 44308, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "butlercounty": {
+   "city_name": "Butler County",
+   "city_id": "city-us-butlercounty-oh",
+   "city_slug": "butlercounty",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Butler County",
+    "coords": [
+     39.4026021,
+     -84.561329
+    ],
+    "address": "Marcum Park, 116 Dayton St, Hamilton, Ohio, 45011, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "cincinnati": {
+   "city_name": "Cincinnati",
+   "city_id": "city-us-cincinnati-oh",
+   "city_slug": "cincinnati",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Cincinnati",
+    "coords": [
+     39.10149,
+     -84.512387
+    ],
+    "address": "Fountain Square, 520 Vine St, Cincinnati, Ohio, 45202, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "northernkentucky": {
+   "city_name": "Northern Kentucky",
+   "city_id": "city-us-northernkentucky-ky",
+   "city_slug": "northernkentucky",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Northern Kentucky",
+    "coords": [
+     39.0827145,
+     -84.50948
+    ],
+    "address": "Madison Theater, 730 Madison Ave, Covington, Kentucky, 41011, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "columbus": {
+   "city_name": "Columbus",
+   "city_id": "city-us-columbus-oh",
+   "city_slug": "columbus",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Columbus",
+    "coords": [
+     39.961331,
+     -82.99907
+    ],
+    "address": "Ohio Statehouse, 1 Capitol Sq, Columbus, Ohio, 43215, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "dayton": {
+   "city_name": "Dayton",
+   "city_id": "city-us-dayton-oh",
+   "city_slug": "dayton",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Dayton",
+    "coords": [
+     39.759626,
+     -84.19333
+    ],
+    "address": "The International Peace Museum, 10 N Ludlow St, Dayton, Ohio, 45402, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "starkcounty": {
+   "city_name": "Stark County",
+   "city_id": "city-us-starkcounty-oh",
+   "city_slug": "starkcounty",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Stark County",
+    "coords": [
+     40.800709,
+     -81.374295
+    ],
+    "address": "Visit Canton Visitor Center, 401 Market Ave N, Canton, OH 44702, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "charleston": {
+   "city_name": "Charleston",
+   "city_id": "city-us-charleston-wv",
+   "city_slug": "charleston",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Haddad River Front Park",
+    "coords": [
+     38.3494913,
+     -81.63822
+    ],
+    "address": "601-699 Kanawha Blvd E, Charleston, WV 25301, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "lancaster": {
+   "city_name": "Lancaster",
+   "city_id": "city-us-lancaster-oh",
+   "city_slug": "lancaster",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Sherman House Museum",
+    "coords": [
+     39.7138184,
+     -82.6005359
+    ],
+    "address": "137 E Main St, Lancaster, OH 43130"
+   },
+   "region_id": "us-cleveland"
+  },
+  "painesville": {
+   "city_name": "Painesville",
+   "city_id": "city-us-painesville-oh",
+   "city_slug": "painesville",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Painesville Square",
+    "coords": [
+     41.724667,
+     -81.244157
+    ],
+    "address": "Painesville, OH 44077"
+   },
+   "region_id": "us-cleveland"
+  },
+  "kent": {
+   "city_name": "Kent",
+   "city_id": "city-us-kent-oh",
+   "city_slug": "kent",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Kent State University Museum",
+    "coords": [
+     41.152728,
+     -81.351285
+    ],
+    "address": "515 Hilltop Dr, Kent, OH 44240"
+   },
+   "region_id": "us-cleveland"
+  },
+  "mansfield": {
+   "city_name": "Mansfield",
+   "city_id": "city-us-mansfield-oh",
+   "city_slug": "mansfield",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Mansfield Playhouse",
+    "coords": [
+     40.759731,
+     -82.512274
+    ],
+    "address": "95 E 3rd St, Mansfield, OH 44902"
+   },
+   "region_id": "us-cleveland"
+  },
+  "sandusky": {
+   "city_name": "Sandusky",
+   "city_id": "city-us-sandusky-oh",
+   "city_slug": "sandusky",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Sandusky History Museum",
+    "coords": [
+     41.4540009,
+     -82.708412
+    ],
+    "address": "404 Wayne St, Sandusky, OH 44870"
+   },
+   "region_id": "us-cleveland"
+  },
+  "city-intramuros-fr-paris": {
+   "city_name": "Paris",
+   "city_id": "city-intramuros-fr-paris",
+   "city_name_localization_key": "DL_CITY_NAME_INTRAMUROS_fr_paris",
+   "region_id": "fr-paris",
+   "city_slug": "city-intramuros-fr-paris",
+   "default_place": {
+    "coords": [
+     48.86576261837593,
+     2.3478135733946996
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-dallas": {
+   "city_name": "Dallas",
+   "city_id": "city-us-dallas",
+   "city_name_localization_key": "DL_CITY_NAME_US_DALLAS",
+   "region_id": "us-dallas",
+   "city_slug": "city-us-dallas",
+   "default_place": {
+    "coords": [
+     32.79404237837837,
+     -96.80664227027027
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "toledo": {
+   "city_name": "Toledo",
+   "city_id": "city-us-toledo",
+   "city_name_localization_key": "DL_CITY_NAME_US_TOLEDO",
+   "city_slug": "toledo",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Toledo",
+    "coords": [
+     41.65131434908706,
+     -83.53692798874528
+    ],
+    "address": "500 Jefferson Ave, Toledo, OH 43604, United States"
+   },
+   "region_id": "us-detroit"
+  },
+  "ann-arbor": {
+   "city_name": "Ann Arbor",
+   "city_id": "city-us-annarbor",
+   "city_name_localization_key": "DL_CITY_NAME_US_ANNARBOR",
+   "city_slug": "ann-arbor",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Ann Arbor",
+    "coords": [
+     42.280351119559576,
+     -83.74291918753232
+    ],
+    "address": "500 michE, E Washington St, Ann Arbor, Michigan, 48104, United States"
+   },
+   "region_id": "us-detroit"
+  },
+  "traverse-city": {
+   "city_name": "Traverse City",
+   "city_id": "city-us-traversecity-mi",
+   "city_slug": "traverse-city",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Traverse City",
+    "coords": [
+     44.763997,
+     -85.623459
+    ],
+    "address": "106 E Front St, Traverse City, MI 49684, United States"
+   },
+   "region_id": "us-detroit"
+  },
+  "kalamazoo": {
+   "city_name": "Kalamazoo",
+   "city_id": "city-us-kalamazoo",
+   "city_name_localization_key": "DL_CITY_NAME_US_KALAMAZOO",
+   "city_slug": "kalamazoo",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Kalamazoo",
+    "coords": [
+     42.28957458130329,
+     -85.58562621054604
+    ],
+    "address": "241 W South St, Kalamazoo, Michigan, 49007, United States"
+   },
+   "region_id": "us-detroit"
+  },
+  "city-us-detroit": {
+   "city_name": "Detroit",
+   "city_id": "city-us-detroit",
+   "city_name_localization_key": "DL_CITY_NAME_US_DETROIT",
+   "region_id": "us-detroit",
+   "city_slug": "city-us-detroit",
+   "default_place": {
+    "coords": [
+     42.330937161282016,
+     -83.12645972266263
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-grandrapids": {
+   "city_name": "Grand Rapids",
+   "city_id": "city-us-grandrapids",
+   "city_name_localization_key": "DL_CITY_NAME_US_DETROIT",
+   "region_id": "us-detroit",
+   "city_slug": "city-us-grandrapids",
+   "default_place": {
+    "coords": [
+     42.922986779129516,
+     -85.65746422284298
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-fort-worth": {
+   "city_name": "Fort Worth",
+   "city_id": "city-us-fort-worth",
+   "city_name_localization_key": "DL_CITY_NAME_US_FORT_WORTH",
+   "region_id": "us-dallas",
+   "city_slug": "city-us-fort-worth",
+   "default_place": {
+    "coords": [
+     32.77472876190476,
+     -97.3888168095238
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "plano": {
+   "city_name": "Plano",
+   "city_id": "city-us-plano",
+   "city_name_localization_key": "DL_CITY_NAME_US_PLANO",
+   "city_slug": "plano",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Plano",
+    "coords": [
+     33.01975231755332,
+     -96.69922082851214
+    ],
+    "address": "1021 E 15th St, Plano, TX 75074, United States"
+   },
+   "region_id": "us-dallas"
+  },
+  "city-us-baltimore": {
+   "city_name": "Baltimore",
+   "city_id": "city-us-baltimore",
+   "city_name_localization_key": "DL_CITY_NAME_US_BALTIMORE",
+   "region_id": "us-dc",
+   "city_slug": "city-us-baltimore",
+   "default_place": {
+    "coords": [
+     39.27937615,
+     -76.5843650875
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-washington": {
+   "city_name": "Washington",
+   "city_id": "city-us-washington",
+   "city_name_localization_key": "DL_CITY_NAME_US_WASHINGTON",
+   "region_id": "us-dc",
+   "city_slug": "city-us-washington",
+   "default_place": {
+    "coords": [
+     38.91210131666667,
+     -77.03001088333333
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-los-angeles": {
+   "city_name": "Los Angeles",
+   "city_id": "city-us-los-angeles",
+   "city_name_localization_key": "DL_CITY_NAME_US_LOS_ANGELES",
+   "region_id": "us-la",
+   "city_slug": "city-us-los-angeles",
+   "default_place": {
+    "coords": [
+     34.05746614285714,
+     -118.42594292857144
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-san-diego": {
+   "city_name": "San Diego",
+   "city_id": "city-us-san-diego",
+   "city_name_localization_key": "DL_CITY_NAME_US_SAN_DIEGO",
+   "region_id": "us-la",
+   "city_slug": "city-us-san-diego",
+   "default_place": {
+    "coords": [
+     33.095281630434776,
+     -117.1485217478261
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-fort-lauderdale": {
+   "city_name": "Fort Lauderdale",
+   "city_id": "city-us-fort-lauderdale",
+   "city_name_localization_key": "DL_CITY_NAME_US_FORT_LAUDERDALE",
+   "region_id": "us-miami",
+   "city_slug": "city-us-fort-lauderdale",
+   "default_place": {
+    "coords": [
+     26.13688128571429,
+     -80.15066142857142
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "miami": {
+   "city_name": "Miami-Dade County",
+   "city_id": "city-us-miami-dade-county",
+   "city_name_localization_key": "DL_CITY_NAME_US_MIAMI_DADE_COUNTY",
+   "city_slug": "miami",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Miami",
+    "coords": [
+     25.7820042,
+     -80.22256438834017
+    ],
+    "address": "851, Northwest 17th Avenue, Miami, Miami-Dade County, Florida, 33125, United States"
+   },
+   "region_id": "us-miami"
+  },
+  "city-us-west-palm-beach": {
+   "city_name": "West Palm Beach",
+   "city_id": "city-us-west-palm-beach",
+   "city_name_localization_key": "DL_CITY_NAME_US_WEST_PALM_BEACH",
+   "region_id": "us-miami",
+   "city_slug": "city-us-west-palm-beach",
+   "default_place": {
+    "coords": [
+     26.74721823809523,
+     -80.11819009523808
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "youngstown": {
+   "city_name": "Youngstown",
+   "city_id": "city-us-youngstown-oh",
+   "city_slug": "youngstown",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Youngstown",
+    "coords": [
+     41.103014,
+     -80.65107
+    ],
+    "address": "151 W Wood St, Youngstown, OH 44503, United States"
+   },
+   "region_id": "us-cleveland"
+  },
+  "city-us-minneapolis": {
+   "city_name": "Minneapolis",
+   "city_id": "city-us-minneapolis",
+   "city_name_localization_key": "DL_CITY_NAME_US_MINNEAPOLIS",
+   "region_id": "us-minneapolis",
+   "city_slug": "city-us-minneapolis",
+   "default_place": {
+    "coords": [
+     44.9749434125,
+     -93.26892525000001
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-saint-paul": {
+   "city_name": "Saint Paul",
+   "city_id": "city-us-saint-paul",
+   "city_name_localization_key": "DL_CITY_NAME_US_SAINT_PAUL",
+   "region_id": "us-minneapolis",
+   "city_slug": "city-us-saint-paul",
+   "default_place": {
+    "coords": [
+     44.946882800000004,
+     -93.1099588
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "rochester": {
+   "city_name": "Rochester",
+   "city_id": "city-us-rochester-mn",
+   "city_name_localization_key": "DL_CITY_NAME_US_ROCHESTER",
+   "city_slug": "rochester",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Rochester",
+    "coords": [
+     44.01901467579498,
+     -92.46042198482091
+    ],
+    "address": "200 4th St SE, Rochester, Minnesota, 55904"
+   },
+   "region_id": "us-minneapolis"
+  },
+  "jerseycity": {
+   "city_name": "Jersey City",
+   "city_id": "city-us-jersey-city",
+   "city_name_localization_key": "DL_CITY_NAME_US_JERSEY_CITY",
+   "city_greenie": "us-jersey-city",
+   "city_slug": "jerseycity",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Jersey City City Hall",
+    "coords": [
+     40.717817,
+     -74.043098
+    ],
+    "address": "280 Grove St, Jersey City, NJ, United States"
+   },
+   "region_id": "us-nyc",
+   "cobranding": {
+    "branding_partner_id": "cfc-area-jersey-city",
+    "disable_advertising": false,
+    "logo_credit_line_localization_key": "COBRANDING_CREDIT_LINE_IN_PARTNERSHIP",
+    "images": {
+     "logo_on_dark": {
+      "resources": [
+       "cobranding-on-dark-jersey-city.svg",
+       "cobranding-on-dark-jersey-city@3x.png",
+       "cobranding-on-dark-jersey-city@2x.png"
+      ],
+      "width": 160,
+      "height": 60
+     }
+    }
+   }
+  },
+  "city-cfc-breeze-transit-us-westflorida": {
+   "city_name": "Sarasota County",
+   "city_id": "city-cfc-breeze-transit-us-westflorida",
+   "city_name_localization_key": "DL_CITY_NAME_SARASOTA",
+   "region_id": "us-westflorida",
+   "city_greenie": "us-westflorida-breeze",
+   "city_slug": "city-cfc-breeze-transit-us-westflorida",
+   "default_place": {
+    "coords": [
+     27.20360205769282,
+     -82.43092294159713
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "grenoble": {
+   "city_name": "Grenoble",
+   "city_id": "city-fr-grenoble",
+   "city_name_localization_key": "DL_CITY_NAME_FR_GRENOBLE",
+   "city_slug": "grenoble",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Grenoble",
+    "coords": [
+     45.1885,
+     5.7245
+    ],
+    "address": "Grenoble, Auvergne-Rh\u00f4ne-Alpes, France"
+   },
+   "region_id": "fr-lyon"
+  },
+  "saintetienne": {
+   "city_name": "Saint-\u00c9tienne",
+   "city_id": "city-fr-saintetienne",
+   "city_name_localization_key": "DL_CITY_NAME_FR_SAINTETIENNE",
+   "city_slug": "saintetienne",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Saint-\u00c9tienne",
+    "coords": [
+     45.4397,
+     4.3872
+    ],
+    "address": "Saint-\u00c9tienne, Auvergne-Rh\u00f4ne-Alpes, France"
+   },
+   "region_id": "fr-lyon"
+  },
+  "annecy": {
+   "city_name": "Annecy",
+   "city_id": "city-fr-annecy",
+   "city_name_localization_key": "DL_CITY_NAME_FR_ANNECY",
+   "city_slug": "annecy",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Annecy",
+    "coords": [
+     45.8992,
+     6.1294
+    ],
+    "address": "Annecy, Auvergne-Rh\u00f4ne-Alpes, France"
+   },
+   "region_id": "fr-lyon"
+  },
+  "lyon": {
+   "city_name": "Lyon",
+   "city_id": "city-fr-lyon",
+   "city_name_localization_key": "DL_CITY_NAME_FR_LYON",
+   "city_slug": "lyon",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Lyon",
+    "coords": [
+     45.764,
+     4.8357
+    ],
+    "address": "Lyon, Auvergne-Rh\u00f4ne-Alpes, France"
+   },
+   "region_id": "fr-lyon"
+  },
+  "clermontferrand": {
+   "city_name": "Clermont-Ferrand",
+   "city_id": "city-fr-clermontferrand",
+   "city_name_localization_key": "DL_CITY_NAME_FR_CLERMONTFERRAND",
+   "city_slug": "clermontferrand",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Clermont-Ferrand",
+    "coords": [
+     45.7772,
+     3.087
+    ],
+    "address": "Clermont-Ferrand, Auvergne-Rh\u00f4ne-Alpes, France"
+   },
+   "region_id": "fr-lyon"
+  },
+  "valence": {
+   "city_name": "Valence",
+   "city_id": "city-fr-valence",
+   "city_name_localization_key": "DL_CITY_NAME_FR_VALENCE",
+   "city_slug": "valence",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Valence",
+    "coords": [
+     44.9334,
+     4.8924
+    ],
+    "address": "Valence, Auvergne-Rh\u00f4ne-Alpes, France"
+   },
+   "region_id": "fr-lyon"
+  },
+  "stamford": {
+   "city_name": "Stamford",
+   "city_id": "city-us-stamford-ct",
+   "city_greenie": "us-stamford-ct",
+   "city_name_localization_key": "DL_CITY_NAME_US_STAMFORD_CT",
+   "city_slug": "stamford",
+   "show_in_city_switcher": false,
+   "default_place": {
+    "name": "Stamford",
+    "coords": [
+     41.055289,
+     -73.539073
+    ],
+    "address": "7 Bedford St, Stamford, CT 06901, United States"
+   },
+   "region_id": "us-nyc"
+  },
+  "city-us-new-york-city": {
+   "city_name": "New York City",
+   "city_id": "city-us-new-york-city",
+   "city_name_localization_key": "DL_CITY_NAME_US_NEW_YORK_CITY",
+   "region_id": "us-nyc",
+   "city_slug": "city-us-new-york-city",
+   "default_place": {
+    "coords": [
+     40.65476001248997,
+     -73.99701250826519
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-newark": {
+   "city_name": "Newark",
+   "city_id": "city-us-newark",
+   "city_name_localization_key": "DL_CITY_NAME_US_NEWARK",
+   "region_id": "us-nyc",
+   "city_slug": "city-us-newark",
+   "default_place": {
+    "coords": [
+     40.72900386428572,
+     -74.18403977857142
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-seattle": {
+   "city_name": "Seattle",
+   "city_id": "city-us-seattle",
+   "city_name_localization_key": "DL_CITY_NAME_US_SEATTLE",
+   "region_id": "us-seattle",
+   "city_slug": "city-us-seattle",
+   "default_place": {
+    "coords": [
+     47.59006200416667,
+     -122.32367282916668
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "springdale": {
+   "city_name": "Northwest Arkansas",
+   "city_id": "city-us-springdale",
+   "city_name_localization_key": "DL_CITY_NAME_US_ARKANSAS",
+   "city_slug": "springdale",
+   "show_in_city_switcher": false,
+   "region_id": "us-arkansas",
+   "default_place": {
+    "coords": [
+     36.24980837499999,
+     -94.23859575
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "stlouis": {
+   "city_name": "St Louis",
+   "city_id": "city-us-stlouis",
+   "city_name_localization_key": "DL_CITY_NAME_US_ST_LOUIS",
+   "city_slug": "stlouis",
+   "show_in_city_switcher": false,
+   "region_id": "us-stlouis",
+   "default_place": {
+    "coords": [
+     38.70363130954286,
+     -90.11084420339999
+    ],
+    "name": "Sample Place"
+   },
+   "cobranding": {
+    "branding_partner_id": "cfc-area-stlouis",
+    "disable_advertising": false,
+    "logo_credit_line_localization_key": "COBRANDING_CREDIT_LINE_IN_PARTNERSHIP",
+    "images": {
+     "logo_on_dark": {
+      "resources": [
+       "cobranding-on-dark-us-stlouis.svg",
+       "cobranding-on-dark-us-stlouis@3x.png",
+       "cobranding-on-dark-us-stlouis@2x.png"
+      ],
+      "width": 160,
+      "height": 60
+     }
+    }
+   }
+  },
+  "quebeccity": {
+   "city_name": "Quebec City",
+   "city_id": "city-ca-quebeccity",
+   "city_name_localization_key": "DL_CITY_NAME_US_QUEBEC",
+   "city_slug": "quebeccity",
+   "show_in_city_switcher": false,
+   "region_id": "ca-quebec",
+   "default_place": {
+    "coords": [
+     46.859038500000004,
+     -71.5291743
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-tacoma": {
+   "city_name": "Tacoma",
+   "city_id": "city-us-tacoma",
+   "city_name_localization_key": "DL_CITY_NAME_US_TACOMA",
+   "region_id": "us-seattle",
+   "city_slug": "city-us-tacoma",
+   "default_place": {
+    "coords": [
+     47.25610483789473,
+     -122.44812022842103
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-berkeley": {
+   "city_name": "Berkeley",
+   "city_id": "city-us-berkeley",
+   "city_name_localization_key": "DL_CITY_NAME_US_BERKELEY",
+   "region_id": "us-sf",
+   "city_slug": "city-us-berkeley",
+   "default_place": {
+    "coords": [
+     37.87358318571429,
+     -122.30956487142859
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-oakland": {
+   "city_name": "Oakland",
+   "city_id": "city-us-oakland",
+   "city_name_localization_key": "DL_CITY_NAME_US_OAKLAND",
+   "region_id": "us-sf",
+   "city_slug": "city-us-oakland",
+   "default_place": {
+    "coords": [
+     37.759985807046434,
+     -122.22208914780079
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-san-francisco": {
+   "city_name": "San Francisco",
+   "city_id": "city-us-san-francisco",
+   "city_name_localization_key": "DL_CITY_NAME_US_SAN_FRANCISCO",
+   "region_id": "us-sf",
+   "city_slug": "city-us-san-francisco",
+   "default_place": {
+    "coords": [
+     37.80627657826087,
+     -122.49220173913044
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-us-san-jose": {
+   "city_name": "San Jose",
+   "city_id": "city-us-san-jose",
+   "city_name_localization_key": "DL_CITY_NAME_US_SAN_JOSE",
+   "region_id": "us-sf",
+   "city_slug": "city-us-san-jose",
+   "default_place": {
+    "coords": [
+     37.27404834888888,
+     -121.82005600444445
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-greater-london": {
+   "city_id": "city-uk-greater-london",
+   "city_name": "London",
+   "city_name_localization_key": "DL_CITY_NAME_UK_GREATER_LONDON",
+   "region_id": "uk-london",
+   "city_slug": "city-uk-greater-london",
+   "default_place": {
+    "coords": [
+     51.4691913021739,
+     -0.08163599130434783
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-brighton-and-hove": {
+   "city_id": "city-uk-brighton-and-hove",
+   "city_name": "Brighton and Hove",
+   "city_name_localization_key": "DL_CITY_NAME_UK_BRIGHTON_AND_HOVE",
+   "region_id": "uk-london",
+   "city_slug": "city-uk-brighton-and-hove",
+   "default_place": {
+    "coords": [
+     50.84282543529412,
+     -0.11334317058823529
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-cambridge": {
+   "city_id": "city-uk-cambridge",
+   "city_name": "Cambridge",
+   "city_name_localization_key": "DL_CITY_NAME_UK_CAMBRIDGE",
+   "region_id": "uk-london",
+   "city_slug": "city-uk-cambridge",
+   "default_place": {
+    "coords": [
+     52.19561073999999,
+     0.14551280999999996
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-sheffield": {
+   "city_id": "city-uk-sheffield",
+   "city_name": "Sheffield",
+   "city_name_localization_key": "DL_CITY_NAME_UK_SHEFFIELD",
+   "region_id": "uk-manchester",
+   "city_slug": "city-uk-sheffield",
+   "default_place": {
+    "coords": [
+     53.39893568399999,
+     -1.5341562399999997
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-manchester": {
+   "city_id": "city-uk-manchester",
+   "city_name": "Manchester",
+   "city_name_localization_key": "DL_CITY_NAME_UK_MANCHESTER",
+   "region_id": "uk-manchester",
+   "city_slug": "city-uk-manchester",
+   "default_place": {
+    "coords": [
+     53.53790791153846,
+     -2.3255241884615385
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-liverpool": {
+   "city_id": "city-uk-liverpool",
+   "city_name": "Liverpool",
+   "city_name_localization_key": "DL_CITY_NAME_UK_LIVERPOOL",
+   "region_id": "uk-manchester",
+   "city_slug": "city-uk-liverpool",
+   "default_place": {
+    "coords": [
+     53.39032803333334,
+     -2.8829248611111113
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-peterborough": {
+   "city_name": "Peterborough",
+   "city_id": "city-uk-peterborough",
+   "city_name_localization_key": "DL_CITY_NAME_UK_PETERBOROUGH",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-peterborough",
+   "default_place": {
+    "coords": [
+     52.606037333333326,
+     -0.3230416
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "shropshire": {
+   "city_name": "Shropshire",
+   "city_id": "city-uk-shropshire",
+   "city_name_localization_key": "DL_CITY_NAME_UK_SHROPSHIRE",
+   "city_greenie": "uk-shropshire",
+   "city_slug": "shropshire",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Shrewsbury",
+    "coords": [
+     52.712123,
+     -2.75014
+    ],
+    "address": "Shrewsbury Station, Shrewsbury, Shropshire, England, SY1 2AU, United Kingdom"
+   },
+   "region_id": "uk-birmingham",
+   "cobranding": {
+    "branding_partner_id": "cfc-area-shropshire",
+    "disable_advertising": false,
+    "logo_credit_line_localization_key": "COBRANDING_CREDIT_LINE_IN_PARTNERSHIP",
+    "images": {
+     "logo_on_dark": {
+      "resources": [
+       "cobranding-on-dark-uk-shropshire.svg",
+       "cobranding-on-dark-uk-shropshire@2x.png"
+      ],
+      "width": 160,
+      "height": 60
+     }
+    }
+   }
+  },
+  "herefordshire": {
+   "city_name": "Herefordshire",
+   "city_id": "city-uk-herefordshire",
+   "city_name_localization_key": "DL_CITY_NAME_UK_HEREFORDSHIRE",
+   "city_greenie": "uk-herefordshire",
+   "city_slug": "herefordshire",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Hereford",
+    "coords": [
+     52.056656,
+     -2.715551
+    ],
+    "address": "High Town, Hereford, Herefordshire, England, HR1 2AB, United Kingdom"
+   },
+   "region_id": "uk-birmingham",
+   "cobranding": {
+    "branding_partner_id": "cfc-area-herefordshire",
+    "disable_advertising": false,
+    "logo_credit_line_localization_key": "COBRANDING_CREDIT_LINE_IN_PARTNERSHIP",
+    "images": {
+     "logo_on_dark": {
+      "resources": [
+       "cobranding-on-dark-uk-herefordshire.svg",
+       "cobranding-on-dark-uk-herefordshire@3x.png",
+       "cobranding-on-dark-uk-herefordshire@2x.png"
+      ],
+      "width": 160,
+      "height": 60
+     }
+    }
+   }
+  },
+  "lincolnshire": {
+   "city_name": "Lincolnshire",
+   "city_id": "city-uk-lincolnshire",
+   "city_name_localization_key": "DL_CITY_NAME_UK_LINCOLNSHIRE",
+   "city_greenie": "uk-lincolnshire",
+   "city_slug": "lincolnshire",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Cornhill Market",
+    "coords": [
+     53.22799024545706,
+     -0.5391365315285328
+    ],
+    "address": "Central Market, Sincil St, Lincoln LN5 7ET, United Kingdom"
+   },
+   "region_id": "uk-birmingham",
+   "cobranding": {
+    "branding_partner_id": "cfc-area-lincolnshire",
+    "disable_advertising": false,
+    "logo_credit_line_localization_key": "COBRANDING_CREDIT_LINE_IN_PARTNERSHIP",
+    "images": {
+     "logo_on_dark": {
+      "resources": [
+       "cobranding-on-dark-lincolnshire.svg",
+       "cobranding-on-dark-lincolnshire@3x.png",
+       "cobranding-on-dark-lincolnshire@2x.png"
+      ],
+      "width": 160,
+      "height": 60
+     }
+    }
+   }
+  },
+  "city-uk-leeds": {
+   "city_id": "city-uk-leeds",
+   "city_name": "Leeds",
+   "city_name_localization_key": "DL_CITY_NAME_UK_LEEDS",
+   "region_id": "uk-manchester",
+   "city_slug": "city-uk-leeds",
+   "default_place": {
+    "coords": [
+     53.83351042000001,
+     -1.5122066133333334
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-york": {
+   "city_id": "city-uk-york",
+   "city_name": "York",
+   "region_id": "uk-manchester",
+   "city_slug": "city-uk-york",
+   "default_place": {
+    "coords": [
+     53.969690364949955,
+     -1.075141699597501
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-south-yorkshire": {
+   "city_id": "city-uk-south-yorkshire",
+   "city_name": "South Yorkshire",
+   "city_name_localization_key": "DL_CITY_NAME_UK_SOUTH_YORKSHIRE",
+   "region_id": "uk-manchester",
+   "city_slug": "city-uk-south-yorkshire",
+   "default_place": {
+    "coords": [
+     53.48281845011265,
+     -1.395425409118154
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-birmingham": {
+   "city_name": "Birmingham",
+   "city_id": "city-uk-birmingham",
+   "city_name_localization_key": "DL_CITY_NAME_UK_BIRMINGHAM",
+   "region_id": "uk-birmingham",
+   "city_greenie": "birmingham",
+   "default_place": {
+    "name": "Victoria Square",
+    "coords": [
+     52.479752,
+     -1.902536
+    ],
+    "address": "50 Pinfold Street, Birmingham, B2 4AY",
+    "place_id": "0cf6c813-1c14-4abc-87ef-753a627c637c"
+   },
+   "city_slug": "city-uk-birmingham"
+  },
+  "city-uk-coventry": {
+   "city_name": "Coventry",
+   "city_id": "city-uk-coventry",
+   "city_name_localization_key": "DL_CITY_NAME_UK_COVENTRY",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-coventry",
+   "default_place": {
+    "coords": [
+     52.411032894340345,
+     -1.5181030317115363
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-derby": {
+   "city_name": "Derby",
+   "city_id": "city-uk-derby",
+   "city_name_localization_key": "DL_CITY_NAME_UK_DERBY",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-derby",
+   "default_place": {
+    "coords": [
+     52.90868201696968,
+     -1.473615156022191
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-leicester": {
+   "city_name": "Leicester",
+   "city_id": "city-uk-leicester",
+   "city_name_localization_key": "DL_CITY_NAME_UK_LEICESTER",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-leicester",
+   "default_place": {
+    "coords": [
+     52.64885165444576,
+     -1.1103370724501018
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-nottingham": {
+   "city_name": "Nottingham",
+   "city_id": "city-uk-nottingham",
+   "city_name_localization_key": "DL_CITY_NAME_UK_NOTTINGHAM",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-nottingham",
+   "default_place": {
+    "coords": [
+     52.963940340113496,
+     -1.1630030865128826
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-stokeontrent": {
+   "city_name": "Stoke-on-Trent",
+   "city_id": "city-uk-stokeontrent",
+   "city_name_localization_key": "DL_CITY_NAME_UK_STOKEONTRENT",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-stokeontrent",
+   "default_place": {
+    "coords": [
+     53.0204003869928,
+     -2.177893911613539
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-telford": {
+   "city_name": "Telford",
+   "city_id": "city-uk-telford",
+   "city_name_localization_key": "DL_CITY_NAME_UK_TELFORD",
+   "city_greenie": "uk-telford-and-wrekin",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-telford",
+   "default_place": {
+    "coords": [
+     52.74543199303212,
+     -2.4337728918269503
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-wolverhampton": {
+   "city_name": "Wolverhampton",
+   "city_id": "city-uk-wolverhampton",
+   "city_name_localization_key": "DL_CITY_NAME_UK_WOLVERHAMPTON",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-wolverhampton",
+   "default_place": {
+    "coords": [
+     52.59318071528356,
+     -2.1202167913971874
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-worcestershire": {
+   "city_name": "Worcestershire",
+   "city_id": "city-uk-worcestershire",
+   "city_name_localization_key": "DL_CITY_NAME_UK_WORCESTERSHIRE",
+   "city_greenie": "uk-worcestershire",
+   "region_id": "uk-birmingham",
+   "city_slug": "city-uk-worcestershire",
+   "default_place": {
+    "coords": [
+     52.21853465575837,
+     -2.220346297756959
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-newcastle": {
+   "city_id": "city-uk-newcastle",
+   "city_name": "Newcastle-upon-Tyne",
+   "city_name_localization_key": "DL_CITY_NAME_UK_NEWCASTLE",
+   "city_greenie": "newcastle",
+   "region_id": "uk-newcastle",
+   "city_slug": "city-uk-newcastle",
+   "default_place": {
+    "coords": [
+     55.005317289328765,
+     -1.6488708790863598
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-sunderland": {
+   "city_id": "city-uk-sunderland",
+   "city_name": "Sunderland",
+   "city_name_localization_key": "DL_CITY_NAME_UK_NEWCASTLE",
+   "city_greenie": "newcastle",
+   "region_id": "uk-newcastle",
+   "city_slug": "city-uk-sunderland",
+   "default_place": {
+    "coords": [
+     54.882604704586896,
+     -1.4139834562771079
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-durham": {
+   "city_id": "city-uk-durham",
+   "city_name": "Durham",
+   "city_name_localization_key": "DL_CITY_NAME_UK_NEWCASTLE",
+   "city_greenie": "newcastle",
+   "region_id": "uk-newcastle",
+   "city_slug": "city-uk-durham",
+   "default_place": {
+    "coords": [
+     54.78042312425563,
+     -1.5818163865077195
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "city-uk-middlesbrough": {
+   "city_id": "city-uk-middlesbrough",
+   "city_name": "Middlesbrough",
+   "city_name_localization_key": "DL_CITY_NAME_UK_NEWCASTLE",
+   "city_greenie": "newcastle",
+   "region_id": "uk-newcastle",
+   "city_slug": "city-uk-middlesbrough",
+   "default_place": {
+    "coords": [
+     54.56846088162516,
+     -1.2115127233785679
+    ],
+    "name": "Sample Place"
+   }
+  },
+  "utsunomiya": {
+   "city_name": "Utsunomiya",
+   "city_id": "city-jp-utsunomiya",
+   "city_name_localization_key": "DL_REGION_NAME_JP_UTSUNOMIYA",
+   "city_slug": "utsunomiya",
+   "city_greenie": "jp-utsunomiya",
+   "show_in_city_switcher": true,
+   "default_place": {
+    "name": "Utsunomiya Station",
+    "coords": [
+     36.5591,
+     139.8982
+    ],
+    "address": "Utsunomiya, Tochigi, Japan",
+    "place_id": "ChIJEwixTHRnH2ARgwAFfkAT-88"
+   },
+   "region_id": "jp-utsunomiya"
+  }
+ }
+}

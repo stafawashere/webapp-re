@@ -29,5 +29,11 @@ dist/
 
 # pipeline output that belongs in site workspaces, never here
 var/
+!examples/citymapper/var/
+examples/citymapper/var/*
+!examples/citymapper/var/state/
+examples/citymapper/var/state/*
+!examples/citymapper/var/state/readiness.json
+!examples/citymapper/var/public/
 apps/
 .pytest_cache/

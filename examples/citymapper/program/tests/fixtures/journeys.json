@@ -1,0 +1,563 @@
+{
+   "sections": [
+      {
+         "journeys": [
+            0,
+            1
+         ],
+         "name": "Suggested",
+         "id": "SUGGESTED"
+      },
+      {
+         "journeys": [
+            2
+         ],
+         "name": "More Metro",
+         "id": "METRO_ONLY",
+         "ad_may_follow": true
+      }
+   ],
+   "shared": {
+      "station_exits": [
+         {
+            "id": "MetroHarbourSq_E1",
+            "coords": [
+               10.5121,
+               20.4882
+            ],
+            "station_id": "MetroHarbourSq",
+            "name": "Quay Rd exit"
+         }
+      ],
+      "trip_curation_urls": [
+         {
+            "href": "https://citymapper.com/trip-curation/carriages",
+            "id": "web_edit_carriages",
+            "title": "Where to Get On?"
+         }
+      ]
+   },
+   "journeys": [
+      {
+         "start": {
+            "coords": [
+               10.5,
+               20.5
+            ],
+            "name": "Harbour Square"
+         },
+         "end": {
+            "coords": [
+               10.6,
+               20.7
+            ],
+            "name": "Saltmarsh Pier"
+         },
+         "walk_seconds": 270,
+         "duration_seconds": 1500,
+         "calories": 21,
+         "legs": [
+            {
+               "duration_seconds": 90,
+               "mode": "walk",
+               "shape": [
+                  [
+                     10.5,
+                     20.5
+                  ],
+                  [
+                     10.512,
+                     20.488
+                  ]
+               ],
+               "distance_meters": 120,
+               "end_id": "Platform_MetroHarbourSq_1",
+               "departure_time": "2026-10-12T08:31:30+09:00",
+               "arrival_time": "2026-10-12T08:31:30+09:00"
+            },
+            {
+               "mode": "transit",
+               "routes": [
+                  {
+                     "id": "A",
+                     "brand_id": "PortvaleMetro",
+                     "display_name": "A",
+                     "affinities": [
+                        "metro"
+                     ],
+                     "live_request_types": [
+                        "metrostation"
+                     ],
+                     "color": "#1A6FB0",
+                     "ui_color": "#1A6FB0",
+                     "text_color": "#FFFFFF",
+                     "icon_name": "zz-portvale-metro-a",
+                     "icon_contains_name": true
+                  }
+               ],
+               "stops": [
+                  {
+                     "id": "MetroHarbourSq",
+                     "name": "Harbour Sq",
+                     "coords": [
+                        10.512,
+                        20.488
+                     ],
+                     "spoken_name": "Harbour Square"
+                  },
+                  {
+                     "id": "MetroDockRd",
+                     "name": "Dock Rd",
+                     "coords": [
+                        10.556,
+                        20.531
+                     ],
+                     "spoken_name": "Dock Road",
+                     "duration_seconds_to_here": 180
+                  },
+                  {
+                     "id": "MetroSaltmarsh",
+                     "name": "Saltmarsh",
+                     "coords": [
+                        10.598,
+                        20.602
+                     ],
+                     "spoken_name": "Saltmarsh",
+                     "duration_seconds_to_here": 420
+                  }
+               ],
+               "shape": [
+                  [
+                     10.512,
+                     20.488
+                  ],
+                  [
+                     10.556,
+                     20.531
+                  ],
+                  [
+                     10.598,
+                     20.602
+                  ]
+               ],
+               "frequency": {
+                  "duration_seconds": 420,
+                  "headway_seconds": 300
+               },
+               "platform_description": "Southbound",
+               "pattern_ids": [
+                  {
+                     "pattern_id": "A_0_1__Stations",
+                     "direction_id": "0"
+                  }
+               ],
+               "boarding_info": {
+                  "carriage_info_list": [
+                     {
+                        "index": 0,
+                        "text": "Front"
+                     }
+                  ],
+                  "total_carriages": 4
+               },
+               "departure_time": "2026-10-12T08:31:30+09:00",
+               "arrival_time": "2026-10-12T08:45:00+09:00"
+            },
+            {
+               "duration_seconds": 180,
+               "mode": "walk",
+               "shape": [
+                  [
+                     10.598,
+                     20.602
+                  ],
+                  [
+                     10.6,
+                     20.7
+                  ]
+               ],
+               "distance_meters": 240,
+               "end_id": "Platform_MetroHarbourSq_1",
+               "departure_time": "2026-10-12T08:45:00+09:00",
+               "arrival_time": "2026-10-12T08:45:00+09:00"
+            }
+         ],
+         "signature": "{\"car\": 4810, \"duration\": 1500, \"end\": {\"coords\": \"10.6,20.7\", \"name\": \"Saltmarsh Pier\"}, \"jr_index\": 0, \"legs\": [{\"distance\": 120, \"duration\": 90, \"mode\": \"walk\"}]}",
+         "outdoor_walk_minutes": 5,
+         "distance_meters": 6410,
+         "formatted_price": "$2.10",
+         "price_amount": "2.10",
+         "currency_code": "USD",
+         "trip_curation_url_ids": [
+            "web_edit_carriages"
+         ],
+         "journey_equivalence_hash": "a1b2c3d4e5f60718293a4b5c0",
+         "log": {
+            "Modes": [
+               "Metro"
+            ],
+            "Brands": [
+               "PortvaleMetro"
+            ],
+            "Affinities": [
+               "metro"
+            ],
+            "Routes": [
+               "A"
+            ],
+            "Mode Category": "Transit"
+         }
+      },
+      {
+         "start": {
+            "coords": [
+               10.5,
+               20.5
+            ],
+            "name": "Harbour Square"
+         },
+         "end": {
+            "coords": [
+               10.6,
+               20.7
+            ],
+            "name": "Saltmarsh Pier"
+         },
+         "walk_seconds": 270,
+         "duration_seconds": 1740,
+         "calories": 21,
+         "legs": [
+            {
+               "duration_seconds": 90,
+               "mode": "walk",
+               "shape": [
+                  [
+                     10.5,
+                     20.5
+                  ],
+                  [
+                     10.512,
+                     20.488
+                  ]
+               ],
+               "distance_meters": 120,
+               "end_id": "Platform_MetroHarbourSq_1",
+               "departure_time": "2026-10-12T08:34:00+09:00",
+               "arrival_time": "2026-10-12T08:34:00+09:00"
+            },
+            {
+               "mode": "transit",
+               "routes": [
+                  {
+                     "id": "C",
+                     "brand_id": "PortvaleMetro",
+                     "display_name": "C",
+                     "affinities": [
+                        "metro"
+                     ],
+                     "live_request_types": [
+                        "metrostation"
+                     ],
+                     "status": {
+                        "level": 1,
+                        "summary": "Minor Delays",
+                        "description_html": "<span>Minor delays</span>"
+                     },
+                     "color": "#E0812B",
+                     "ui_color": "#E0812B",
+                     "text_color": "#FFFFFF",
+                     "icon_name": "zz-portvale-metro-c",
+                     "icon_contains_name": true
+                  }
+               ],
+               "stops": [
+                  {
+                     "id": "MetroHarbourSq",
+                     "name": "Harbour Sq",
+                     "coords": [
+                        10.512,
+                        20.488
+                     ],
+                     "spoken_name": "Harbour Square"
+                  },
+                  {
+                     "id": "MetroDockRd",
+                     "name": "Dock Rd",
+                     "coords": [
+                        10.556,
+                        20.531
+                     ],
+                     "spoken_name": "Dock Road",
+                     "duration_seconds_to_here": 180
+                  },
+                  {
+                     "id": "MetroSaltmarsh",
+                     "name": "Saltmarsh",
+                     "coords": [
+                        10.598,
+                        20.602
+                     ],
+                     "spoken_name": "Saltmarsh",
+                     "duration_seconds_to_here": 420
+                  }
+               ],
+               "shape": [
+                  [
+                     10.512,
+                     20.488
+                  ],
+                  [
+                     10.556,
+                     20.531
+                  ],
+                  [
+                     10.598,
+                     20.602
+                  ]
+               ],
+               "frequency": {
+                  "duration_seconds": 420,
+                  "headway_seconds": 300
+               },
+               "platform_description": "Southbound",
+               "pattern_ids": [
+                  {
+                     "pattern_id": "C_0_1__Stations",
+                     "direction_id": "0"
+                  }
+               ],
+               "boarding_info": {
+                  "carriage_info_list": [
+                     {
+                        "index": 0,
+                        "text": "Front"
+                     }
+                  ],
+                  "total_carriages": 4
+               },
+               "departure_time": "2026-10-12T08:34:00+09:00",
+               "arrival_time": "2026-10-12T08:52:00+09:00"
+            },
+            {
+               "duration_seconds": 180,
+               "mode": "walk",
+               "shape": [
+                  [
+                     10.598,
+                     20.602
+                  ],
+                  [
+                     10.6,
+                     20.7
+                  ]
+               ],
+               "distance_meters": 240,
+               "end_id": "Platform_MetroHarbourSq_1",
+               "departure_time": "2026-10-12T08:52:00+09:00",
+               "arrival_time": "2026-10-12T08:52:00+09:00"
+            }
+         ],
+         "signature": "{\"car\": 4810, \"duration\": 1740, \"end\": {\"coords\": \"10.6,20.7\", \"name\": \"Saltmarsh Pier\"}, \"jr_index\": 1, \"legs\": [{\"distance\": 120, \"duration\": 90, \"mode\": \"walk\"}]}",
+         "outdoor_walk_minutes": 5,
+         "distance_meters": 6410,
+         "formatted_price": "$2.10",
+         "price_amount": "2.10",
+         "currency_code": "USD",
+         "trip_curation_url_ids": [
+            "web_edit_carriages"
+         ],
+         "journey_equivalence_hash": "a1b2c3d4e5f60718293a4b5c1",
+         "log": {
+            "Modes": [
+               "Metro"
+            ],
+            "Brands": [
+               "PortvaleMetro"
+            ],
+            "Affinities": [
+               "metro"
+            ],
+            "Routes": [
+               "C"
+            ],
+            "Mode Category": "Transit"
+         }
+      },
+      {
+         "start": {
+            "coords": [
+               10.5,
+               20.5
+            ],
+            "name": "Harbour Square"
+         },
+         "end": {
+            "coords": [
+               10.6,
+               20.7
+            ],
+            "name": "Saltmarsh Pier"
+         },
+         "walk_seconds": 270,
+         "duration_seconds": 1980,
+         "calories": 21,
+         "legs": [
+            {
+               "duration_seconds": 90,
+               "mode": "walk",
+               "shape": [
+                  [
+                     10.5,
+                     20.5
+                  ],
+                  [
+                     10.512,
+                     20.488
+                  ]
+               ],
+               "distance_meters": 120,
+               "end_id": "Platform_MetroHarbourSq_1",
+               "departure_time": "2026-10-12T08:40:00+09:00",
+               "arrival_time": "2026-10-12T08:40:00+09:00"
+            },
+            {
+               "mode": "transit",
+               "routes": [
+                  {
+                     "id": "A",
+                     "brand_id": "PortvaleMetro",
+                     "display_name": "A",
+                     "affinities": [
+                        "metro"
+                     ],
+                     "live_request_types": [
+                        "metrostation"
+                     ],
+                     "color": "#1A6FB0",
+                     "ui_color": "#1A6FB0",
+                     "text_color": "#FFFFFF",
+                     "icon_name": "zz-portvale-metro-a",
+                     "icon_contains_name": true
+                  }
+               ],
+               "stops": [
+                  {
+                     "id": "MetroHarbourSq",
+                     "name": "Harbour Sq",
+                     "coords": [
+                        10.512,
+                        20.488
+                     ],
+                     "spoken_name": "Harbour Square"
+                  },
+                  {
+                     "id": "MetroDockRd",
+                     "name": "Dock Rd",
+                     "coords": [
+                        10.556,
+                        20.531
+                     ],
+                     "spoken_name": "Dock Road",
+                     "duration_seconds_to_here": 180
+                  },
+                  {
+                     "id": "MetroSaltmarsh",
+                     "name": "Saltmarsh",
+                     "coords": [
+                        10.598,
+                        20.602
+                     ],
+                     "spoken_name": "Saltmarsh",
+                     "duration_seconds_to_here": 420
+                  }
+               ],
+               "shape": [
+                  [
+                     10.512,
+                     20.488
+                  ],
+                  [
+                     10.556,
+                     20.531
+                  ],
+                  [
+                     10.598,
+                     20.602
+                  ]
+               ],
+               "frequency": {
+                  "duration_seconds": 420,
+                  "headway_seconds": 300
+               },
+               "platform_description": "Southbound",
+               "pattern_ids": [
+                  {
+                     "pattern_id": "A_0_1__Stations",
+                     "direction_id": "0"
+                  }
+               ],
+               "boarding_info": {
+                  "carriage_info_list": [
+                     {
+                        "index": 0,
+                        "text": "Front"
+                     }
+                  ],
+                  "total_carriages": 4
+               },
+               "departure_time": "2026-10-12T08:40:00+09:00",
+               "arrival_time": "2026-10-12T09:01:00+09:00"
+            },
+            {
+               "duration_seconds": 180,
+               "mode": "walk",
+               "shape": [
+                  [
+                     10.598,
+                     20.602
+                  ],
+                  [
+                     10.6,
+                     20.7
+                  ]
+               ],
+               "distance_meters": 240,
+               "end_id": "Platform_MetroHarbourSq_1",
+               "departure_time": "2026-10-12T09:01:00+09:00",
+               "arrival_time": "2026-10-12T09:01:00+09:00"
+            }
+         ],
+         "signature": "{\"car\": 4810, \"duration\": 1980, \"end\": {\"coords\": \"10.6,20.7\", \"name\": \"Saltmarsh Pier\"}, \"jr_index\": 2, \"legs\": [{\"distance\": 120, \"duration\": 90, \"mode\": \"walk\"}]}",
+         "outdoor_walk_minutes": 5,
+         "distance_meters": 6410,
+         "formatted_price": "$2.10",
+         "price_amount": "2.10",
+         "currency_code": "USD",
+         "trip_curation_url_ids": [
+            "web_edit_carriages"
+         ],
+         "journey_equivalence_hash": "a1b2c3d4e5f60718293a4b5c2",
+         "log": {
+            "Modes": [
+               "Metro"
+            ],
+            "Brands": [
+               "PortvaleMetro"
+            ],
+            "Affinities": [
+               "metro"
+            ],
+            "Routes": [
+               "A"
+            ],
+            "Mode Category": "Transit"
+         }
+      }
+   ],
+   "routing_request_id": "00000000-1111-2222-3333-444444444444",
+   "allow_jokes": false,
+   "log": {
+      "Time Mode": "Nowish",
+      "Transit Journeys": 3
+   }
+}

@@ -1,0 +1,10 @@
+#!/bin/sh
+plugin_dir=$(cd "$(dirname "$0")/.." && pwd)
+site_root=$(dirname "$plugin_dir")
+
+if [ ! -d "$site_root/program" ]; then
+   site_root="${WEBAPP_RE_HOME:-$HOME/dev/webapp-re/apps}/citymapper"
+fi
+
+export UV_PROJECT_ENVIRONMENT="$site_root/program/.venv"
+exec uv run --project "$site_root/program" citymapper --env-file "$site_root/.env" "$@"

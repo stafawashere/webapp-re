@@ -1,0 +1,8 @@
+stop-nyc-subway https://citymapper.com/nyc/subway/stations/times-sq-42-st
+stop-nyc-bus https://citymapper.com/nyc/bus/stops/7-avw-44-st
+nearby-nyc-rail https://citymapper.com/nyc/rail/stations?name=Times%20Square&coords=40.75773%2C-73.985708
+nearby-nyc-ferry https://citymapper.com/nyc/ferry/piers?name=Times%20Square&coords=40.75773%2C-73.985708
+directions-london https://citymapper.com/directions?startcoord=51.503324%2C-0.119543&endcoord=51.531683%2C-0.124518&startname=London%20Eye&endname=Kings%20Cross
+city-paris https://citymapper.com/paris
+nearby-paris-metro https://citymapper.com/paris/metro/stations?name=Chatelet&coords=48.858370%2C2.347000
+meet https://citymapper.com/meet

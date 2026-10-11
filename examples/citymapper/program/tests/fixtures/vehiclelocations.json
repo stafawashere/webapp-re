@@ -1,0 +1,19 @@
+{
+   "route": {
+      "id": "A",
+      "brand_id": "PortvaleMetro",
+      "display_name": "A",
+      "affinities": [
+         "metro"
+      ],
+      "live_request_types": [
+         "metrostation"
+      ],
+      "color": "#1A6FB0",
+      "ui_color": "#1A6FB0",
+      "text_color": "#FFFFFF",
+      "icon_name": "zz-portvale-metro-a",
+      "icon_contains_name": true
+   },
+   "vehicle_locations": []
+}

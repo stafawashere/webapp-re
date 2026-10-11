@@ -1,0 +1,45 @@
+{
+   "results": [
+      {
+         "id": "results",
+         "name": "Results",
+         "result_type": "heading",
+         "search_providers": [
+            {
+               "id": "google",
+               "name": "Google"
+            }
+         ]
+      },
+      {
+         "address": "Quay Rd, Portvale",
+         "id": "google:ChIJFakePlaceAlpha",
+         "name": "Lantern Market",
+         "place_details_available": true,
+         "result_type": "result",
+         "source": "google",
+         "type": "place"
+      },
+      {
+         "alternate_search_providers": [],
+         "id": "results",
+         "included_search_providers": [
+            {
+               "id": "google",
+               "name": "Google"
+            }
+         ],
+         "name": "Results",
+         "result_type": "attribution"
+      }
+   ],
+   "included_search_providers": [
+      {
+         "id": "google",
+         "name": "Google"
+      }
+   ],
+   "alternate_search_providers": [],
+   "detailed_search_providers": [],
+   "query": "Lantern Market"
+}

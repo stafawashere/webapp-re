@@ -1,0 +1,119 @@
+{
+   "region_id": "zz-portvale",
+   "region_name": "Portvale",
+   "region_name_localization_key": "REGION_NAME_PORTVALE",
+   "region_name_aliases": [
+      "Port V",
+      "Portvale Bay"
+   ],
+   "region_slug": "portvale",
+   "region_slug_aliases": [
+      "port-vale"
+   ],
+   "region_dude": "gulls",
+   "bounding_box": {
+      "southwest_corner_coords": [
+         10.0,
+         20.0
+      ],
+      "northeast_corner_coords": [
+         11.0,
+         21.0
+      ]
+   },
+   "default_place": {
+      "name": "Harbour Square",
+      "name_localization_key": "PLACE_HARBOUR_SQUARE",
+      "coords": [
+         10.5,
+         20.5
+      ],
+      "address": "Harbour Sq, Portvale",
+      "place_id": "0f1e2d3c-4b5a-6978-8796-a5b4c3d2e1f0"
+   },
+   "nearby_modes": [
+      {
+         "mode_id": "zz-portvale-metro",
+         "short_title": "Metro",
+         "short_title_localization_key": "NEARBY_SHORT_TITLE_ZZ_METRO",
+         "mode_slug": "metro",
+         "affinities": [
+            "metro"
+         ],
+         "image_name_stem": "zz-portvale-metro",
+         "kind_ids": [
+            "transitstop"
+         ],
+         "mode_type": "transit",
+         "request_brand_ids": [
+            "PortvaleMetro"
+         ],
+         "default_views": [
+            "list"
+         ]
+      },
+      {
+         "mode_id": "zz-portvale-bikes",
+         "short_title": "Harbour Bikes",
+         "short_title_localization_key": "NEARBY_SHORT_TITLE_ZZ_BIKES",
+         "mode_slug": "bike",
+         "affinities": [
+            "cycle"
+         ],
+         "image_name_stem": "zz-portvale-bike",
+         "kind_ids": [
+            "cycledock"
+         ],
+         "mode_type": "cyclehire",
+         "default_promoted_brand_id": "HarbourBikes",
+         "request_brand_ids": [
+            "HarbourBikes"
+         ],
+         "default_views": [
+            "map"
+         ]
+      },
+      {
+         "mode_id": "zz-portvale-ferry",
+         "short_title": "Ferry",
+         "short_title_localization_key": "NEARBY_SHORT_TITLE_ZZ_FERRY",
+         "mode_slug": "ferry",
+         "affinities": [
+            "ferry"
+         ],
+         "image_name_stem": "zz-portvale-ferry",
+         "kind_ids": [
+            "ferrystop"
+         ],
+         "mode_type": "transit",
+         "request_brand_ids": [],
+         "default_views": [
+            "list"
+         ]
+      }
+   ],
+   "mail_prefix": "PVL",
+   "temperature_units": "c",
+   "timezone": "Asia/Tokyo",
+   "region_is_launched": true,
+   "web_enabled": true,
+   "api_enabled": true,
+   "core_brand_ids": [
+      "PortvaleMetro",
+      "PortvaleBus"
+   ],
+   "default_cycle_brand_id": "HarbourBikes",
+   "sample_bus_number": "12",
+   "clock": "24",
+   "distance_units": "km",
+   "feature_walk_routing": true,
+   "feature_cycle_routing": true,
+   "feature_cab_routing": true,
+   "brand_ids_in_line_status": [
+      "PortvaleMetro"
+   ],
+   "region_default_languages": [
+      "en-GB"
+   ],
+   "region_growth_percent": 100
+}

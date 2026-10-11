@@ -1,0 +1,72 @@
+{
+ "results": [
+  {
+   "id": "F32",
+   "outcome": "fixed",
+   "reason": "Defect confirmed before the change: cdp_capture.py line 30 SENSITIVE_HEADER did not match user-device, and all 24 partition captures held the raw 24-character User-Device value twice each (48 total, request_headers and wire_headers), all mode 0644. Fix in skills/webapp-re/scripts/cdp_capture.py (the ~/.claude/skills/webapp-re path is a symlink to it): SENSITIVE_HEADER now also matches ^uid$, user-device and device-id; write_capture opens the file with os.open(..., 0o600) and os.fchmod(descriptor, 0o600), so a rewrite of an existing 0644 file also ends up 0600. Scrubbed the 24 captures in place: only changed lines were re-serialized, the value became '<redacted len=24>', line count is unchanged (952 before and after), and all 24 are now -rw-------. Post-check: the before snapshot still has 48 raw occurrences (control), var/captures now has 0 raw occurrences and 48 redacted user-device entries. The value appeared nowhere else in the captures (no bodies, URLs or post_data). Out of partition and left untouched: (1) optimize/run-2026-10-10-092702/before/.../var/captures/run-2026-10-10-082844-*.jsonl, which holds 24 raw copies (48 occurrences) as the optimize rollback snapshot. The main session should decide whether to scrub or delete those. (2) run-2026-10-10-082844-stop-nyc-bike.jsonl and the two replay-*.jsonl files hold no User-Device value but are still mode 0644. No regression test was added because the pipeline has no test file for scripts/ and none is in this partition. The proof is the scratch probe described in bite_proof.",
+   "files_changed": [
+    "skills/webapp-re/scripts/cdp_capture.py",
+    "var/captures/run-2026-10-10-082844-cities.jsonl",
+    "var/captures/run-2026-10-10-082844-city-london.jsonl",
+    "var/captures/run-2026-10-10-082844-city-nyc.jsonl",
+    "var/captures/run-2026-10-10-082844-city-paris.jsonl",
+    "var/captures/run-2026-10-10-082844-directions-london.jsonl",
+    "var/captures/run-2026-10-10-082844-directions-nyc.jsonl",
+    "var/captures/run-2026-10-10-082844-directions-paris-depart.jsonl",
+    "var/captures/run-2026-10-10-082844-home.jsonl",
+    "var/captures/run-2026-10-10-082844-line-london-bakerloo.jsonl",
+    "var/captures/run-2026-10-10-082844-line-nyc-subway-6.jsonl",
+    "var/captures/run-2026-10-10-082844-meet.jsonl",
+    "var/captures/run-2026-10-10-082844-nearby-nyc-bike.jsonl",
+    "var/captures/run-2026-10-10-082844-nearby-nyc-bus.jsonl",
+    "var/captures/run-2026-10-10-082844-nearby-nyc-ferry.jsonl",
+    "var/captures/run-2026-10-10-082844-nearby-nyc-rail.jsonl",
+    "var/captures/run-2026-10-10-082844-nearby-nyc-subway.jsonl",
+    "var/captures/run-2026-10-10-082844-nearby-paris-metro.jsonl",
+    "var/captures/run-2026-10-10-082844-news.jsonl",
+    "var/captures/run-2026-10-10-082844-status-nyc.jsonl",
+    "var/captures/run-2026-10-10-082844-stop-nyc-bus.jsonl",
+    "var/captures/run-2026-10-10-082844-stop-nyc-ferry.jsonl",
+    "var/captures/run-2026-10-10-082844-stop-nyc-rail.jsonl",
+    "var/captures/run-2026-10-10-082844-stop-nyc-subway.jsonl",
+    "var/captures/run-2026-10-10-082844-stop-paris-metro.jsonl"
+   ],
+   "tests_added": [],
+   "bite_proof": "No pytest test was added because there is no test file for scripts/ in this partition. Defect caught: write_capture leaves a User-Device, uid or device-id header raw, or writes the capture group or world readable. The check is a scratch probe (scratchpad/probe_capture_redaction.py, outside the repo). It stubs websockets, calls write_capture with a marker value in User-Device, user-device, uid and x-device-id, and checks the raw marker count, the file mode and an Accept header kept as a positive control. Against the fixed script it printed 'raw marker occurrences: 0', 'file mode: 0o600', 'PROBE PASS' (exit 0). Against the original saved copy (the break) it printed 'raw marker occurrences: 4', 'request user-device: DEVICEMARKER0123456789ab', 'file mode: 0o644', 'PROBE FAIL' (exit 1). A second probe chmodded an existing capture to 0o644 and rewrote it. It printed 'before: 0o644' and 'after rewrite of existing file: 0o600'.",
+   "live_check": "None needed. The change only affects how captures are written locally. On the next real capture window you can run: ls -l <site>/var/captures/<run>-<label>.jsonl (expect -rw-------) and grep -ci '\"user-device\": \"<redacted' on that file (expect a nonzero count wherever the header was sent)."
+  }
+ ],
+ "needs_files": [],
+ "failed_partitions": [],
+ "changed": [
+  "skills/webapp-re/scripts/cdp_capture.py",
+  "var/captures/run-2026-10-10-082844-cities.jsonl",
+  "var/captures/run-2026-10-10-082844-city-london.jsonl",
+  "var/captures/run-2026-10-10-082844-city-nyc.jsonl",
+  "var/captures/run-2026-10-10-082844-city-paris.jsonl",
+  "var/captures/run-2026-10-10-082844-directions-london.jsonl",
+  "var/captures/run-2026-10-10-082844-directions-nyc.jsonl",
+  "var/captures/run-2026-10-10-082844-directions-paris-depart.jsonl",
+  "var/captures/run-2026-10-10-082844-home.jsonl",
+  "var/captures/run-2026-10-10-082844-line-london-bakerloo.jsonl",
+  "var/captures/run-2026-10-10-082844-line-nyc-subway-6.jsonl",
+  "var/captures/run-2026-10-10-082844-meet.jsonl",
+  "var/captures/run-2026-10-10-082844-nearby-nyc-bike.jsonl",
+  "var/captures/run-2026-10-10-082844-nearby-nyc-bus.jsonl",
+  "var/captures/run-2026-10-10-082844-nearby-nyc-ferry.jsonl",
+  "var/captures/run-2026-10-10-082844-nearby-nyc-rail.jsonl",
+  "var/captures/run-2026-10-10-082844-nearby-nyc-subway.jsonl",
+  "var/captures/run-2026-10-10-082844-nearby-paris-metro.jsonl",
+  "var/captures/run-2026-10-10-082844-news.jsonl",
+  "var/captures/run-2026-10-10-082844-status-nyc.jsonl",
+  "var/captures/run-2026-10-10-082844-stop-nyc-bus.jsonl",
+  "var/captures/run-2026-10-10-082844-stop-nyc-ferry.jsonl",
+  "var/captures/run-2026-10-10-082844-stop-nyc-rail.jsonl",
+  "var/captures/run-2026-10-10-082844-stop-nyc-subway.jsonl",
+  "var/captures/run-2026-10-10-082844-stop-paris-metro.jsonl"
+ ],
+ "review": {
+  "violations": [],
+  "notes": "I found no rule violations in partition P9 (finding F32).\n\ncdp_capture.py (skills/webapp-re/scripts/cdp_capture.py, which ~/.claude/skills/webapp-re symlinks to) has two changes:\n1. SENSITIVE_HEADER now also matches `^uid$`, `user-device` and `device-id`.\n2. write_capture opens the file with os.open(..., 0o600), then calls os.fchmod and os.fdopen.\n\nThe changes keep 3-space indentation and double quotes, add no compound conditions and no comments, and leave no trailing blank line. They add no endpoint literals, no password or argv secrets and no requests, and they change no pacing defaults or command names.\n\nThe 24 capture files differ from their backups only in User-Device / user-device, which went from the raw value to \"<redacted len=24>\". That is 2 values per file, 48 in total, and each file is exactly 14 bytes smaller. All 24 are now mode 0600. Every line of every run-2026-10-10-082844-*.jsonl still parses as JSON (0 bad lines), and no raw User-Device value remains in any file under var/captures.\n\nThings I noticed that do not break the listed rules:\n- No test covers the new header pattern or the 0600 mode. The rules do not require one, but without a test this fix has no bite proof.\n- If os.fchmod raises before os.fdopen takes ownership, the file descriptor leaks. This is minor.\n- run-2026-10-10-082844-stop-nyc-bike.jsonl and two other capture files are still mode 0644. None of them were in the partition, and none contain User-Device.\n- Mistake on my part: one of my diff commands printed a raw User-Device value from the before/ backup copy into my own tool output. It is not repeated here. The backups under optimize/run-2026-10-10-092702/before still hold the unredacted values with mode 0644, so you may want to delete or chmod them once the run is accepted."
+ }
+}

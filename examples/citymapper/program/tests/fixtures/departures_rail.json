@@ -1,0 +1,78 @@
+{
+   "stations": [
+      {
+         "station": {
+            "name": "Portvale Central",
+            "coords": [
+               10.531,
+               20.552
+            ],
+            "live_code": "RailPortvaleCentral",
+            "brands": [
+               "CoastRail"
+            ],
+            "route_icon_names": [
+               "zz-portvale-coast"
+            ]
+         },
+         "can_have_departures": true,
+         "departures": [
+            {
+               "destination": "Seagate",
+               "destination_short_name": "512",
+               "platform_number": 3,
+               "pattern_id": "CoastLine_0_SG",
+               "brand_id": "CoastRail",
+               "route_id": "CoastLine",
+               "status": 1,
+               "is_live": true,
+               "scheduled_time": "2026-10-12T08:39:00+09:00",
+               "expected_departure_time": "2026-10-12T08:40:00+09:00",
+               "stops": [
+                  {
+                     "id": "RailSeagate",
+                     "name": "Seagate",
+                     "coords": [
+                        10.81,
+                        20.93
+                     ],
+                     "arrival_time": "2026-10-12T09:10:00+09:00",
+                     "departure_time": "2026-10-12T09:11:00+09:00"
+                  }
+               ],
+               "time_seconds": 540,
+               "trip_equivalence_id": "8800512",
+               "trip_short_name": "512"
+            },
+            {
+               "destination": "Inland Junction",
+               "destination_short_name": "77",
+               "platform_number": null,
+               "pattern_id": "CoastLine_1_IJ",
+               "brand_id": "CoastRail",
+               "route_id": "CoastLine",
+               "status": 0,
+               "is_live": false,
+               "scheduled_time": "2026-10-12T08:33:00+09:00",
+               "expected_departure_time": null,
+               "stops": [
+                  {
+                     "id": "RailInlandJunction",
+                     "name": "Inland Junction",
+                     "coords": [
+                        10.2,
+                        20.3
+                     ],
+                     "arrival_time": "2026-10-12T09:02:00+09:00",
+                     "departure_time": "2026-10-12T09:03:00+09:00"
+                  }
+               ],
+               "time_seconds": 180,
+               "trip_equivalence_id": "8800077",
+               "trip_short_name": "77"
+            }
+         ]
+      }
+   ],
+   "last_updated_time": "2026-10-12T08:30:20+09:00"
+}

@@ -1,0 +1,96 @@
+{
+   "plus_code": {
+      "compound_code": "FV2Q+3C Portvale",
+      "global_code": "7Q9JFV2Q+3C"
+   },
+   "results": [
+      {
+         "address_components": [
+            {
+               "long_name": "18",
+               "short_name": "18",
+               "types": [
+                  "street_number"
+               ]
+            },
+            {
+               "long_name": "Quay Road",
+               "short_name": "Quay Rd",
+               "types": [
+                  "route"
+               ]
+            },
+            {
+               "long_name": "Portvale",
+               "short_name": "Portvale",
+               "types": [
+                  "locality",
+                  "political"
+               ]
+            }
+         ],
+         "formatted_address": "18 Quay Rd, Portvale 400-0001",
+         "geometry": {
+            "location": {
+               "lat": 10.5231,
+               "lng": 20.6109
+            },
+            "location_type": "ROOFTOP",
+            "viewport": {
+               "northeast": {
+                  "lat": 10.5245,
+                  "lng": 20.6123
+               },
+               "southwest": {
+                  "lat": 10.5218,
+                  "lng": 20.6096
+               }
+            }
+         },
+         "place_id": "ChIJFakeGeocodeOne",
+         "plus_code": {
+            "compound_code": "FV2Q+3C Portvale",
+            "global_code": "7Q9JFV2Q+3C"
+         },
+         "types": [
+            "street_address"
+         ]
+      },
+      {
+         "address_components": [
+            {
+               "long_name": "Portvale",
+               "short_name": "Portvale",
+               "types": [
+                  "locality",
+                  "political"
+               ]
+            }
+         ],
+         "formatted_address": "Portvale",
+         "geometry": {
+            "location": {
+               "lat": 10.5,
+               "lng": 20.5
+            },
+            "location_type": "APPROXIMATE",
+            "viewport": {
+               "northeast": {
+                  "lat": 11.0,
+                  "lng": 21.0
+               },
+               "southwest": {
+                  "lat": 10.0,
+                  "lng": 20.0
+               }
+            }
+         },
+         "place_id": "ChIJFakeGeocodeTwo",
+         "types": [
+            "locality",
+            "political"
+         ]
+      }
+   ],
+   "status": "OK"
+}

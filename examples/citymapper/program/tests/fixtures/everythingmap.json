@@ -1,0 +1,105 @@
+{
+   "elements": [
+      {
+         "coords": [
+            10.81,
+            20.93
+         ],
+         "kind": "railstation",
+         "name": "Seagate",
+         "id": "RailSeagate",
+         "brand_ids": [
+            "CoastRail"
+         ],
+         "advertised_brand_ids": [
+            "CoastRail"
+         ],
+         "route_names": [
+            "Coast"
+         ],
+         "route_ids": [
+            "CoastLine"
+         ],
+         "route_icon_names": [
+            "zz-portvale-coast"
+         ],
+         "aliases": [
+            "seagate"
+         ],
+         "tile_sets": [
+            "large",
+            "medium"
+         ]
+      },
+      {
+         "coords": [
+            10.531,
+            20.552
+         ],
+         "kind": "railstation",
+         "name": "Portvale Central",
+         "id": "RailPortvaleCentral",
+         "brand_ids": [
+            "CoastRail"
+         ],
+         "advertised_brand_ids": [
+            "CoastRail"
+         ],
+         "route_names": [
+            "Coast"
+         ],
+         "route_ids": [
+            "CoastLine"
+         ],
+         "route_icon_names": [
+            "zz-portvale-coast"
+         ],
+         "aliases": [
+            "portvale-central"
+         ],
+         "tile_sets": [
+            "large"
+         ]
+      }
+   ],
+   "routes": [
+      {
+         "name": "Coast",
+         "color": "#2E8B57",
+         "text_color": "#FFFFFF",
+         "icon_name": "zz-portvale-coast",
+         "icon_contains_name": false,
+         "id": "CoastLine",
+         "brand_id": "CoastRail",
+         "ui_color": "#2E8B57",
+         "long_name": "Coast Line",
+         "mode": "rail",
+         "affinities": [
+            "rail"
+         ],
+         "tile_sets": [
+            "large"
+         ],
+         "supports_paths": true
+      }
+   ],
+   "last_updated_time": "2026-10-12T08:31:00+09:00",
+   "tile_bounding_box": {
+      "northwest_corner_coords": [
+         11.0,
+         20.0
+      ],
+      "northeast_corner_coords": [
+         11.0,
+         21.0
+      ],
+      "southwest_corner_coords": [
+         10.0,
+         20.0
+      ],
+      "southeast_corner_coords": [
+         10.0,
+         21.0
+      ]
+   }
+}

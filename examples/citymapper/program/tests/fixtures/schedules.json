@@ -1,0 +1,27 @@
+{
+   "id": "PVBus_4471",
+   "services": [
+      {
+         "id": "portvalebus12_lighthouse",
+         "route_id": "PortvaleBus12",
+         "brand_id": "PortvaleBus",
+         "display_name": "12",
+         "headsign": "Lighthouse",
+         "grouping_id": "PVBus_4471__Lighthouse"
+      }
+   ],
+   "departures": [
+      {
+         "service_id": "portvalebus12_lighthouse",
+         "scheduled_time": "2026-10-12T08:40:00+09:00",
+         "pattern_id": "12_1"
+      },
+      {
+         "service_id": "portvalebus12_lighthouse",
+         "scheduled_time": "2026-10-12T09:00:00+09:00",
+         "pattern_id": "12_1"
+      }
+   ],
+   "labels": [],
+   "next_time": "2026-10-12T11:40:00+09:00"
+}

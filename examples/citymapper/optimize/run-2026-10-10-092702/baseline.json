@@ -1,0 +1,130 @@
+{
+ "measured_at": "2026-10-10T09:27:10",
+ "root": ".",
+ "root_env": "CITYMAPPER_ROOT",
+ "metrics": [
+  {
+   "name": "tests",
+   "value": 0,
+   "unit": "exit code",
+   "seconds": 0.96,
+   "detail": "372 passed in 0.56s",
+   "command": "uv run --frozen --no-sync --project program pytest -q -p no:cacheprovider"
+  },
+  {
+   "name": "tests passed",
+   "value": 372,
+   "unit": "tests"
+  },
+  {
+   "name": "tests wall time",
+   "value": 0.96,
+   "unit": "s"
+  },
+  {
+   "name": "provenance gate",
+   "value": 0,
+   "unit": "exit code",
+   "seconds": 0.04,
+   "detail": "provenance violations: 0",
+   "command": "uv run --frozen --no-sync --project program python scripts/check_provenance.py"
+  },
+  {
+   "name": "cli --help wall time, median",
+   "value": 110,
+   "unit": "ms",
+   "detail": "samples [112, 111, 110, 109, 109]"
+  },
+  {
+   "name": "cli help command wall time, median",
+   "value": 153,
+   "unit": "ms",
+   "detail": "samples [152, 153, 155, 154, 151]"
+  },
+  {
+   "name": "import time of citymapper_client.cli",
+   "value": 76.3,
+   "unit": "ms"
+  },
+  {
+   "name": "check_scope",
+   "value": 0,
+   "unit": "exit code",
+   "seconds": 0.03,
+   "detail": "scope: 18 pages, 53 capabilities, 68 endpoints, 24 entities, 14 caveats, 6 open_questions; 0 problems",
+   "command": "uv run --script skills/webapp-re/scripts/check_scope.py scope/scope.json"
+  },
+  {
+   "name": "check_plan",
+   "value": 0,
+   "unit": "exit code",
+   "seconds": 0.03,
+   "detail": "plan: 57 commands, 8 build steps, 22 open steps, budget 44 requests; 0 problems",
+   "command": "uv run --script skills/webapp-re/scripts/check_plan.py ."
+  }
+ ],
+ "live": {
+  "budget": 20,
+  "spent": 7,
+  "commands": [
+   {
+    "command": "get-city",
+    "exit": 0,
+    "ms": 161,
+    "requests": 0,
+    "items": 13,
+    "stderr_tail": ""
+   },
+   {
+    "command": "search-places",
+    "exit": 0,
+    "ms": 624,
+    "requests": 1,
+    "items": 6,
+    "stderr_tail": ""
+   },
+   {
+    "command": "get-line-status",
+    "exit": 0,
+    "ms": 4491,
+    "requests": 1,
+    "items": 8,
+    "stderr_tail": ""
+   },
+   {
+    "command": "get-disruptions",
+    "exit": 0,
+    "ms": 4544,
+    "requests": 1,
+    "items": 20,
+    "stderr_tail": ""
+   },
+   {
+    "command": "find-nearby",
+    "exit": 0,
+    "ms": 4411,
+    "requests": 1,
+    "items": 5,
+    "stderr_tail": ""
+   },
+   {
+    "command": "get-departures",
+    "exit": 0,
+    "ms": 8958,
+    "requests": 2,
+    "items": 5,
+    "stderr_tail": ""
+   },
+   {
+    "command": "plan-journey",
+    "exit": 0,
+    "ms": 7901,
+    "requests": 1,
+    "items": 3,
+    "stderr_tail": ""
+   }
+  ],
+  "root": "throwaway (deleted)",
+  "note": "One CLI call per command under a throwaway CITYMAPPER_ROOT (var/cache copied, no session exists, so no refresh possible), sequential from the main session. ms includes the pacer's wait for the previous command's gap. scripts/live_check.py was not used because it writes readiness and logs under the real site root regardless of CITYMAPPER_ROOT."
+ }
+}

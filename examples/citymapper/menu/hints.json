@@ -1,0 +1,954 @@
+{
+ "subtitle": "citymapper.com website requests, 115 regions",
+ "icon": "ti-route",
+ "accent": "green",
+ "footnote": "Live values change on every call; report them with their fetch time. Account commands need your own session (adopt-session). Writes always start with --dry-run.",
+ "groups": [
+  {
+   "key": "start",
+   "title": "Start here",
+   "icon": "ti-world",
+   "commands": [
+    "help",
+    "list-cities",
+    "get-city",
+    "list-brands"
+   ]
+  },
+  {
+   "key": "journeys",
+   "title": "Journeys",
+   "icon": "ti-route",
+   "commands": [
+    "plan-journey",
+    "plan-walk",
+    "plan-cycle",
+    "plan-cab",
+    "plan-vehicle-hire",
+    "get-journey-times",
+    "get-journey",
+    "get-travel-time",
+    "open-trip-link",
+    "get-shared-eta"
+   ]
+  },
+  {
+   "key": "places",
+   "title": "Places and search",
+   "icon": "ti-search",
+   "commands": [
+    "search-places",
+    "resolve-place",
+    "reverse-geocode",
+    "get-map-around"
+   ]
+  },
+  {
+   "key": "departures",
+   "title": "Nearby and departures",
+   "icon": "ti-clock",
+   "commands": [
+    "find-nearby",
+    "get-stop",
+    "get-departures",
+    "get-stop-schedule"
+   ]
+  },
+  {
+   "key": "lines",
+   "title": "Lines and disruptions",
+   "icon": "ti-alert-triangle",
+   "commands": [
+    "get-line-status",
+    "get-disruptions",
+    "get-service-message",
+    "find-line",
+    "get-line",
+    "get-lines",
+    "get-vehicles",
+    "get-route-paths"
+   ]
+  },
+  {
+   "key": "more",
+   "title": "News, terms and links",
+   "icon": "ti-news",
+   "commands": [
+    "list-news",
+    "get-legal",
+    "open-go-link",
+    "get-weather",
+    "get-transit-score"
+   ]
+  },
+  {
+   "key": "account",
+   "title": "Your account",
+   "icon": "ti-user",
+   "commands": [
+    "adopt-session",
+    "whoami",
+    "list-saved-places",
+    "list-favourites",
+    "save-place",
+    "update-place",
+    "remove-place",
+    "add-favourite",
+    "remove-favourite",
+    "save-journey",
+    "remove-saved-journey",
+    "update-profile",
+    "sign-out"
+   ]
+  },
+  {
+   "key": "public",
+   "title": "Public links and votes",
+   "icon": "ti-share",
+   "commands": [
+    "share-journey",
+    "create-go-link",
+    "vote-for-city"
+   ]
+  },
+  {
+   "key": "pass",
+   "title": "Citymapper Pass",
+   "icon": "ti-credit-card",
+   "commands": [
+    "pass-account",
+    "pass-session-time",
+    "pass-set-default-payment",
+    "pass-add-payment-method",
+    "pass-remove-payment-method",
+    "pass-remove-all-payment-methods"
+   ]
+  }
+ ],
+ "datalists": {
+  "regions": {
+   "source": "var/public/regions.json",
+   "value": "slug",
+   "label": "label",
+   "limit": 200
+  }
+ },
+ "commands": {
+  "list-cities": {
+   "fields": {
+    "query": {
+     "placeholder": "Lisbon"
+    }
+   }
+  },
+  "get-city": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    }
+   }
+  },
+  "list-brands": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "query": {
+     "placeholder": "Citi Bike"
+    }
+   }
+  },
+  "search-places": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "query": {
+     "placeholder": "Times Square"
+    },
+    "near": {
+     "placeholder": "40.75773,-73.985708",
+     "hint": "lat,lng or a place name in the city"
+    }
+   }
+  },
+  "resolve-place": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "id": {
+     "pick": "search-places",
+     "hint": "A result id from search-places (google:<id> for Google results)"
+    }
+   }
+  },
+  "reverse-geocode": {
+   "fields": {
+    "lat": {
+     "placeholder": "51.5074"
+    },
+    "lng": {
+     "placeholder": "-0.1278"
+    }
+   }
+  },
+  "plan-journey": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "from": {
+     "placeholder": "Grand Central",
+     "hint": "lat,lng or a place name, resolved with Citymapper's own search"
+    },
+    "to": {
+     "placeholder": "40.706086,-73.996864",
+     "hint": "lat,lng or a place name"
+    },
+    "depart_at": {
+     "placeholder": "18:30",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    },
+    "arrive_by": {
+     "placeholder": "19:00",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    }
+   }
+  },
+  "plan-walk": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "from": {
+     "placeholder": "Grand Central",
+     "hint": "lat,lng or a place name, resolved with Citymapper's own search"
+    },
+    "to": {
+     "placeholder": "40.706086,-73.996864",
+     "hint": "lat,lng or a place name"
+    },
+    "depart_at": {
+     "placeholder": "18:30",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    },
+    "arrive_by": {
+     "placeholder": "19:00",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    }
+   }
+  },
+  "plan-cycle": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "from": {
+     "placeholder": "Grand Central",
+     "hint": "lat,lng or a place name, resolved with Citymapper's own search"
+    },
+    "to": {
+     "placeholder": "40.706086,-73.996864",
+     "hint": "lat,lng or a place name"
+    },
+    "depart_at": {
+     "placeholder": "18:30",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    },
+    "arrive_by": {
+     "placeholder": "19:00",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    }
+   }
+  },
+  "plan-cab": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "from": {
+     "placeholder": "Grand Central",
+     "hint": "lat,lng or a place name, resolved with Citymapper's own search"
+    },
+    "to": {
+     "placeholder": "40.706086,-73.996864",
+     "hint": "lat,lng or a place name"
+    },
+    "depart_at": {
+     "placeholder": "18:30",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    },
+    "arrive_by": {
+     "placeholder": "19:00",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    }
+   }
+  },
+  "plan-vehicle-hire": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "from": {
+     "placeholder": "Grand Central",
+     "hint": "lat,lng or a place name, resolved with Citymapper's own search"
+    },
+    "to": {
+     "placeholder": "40.706086,-73.996864",
+     "hint": "lat,lng or a place name"
+    },
+    "depart_at": {
+     "placeholder": "18:30",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    },
+    "arrive_by": {
+     "placeholder": "19:00",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    }
+   }
+  },
+  "get-journey-times": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "signatures": {
+     "pick": "plan-journey",
+     "hint": "One or more journey signatures from plan-journey"
+    }
+   }
+  },
+  "get-journey": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "signature": {
+     "pick": "plan-journey",
+     "hint": "A journey's signature from plan-journey"
+    }
+   }
+  },
+  "get-travel-time": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "from": {
+     "placeholder": "Grand Central",
+     "hint": "lat,lng or a place name, resolved with Citymapper's own search"
+    },
+    "to": {
+     "placeholder": "40.706086,-73.996864",
+     "hint": "lat,lng or a place name"
+    }
+   }
+  },
+  "get-shared-eta": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "signature": {
+     "pick": "plan-journey",
+     "hint": "A journey's signature from plan-journey"
+    }
+   }
+  },
+  "open-trip-link": {
+   "fields": {
+    "slug": {
+     "hint": "The slug of a citymapper.com/trip/<slug> link"
+    },
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    }
+   }
+  },
+  "find-nearby": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "near": {
+     "placeholder": "40.75773,-73.985708",
+     "hint": "lat,lng or a place name in the city"
+    },
+    "mode": {
+     "placeholder": "subway",
+     "pick": "get-city",
+     "hint": "A nearby mode slug from get-city, such as subway, bus or bike"
+    }
+   }
+  },
+  "get-stop": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "stop": {
+     "placeholder": "times-sq-42-st",
+     "pick": "find-nearby",
+     "hint": "Stop alias or id from find-nearby or get-line"
+    }
+   }
+  },
+  "get-departures": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "stop": {
+     "placeholder": "times-sq-42-st",
+     "pick": "find-nearby",
+     "hint": "Stop alias or id from find-nearby or get-line"
+    },
+    "route": {
+     "placeholder": "6",
+     "hint": "Keep only this route id or name"
+    }
+   }
+  },
+  "get-stop-schedule": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "stop": {
+     "placeholder": "times-sq-42-st",
+     "pick": "find-nearby",
+     "hint": "Stop alias or id from find-nearby or get-line"
+    },
+    "time": {
+     "placeholder": "08:00",
+     "hint": "HH:MM in the city's timezone (tomorrow once more than 15 minutes past) or ISO 8601"
+    }
+   }
+  },
+  "get-line-status": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "mode": {
+     "pick": "get-city",
+     "hint": "Limit to one mode, such as subway"
+    }
+   }
+  },
+  "get-disruptions": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "line": {
+     "placeholder": "subway-6",
+     "pick": "find-line",
+     "hint": "Line alias or id from find-line or get-line-status"
+    },
+    "min_level": {
+     "control": "select",
+     "options": [
+      [
+       "",
+       "Any level"
+      ],
+      [
+       "1",
+       "1 minor or worse"
+      ],
+      [
+       "2",
+       "2 severe"
+      ]
+     ]
+    }
+   }
+  },
+  "get-service-message": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    }
+   }
+  },
+  "find-line": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "query": {
+     "placeholder": "6"
+    }
+   }
+  },
+  "get-line": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "line": {
+     "placeholder": "subway-6",
+     "pick": "find-line",
+     "hint": "Line alias or id from find-line or get-line-status"
+    }
+   }
+  },
+  "get-lines": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "lines": {
+     "placeholder": "subway-6,subway-7",
+     "pick": "find-line",
+     "hint": "Comma-separated line aliases or ids"
+    }
+   }
+  },
+  "get-vehicles": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "line": {
+     "placeholder": "subway-6",
+     "pick": "find-line",
+     "hint": "Line alias or id from find-line or get-line-status"
+    }
+   }
+  },
+  "get-route-paths": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "lines": {
+     "placeholder": "subway-6,subway-7",
+     "pick": "find-line",
+     "hint": "Comma-separated line aliases or ids"
+    }
+   }
+  },
+  "get-map-around": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "near": {
+     "placeholder": "40.75773,-73.985708",
+     "hint": "lat,lng or a place name in the city"
+    }
+   }
+  },
+  "get-weather": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "near": {
+     "placeholder": "40.75773,-73.985708",
+     "hint": "lat,lng or a place name in the city"
+    }
+   }
+  },
+  "get-transit-score": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "near": {
+     "placeholder": "40.75773,-73.985708",
+     "hint": "lat,lng or a place name in the city"
+    }
+   }
+  },
+  "open-go-link": {
+   "fields": {
+    "slug": {
+     "hint": "The slug of a citymapper.com/go/<slug> link"
+    }
+   }
+  },
+  "list-news": {
+   "fields": {
+    "id": {
+     "pick": "list-news",
+     "hint": "One article id from list-news"
+    }
+   }
+  },
+  "adopt-session": {
+   "note": "Sign in on citymapper.com in your browser yourself, copy the Cookie request header of any citymapper.com request, then pipe it in with --stdin. Stores only the needed cookies (mode 600) and prints names and lengths.",
+   "fields": {
+    "from_file": {
+     "hint": "A file that holds the Cookie header"
+    }
+   }
+  },
+  "list-favourites": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    }
+   }
+  },
+  "save-place": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "near": {
+     "placeholder": "40.75773,-73.985708",
+     "hint": "lat,lng or a place name in the city"
+    },
+    "name": {
+     "placeholder": "Studio"
+    }
+   }
+  },
+  "update-place": {
+   "fields": {
+    "id": {
+     "pick": "list-saved-places"
+    },
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "near": {
+     "placeholder": "40.75773,-73.985708",
+     "hint": "lat,lng or a place name in the city"
+    }
+   }
+  },
+  "remove-place": {
+   "fields": {
+    "id": {
+     "pick": "list-saved-places"
+    }
+   }
+  },
+  "add-favourite": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "stop": {
+     "placeholder": "times-sq-42-st",
+     "pick": "find-nearby",
+     "hint": "Stop alias or id from find-nearby or get-line"
+    },
+    "line": {
+     "placeholder": "subway-6",
+     "pick": "find-line",
+     "hint": "Line alias or id from find-line or get-line-status"
+    }
+   }
+  },
+  "remove-favourite": {
+   "fields": {
+    "id": {
+     "pick": "list-favourites"
+    }
+   }
+  },
+  "save-journey": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "signature": {
+     "pick": "plan-journey",
+     "hint": "A journey's signature from plan-journey"
+    }
+   }
+  },
+  "remove-saved-journey": {
+   "fields": {
+    "document_id": {
+     "hint": "The document id save-journey returned"
+    }
+   }
+  },
+  "share-journey": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "signature": {
+     "pick": "plan-journey",
+     "hint": "A journey's signature from plan-journey"
+    }
+   }
+  },
+  "create-go-link": {
+   "fields": {
+    "city": {
+     "control": "datalist",
+     "list": "regions",
+     "label": "City",
+     "placeholder": "nyc",
+     "pick": "list-cities",
+     "hint": "Region slug (nyc, london, paris), region id or city name"
+    },
+    "place": {
+     "placeholder": "40.75773,-73.985708",
+     "hint": "lat,lng or a place name in the city"
+    },
+    "title": {
+     "placeholder": "Meet at the Empire State Building"
+    }
+   }
+  },
+  "vote-for-city": {
+   "fields": {
+    "city_slug": {
+     "hint": "The city to vote for"
+    },
+    "email": {
+     "hint": "Your e-mail address; sent to Citymapper",
+     "warn": true
+    }
+   }
+  },
+  "pass-account": {
+   "fields": {
+    "use_web_session_id": {
+     "label": "Use the web session id",
+     "hint": "Sends your web sessionid as Pass Session-Id; unverified, so off by default",
+     "warn": true
+    }
+   }
+  },
+  "pass-session-time": {
+   "fields": {
+    "use_web_session_id": {
+     "label": "Use the web session id",
+     "hint": "Sends your web sessionid as Pass Session-Id; unverified, so off by default",
+     "warn": true
+    }
+   }
+  },
+  "pass-set-default-payment": {
+   "fields": {
+    "use_web_session_id": {
+     "label": "Use the web session id",
+     "hint": "Sends your web sessionid as Pass Session-Id; unverified, so off by default",
+     "warn": true
+    },
+    "payment_method_id": {
+     "pick": "pass-account"
+    }
+   }
+  },
+  "pass-add-payment-method": {
+   "fields": {
+    "use_web_session_id": {
+     "label": "Use the web session id",
+     "hint": "Sends your web sessionid as Pass Session-Id; unverified, so off by default",
+     "warn": true
+    },
+    "payment_method_id": {
+     "hint": "A token from the payment provider; never a card number"
+    }
+   }
+  },
+  "pass-remove-payment-method": {
+   "fields": {
+    "use_web_session_id": {
+     "label": "Use the web session id",
+     "hint": "Sends your web sessionid as Pass Session-Id; unverified, so off by default",
+     "warn": true
+    },
+    "payment_method_id": {
+     "pick": "pass-account"
+    }
+   }
+  },
+  "pass-remove-all-payment-methods": {
+   "fields": {
+    "use_web_session_id": {
+     "label": "Use the web session id",
+     "hint": "Sends your web sessionid as Pass Session-Id; unverified, so off by default",
+     "warn": true
+    }
+   }
+  }
+ }
+}

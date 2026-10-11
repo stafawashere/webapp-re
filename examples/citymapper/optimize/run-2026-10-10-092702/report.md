@@ -1,0 +1,481 @@
+# Optimize audit, citymapper, run-2026-10-10-092702
+
+Targets: skills citymapper; commands all; program program.
+Live reads: 7 spent of a budget of 20.
+
+## Counts
+
+35 findings kept after the verify pass (34 confirmed, 1 plausible), 3 refuted and dropped.
+
+| Severity | Count |
+|---|---|
+| critical | 0 |
+| high | 7 |
+| medium | 18 |
+| low | 10 |
+
+| Dimension | Count |
+|---|---|
+| speed | 5 |
+| stability | 5 |
+| scope | 4 |
+| correctness | 5 |
+| safety | 4 |
+| skill-quality | 6 |
+| other | 6 |
+
+3 of the kept findings need a live write to verify their fix.
+
+Workflow: 7 reviewers (0 failed), 1 exact duplicates merged, 13 findings left out by the per-reviewer cap, 0 without a verdict.
+
+Note: Phase 1 compare: 90 files changed outside the run directory, all __pycache__/*.pyc bytecode under program/ (written by the main session's uv run CLI calls for the live baseline without PYTHONDONTWRITEBYTECODE, and by imports). No source, state, cache, log or request-log file changed; var/logs/requests-2026-10-10.jsonl is unchanged, so no agent sent a request through the real root. Recorded as a minor breach of the phase 1 write rule.
+
+Note: The workflow's per-reviewer cap of 6 omitted 13 lower-ranked findings (stats.omitted_by_cap); they are not in this file.
+
+Note: Live baseline: 7 of 20 reads, one CLI call per command under a throwaway CITYMAPPER_ROOT, sequential from the main session.
+
+## Baseline
+
+| Metric | Value | Unit | Detail |
+|---|---|---|---|
+| tests | 0 | exit code | 372 passed in 0.56s |
+| tests passed | 372 | tests |  |
+| tests wall time | 0.96 | s |  |
+| provenance gate | 0 | exit code | provenance violations: 0 |
+| cli --help wall time, median | 110 | ms | samples [112, 111, 110, 109, 109] |
+| cli help command wall time, median | 153 | ms | samples [152, 153, 155, 154, 151] |
+| import time of citymapper_client.cli | 76.3 | ms |  |
+| check_scope | 0 | exit code | scope: 18 pages, 53 capabilities, 68 endpoints, 24 entities, 14 caveats, 6 open_questions; 0 problems |
+| check_plan | 0 | exit code | plan: 57 commands, 8 build steps, 22 open steps, budget 44 requests; 0 problems |
+
+## Findings
+
+### F01 update-profile always sends is_interested_in_pass=false, so any profile edit flips the user's Pass interest off
+
+high, correctness, confirmed. Target `citymapper`, at `program/src/citymapper_client/cli.py:26`.
+
+Evidence: Boolean inputs are registered as store_true, so an absent flag arrives as False, never None. account.py:238-239 keeps every field that is not None, so is_interested_in_pass=False always survives. Offline probe through cli.main (network blocked, temp CITYMAPPER_ROOT): `update-profile --first-name Ada --dry-run` printed body {"first_name": "Ada", "is_interested_in_pass": false}; `update-profile --last-name Lovelace --dry-run` printed {"last_name": "Lovelace", "is_interested_in_pass": false}. The flag cannot express 'leave unchanged' or an explicit false. tests/test_writes.py:35 calls the function with a dict {"first_name": "Ada"} and skips argparse, which is why 372 tests pass.
+
+Verify pass: The anchor is at cli.py:24, not 26. Through cli.main with the network blocked, `update-profile --first-name Ada --dry-run` printed body {"first_name": "Ada", "is_interested_in_pass": false}, and the --last-name run also carried is_interested_in_pass false.
+
+Fix: In add_property, register booleans with action=argparse.BooleanOptionalAction and default=None, so an absent flag is None, --interested-in-pass is True and --no-interested-in-pass is False. All other boolean reads (dry_run, yes, with_paths, step_free, refresh, exact) use truthiness, so None behaves like False for them. Add a CLI-level test that parses `update-profile --first-name Ada --dry-run` and asserts that the body has only first_name. Break the fix, watch it go red, then restore.
+
+Expected effect: The update-profile body has exactly the fields the user passed (1 of 1 instead of 2). A first-name edit no longer clears Pass interest, and the user can set it to false on purpose.
+
+### F02 update-place --near can never work: the code needs --city but the command does not accept it
+
+high, correctness, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/account.py:155`.
+
+Evidence: The update-place input_schema (plan.json and schemas.json) has id, name, near, yes and dry_run, but no city. Offline probe: `update-place --id 77 --near 10.5,20.5 --dry-run` exited 2 with UsageError "Pass --city (a slug like nyc...)". Adding `--city portvale` exited 2 from argparse with "unrecognized arguments: --city portvale". The move half of 'Rename or move a saved place' cannot run. A related required-list gap: save-place requires [name, near] and create-go-link requires [place, title], but both call context.region(city) first, so a missing --city fails at runtime and not in argparse's usage line.
+
+Verify pass: The update-place schema has [dry_run,id,name,near,yes] and no city. Offline probe: `update-place --id 77 --near 51.5,-0.12 --dry-run` exited 2 with UsageError 'Pass --city', and adding `--city london` gave an argparse SystemExit 2. save-place and create-go-link do not list city as required.
+
+Fix: Add a city property (with the shared city description) to update-place's input_schema in plan/plan.json. Add city to the required list of save-place and create-go-link. Regenerate schemas.json with scripts/sync_schemas.py. Add a CLI-parse test for `update-place --id X --city portvale --near lat,lng --dry-run`.
+
+Expected effect: update-place --near works offline in a dry run: 0 of 2 working invocation forms becomes 2 of 2. A missing --city on save-place and create-go-link is reported by argparse with the full usage line before any work starts.
+
+### F03 --format table on plan-journey, plan-walk and plan-cycle prints the section tabs instead of the journeys
+
+high, other, confirmed. Target `citymapper`, at `program/src/citymapper_client/cli.py:76`.
+
+Evidence: as_table renders the first top-level list of dicts it finds. journeys_output (capabilities/journeys.py) puts "sections" before "journeys". I ran the plan-journey fixture through cli.as_table offline and it printed only "id | name / SUGGESTED | Suggested / METRO_ONLY | More Metro", with no journey, duration or time. knowledge/endpoints/journeys.md:44 shows that live /api/7/journeys responses carry sections[], so live output has the same problem. get-journey falls back to a raw JSON dump. SKILL.md:19 advertises "--format table for a quick table". No test calls as_table (grep over tests/ finds nothing).
+
+Verify pass: I ran journeys_output on fixtures/journeys.json (2 sections, 3 journeys) through cli.as_table. It printed only 'id | name / SUGGESTED | Suggested / METRO_ONLY | More Metro', because 'sections' comes before 'journeys' and as_table takes the first list of dicts.
+
+Fix: Give as_table the command name and a TABLE_KEY map such as {"plan-journey": "journeys", "plan-walk": "journeys", "plan-cycle": "journeys", "plan-cab": "routes", "get-line": "stops", "get-stop": "routes"}, or use an x-table key in schemas.json synced from plan.json. Fall back to the current scan for other commands. For journeys, flatten duration_seconds, departure_time, arrival_time, a leg-mode summary and signature into columns. Add a parametrized test over READ_CASES asserting that the table for each command contains its primary list's rows.
+
+Expected effect: The table for the three planning commands shows journeys (3 rows in the live baseline) instead of 2 section tabs. The new test covers 35 read commands.
+
+### F06 vote-for-city is marked public and ready for approval but always sends no CSRF token and no cookie
+
+high, scope, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/sharing.py:31`.
+
+Evidence: The bundle inventory (research/bundle/api-inventory.json, cityVote) says X-CSRFToken is required and the client asserts 'city_slug, email, and csrfToken are required'. KB city-vote.md lists required_headers [x-csrftoken, content-type]. The plan's own open step (tools/plan/build_plan.py line 221) says 'needs the csrftoken cookie'. Despite that, plan.json gives it live_policy 'public' and readiness 'built, awaiting approval', and SKILL.md line 79 repeats this. The transport adds X-CSRFToken only from session cookies, and those come only from .env via adopt-session, which refuses input without sessionid (session.py line 75). .env does not exist. My offline probe of vote_for_city with --yes and the HTTP send replaced by a raiser sent POST /cities/vote_submit/ with headers [accept, accept-encoding, accept-language, connection, content-length, content-type, host, origin, referer, user-agent], with no cookie and no x-csrftoken. A Django CSRF-protected view answers 403, which classify() maps to ApiError exit 13. The user's e-mail is sent anyway.
+
+Verify pass: I probed CITY_VOTE through Transport with no .env (none exists in the site root). The sent headers were accept, accept-encoding, accept-language, connection, content-length, content-type, host, origin, referer and user-agent, with no cookie and no x-csrftoken. plan.json has live_policy public and readiness 'built, awaiting approval'. The bundle inventory marks X-CSRFToken as required but says 'the token source is unknown', so the first proposed fix (take csrftoken from a page GET) would need a newly verified finding. Moving the command to the session tier is the fix that keeps the rules. The 403 itself is inferred, not observed.
+
+Fix: Before the POST, GET a cheap citymapper.com page (for example the cached /cities fetch) and take csrftoken from the response's Set-Cookie. Send it as both Cookie and X-CSRFToken. Alternatively, move the command to the session tier and set the plan, readiness.json and SKILL.md status to 'blocked: needs your Citymapper session (csrftoken), then your approval'. Add a write test asserting both headers are present.
+
+Expected effect: vote-for-city goes from 0 of the 2 required auth headers to both, or its status tells the truth. This removes a guaranteed 403 on the first approved run, which would have sent the user's e-mail for nothing. Needs a live write to verify.
+
+### F07 get-departures and get-stop-schedule refetch static stopinfo on every call, doubling wall time
+
+high, speed, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/departures.py:53`.
+
+Evidence: stop_details() is called uncached by get-departures and get-stop-schedule, so both always send 2 paced requests. Baseline live: get-departures 8958 ms with 2 requests against 4411 to 4544 ms for one-request commands. verify-2026-10-10-092313.json has get-departures at 8767 to 9429 ms, 2 requests each. var/logs/requests-2026-10-10.jsonl shows the same three stops re-fetched 14 minutes apart with identical byte sizes (stopinfo 4495 B at 09:09:50 and 09:23:18, 2131 B at 09:09:59 and 09:23:27, 2602 B at 09:10:07 and 09:23:36). get-departures needs only the stop id, name, sharing_urls[0].departure_api and route id to name from that response, and all of those are static stop metadata. Departures are the command a user re-runs most often for the same stop.
+
+Verify pass: departures.py:53 anchor present. stop_details sends STOP_INFO with no cache and is called by get-stop, get-departures (163) and get-stop-schedule (187). The pacer gap is 3.0 s x (1.2 to 1.4), which matches baseline get-departures at 8958 ms for 2 requests against about 4.5 s for one.
+
+Fix: Add a per-region stop cache (var/cache/stops-{region_id}.json, keyed by the normalised --stop text and by the resolved id) that holds id, name, feed and route names, with a 7 day TTL constant in config.py next to CATALOGUE_MAX_AGE_SECONDS. stop_details reads it first and only sends STOP_INFO on a miss. If the feed request then answers NotFound or ContractBroken, drop the entry so the next call refetches. get-stop can keep fetching live because it shows exits and routes, but it can write the cache on the way through.
+
+Expected effect: Repeat get-departures and get-stop-schedule for a known stop go from 2 requests to 1, about 8.8 s to about 4.4 s (one 3.6 to 4.2 s pacing gap plus about 0.5 s request saved), and about 2 to 4.5 KB less transfer per call.
+
+### F08 Approved public-link writes sent over GET are resent up to 3 times on a timeout
+
+high, stability, confirmed. Target `program`, at `program/src/citymapper_client/transport.py:108`.
+
+Evidence: Retry eligibility is decided by HTTP method alone. share-journey (CREATE_TRIP_URL, endpoints.py:84) and create-go-link (CREATE_SHORT_URL, endpoints.py:85) are writes that publish a public link but use GET, and perform_write_public (sharing.py:39) passes them straight to transport.send. Offline probe with httpx.MockTransport raising ReadTimeout: createshorturl GET sends 3, sleeps [5, 10]; createtripurl GET sends 3, sleeps [5, 10]; city-vote POST sends 1. A read timeout after the server already created the link therefore creates up to 2 extra public links from one approval. That contradicts SKILL.md line 112, which says after a write the user should re-read state and resend only with fresh approval. No test covers a GET write.
+
+Verify pass: transport.py:108 decides retries by method alone. In my MockTransport ReadTimeout probe, createshorturl and createtripurl were each sent 3 times with sleeps [5, 10], and city-vote was sent once. This is the earliest entry of the issue that scope-1 and safety-1 repeat.
+
+Fix: Add a `writes: bool = False` field to Endpoint and set it on CREATE_TRIP_URL and CREATE_SHORT_URL (and any other state-changing GET). In Transport.send compute `is_read = request.endpoint.method == "GET" and not request.endpoint.writes` and use it for can_retry. Add a test in tests/test_transport.py asserting one send and no sleeps for a GET write on ReadTimeout.
+
+Expected effect: An approved share-journey or create-go-link reaches the site at most once per approval (3 sends down to 1 on timeout). Read GETs keep the 2 retries.
+
+### F09 Shape drift and corrupt cache escape as raw Python tracebacks with exit 1
+
+high, stability, confirmed. Target `program`, at `program/src/citymapper_client/cli.py:112`.
+
+Evidence: main() catches only CitymapperError, so any KeyError, TypeError or AttributeError from a response that changed shape or a bad cache file propagates as an uncaught traceback (exit 1), which is not in the SKILL.md exit table (2, 10 to 17), so the caller gets neither ContractBroken (14) nor JSON on stderr. Offline probe through cli.main with a fake transport: searchpost returning a list -> uncaught AttributeError; routestatus route with status.level null in get-disruptions -> uncaught TypeError from int(None) at lines.py:72; var/cache/catalogue.json containing [] -> uncaught AttributeError at catalogue.py:95; catalogue.json {"fetched_at": now} with no regions -> uncaught KeyError 'regions' at catalogue.py:112. The same holds for a region-<id>.json lacking 'config' (catalogue.py:151).
+
+Verify pass: cli.py:112 catches only CitymapperError. In an offline probe (send stubbed, tempdir root), var/cache/catalogue.json = [] made `get-city --city london` raise an uncaught AttributeError ("'list' object has no attribute 'get'") from catalogue.py:95. lines.py:66/72 also call int() on a level that can be null.
+
+Fix: In cli.main add `except (KeyError, TypeError, AttributeError, ValueError) as error:` after the CitymapperError branch that writes ContractBroken("Citymapper's response or a cached file has an unexpected shape.", {"error": type(error).__name__}).as_dict() and returns 14. In Catalogue.load and RegionConfigs.get treat a cached value that is not a dict, lacks 'regions'/'config', or has a non-numeric fetched_at as a cache miss so it is refetched instead of raising. Add tests in tests/test_cli.py for a drifted body and in tests/test_commands.py for a [] catalogue cache.
+
+Expected effect: 4 of 4 probed drift and corrupt-cache cases exit 14 with a JSON error (or self-heal by refetch for the cache cases) instead of an unclassified traceback with exit 1.
+
+### F10 adopt-session ignores --env-file and writes cookies to the site-root .env, while reads use --env-file
+
+medium, correctness, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/local.py:17`.
+
+Evidence: The --env-file help reads "path to the .env holding your Citymapper cookies", and Context.build reads the session from it (context.py:28). adopt-session saves to context.paths.env_file (site_root/.env), and help_output (cli.py:70) and require_session (account.py:17) report that path too. Offline probe: `--env-file <tmp>/alt/.env adopt-session --stdin` with a fake cookie returned path <tmp>/root/.env. Afterwards alt/.env did not exist and root/.env did, so a later call with the same --env-file stays signed out. The skill passes the site-root .env, so the paths match today, but the option does not do what its help says. adopt-session also declares --stdin, which the code never reads (stdin is used whenever --from-file is absent).
+
+Verify pass: In a probe, `--env-file <tmp>/alt/.env adopt-session --stdin` returned path <tmp>/root/.env. Afterwards alt/.env did not exist and root/.env did. local.py reads stdin whenever --from-file is absent, so --stdin is never read.
+
+Fix: Store the resolved env file on Context (an env_file field set in Context.build to env_file or paths.env_file). Use it in local.adopt_session for save and for the reported path, in cli.help_output, and in account.require_session's detail. Either honour --stdin (error when neither --stdin nor --from-file is given) or drop it from the schema.
+
+Expected effect: adopt-session, help and every read use one cookie file. adopt-session followed by whoami with the same --env-file finds the session (today 0 of 1 with a non-default path).
+
+### F11 Output schemas drifted from code in 14 commands, and the test validator cannot see it
+
+medium, correctness, confirmed. Target `program`, at `program/src/citymapper_client/capabilities/journeys.py:181`.
+
+Evidence: I ran every READ_CASES fixture through its function in one offline process and compared output keys with output_schema properties. get-travel-time: the schema declares raw, which the code never emits, and the code emits minutes/from/to, which are undeclared. list-cities: the declared regions[].timezone is never emitted and fetched_at is undeclared. list-brands: the declared brands[].regions is never emitted and affinities/departure_apis are undeclared. Undeclared extras appear in find-line (lines[].description), find-nearby (near), get-city (api_enabled), get-stop (url), get-vehicles (line), list-favourites (name), list-news (date, summary), list-saved-places (region), pass-session-time (raw), plan-cab (from, to, time_mode), reverse-geocode (coords, and it is missing on the empty-results path at line 231). tests/support.py schema_errors checks only type, required and enum and never flags extra or absent declared keys, so all 14 pass. help shows these schemas as the contract.
+
+Verify pass: I checked 3 of the 14 commands. The get-travel-time schema declares raw and seconds while the code emits seconds, minutes, from and to. plan-cab emits undeclared from, to and time_mode. reverse-geocode emits undeclared coords, which is missing on the empty path at line 231. tests/support.py schema_errors never checks extra or absent declared keys.
+
+Fix: Bring plan/plan.json output_schema into line with the code for the 14 commands: declare the emitted fields, and drop raw from get-travel-time and timezone/regions from list-cities/list-brands unless the code starts emitting them. Run scripts/sync_schemas.py. Strengthen tests/support.py assert_valid to report keys not in properties when the schema lists properties. This tightens a gate and does not loosen one.
+
+Expected effect: Schema-to-output key mismatches go from 14 commands to 0, and any future drift fails the existing parametrized schema test.
+
+### F13 live_check never downgrades readiness when a command fails, so help and SKILL.md keep saying "verified live"
+
+medium, other, confirmed. Target `program`, at `program/scripts/live_check.py:252`.
+
+Evidence: I ran it offline with run_cli and SITE_ROOT/READINESS_FILE pointed at a tempdir, seeded with get-line and get-lines at "verified live". I faked get-line exiting 14 (ContractBroken) and get-lines failing its invariant. The output was "live check: 0 of 2 runs passed" with exit 1, but readiness still held {'status': 'verified live', 'verified_at': 'old'} for both commands. The nonzero-exit branch (lines 224-235) never touches readiness, and the invariant-fail branch uses setdefault, which leaves an existing status in place. Commands with several labels (plan-journey x2, find-nearby x2, get-departures x3) also get overwritten to verified by any later passing label even when an earlier one failed. render_skill.py and registry.readiness_of read this file, so a broken command keeps advertising "verified live" to Claude. None of this is covered: tests/ has no test for live_check.py.
+
+Verify pass: live_check.py:224-235: the nonzero-exit branch never touches readiness, and line 252 uses setdefault, which keeps an existing 'verified live'. I lowered it to medium because readiness is advisory and a failing command still exits nonzero at run time.
+
+Fix: Keep a per-command failure set during the run. On any failure (nonzero exit, schema or invariant problem) set readiness[command] = {"status": "failing live: <class or first problem>", "checked_at": stamp, "log": ...}. Mark a command "verified live" only if every selected label for it passed in this run. Write readiness in a finally block so a crash mid-run still records what ran. Add tests/test_live_check.py that monkeypatches run_cli, SITE_ROOT and READINESS_FILE and asserts the downgrade. Break the fix, watch the test go red, then restore it.
+
+Expected effect: After a live regression, help and the regenerated SKILL.md show the failing status on the next live_check instead of a stale "verified live". In the case above, 2 of 2 stale statuses get corrected.
+
+### F14 Readiness keeps saying "you are signed out" after adopt-session, so help and SKILL.md steer Claude away from the 16 session commands
+
+medium, other, confirmed. Target `citymapper`, at `program/src/citymapper_client/registry.py:118`.
+
+Evidence: I built a Context offline on a tempdir site root holding a copy of readiness.json and a .env with a fake sessionid. help_output reported session.has_session_cookie True, but list-saved-places still showed "blocked: needs your Citymapper session (you are signed out; sign in yourself, then adopt-session)" and save-place showed "... (you are signed out); round trip with inverse ready ...". readiness_of ignores the session. The strings are baked in at live_check.py:24 and tools/engineer/pending_approvals.py:61 and copied into the SKILL.md status column by render_skill.py. Once the user does exactly what the skill asks (adopt-session), the skill and help still mark these commands blocked because the user is signed out.
+
+Verify pass: Offline probe with a fake sessionid in a tempdir .env: help reported has_session_cookie True but still showed 'you are signed out' for list-saved-places, save-place and pass-account. registry.readiness_of (118) ignores the session. The count is 12 commands (4 reads, 8 writes), not 16.
+
+Fix: Store a session-neutral status such as "needs session: not yet verified live". In readiness_of, take the Session: for live_policy == "session" with no session cookie, return "blocked: needs your Citymapper session (sign in, then adopt-session)". With a cookie, return "session present, not verified live yet (run scripts/live_check.py --only <name>)". Pass context.session from help_output. Change SESSION_BLOCK in live_check.py and pending_approvals.py, and have render_skill.py write "needs your session" without the signed-out claim. Add a test_cli case with a fake sessionid that asserts the status no longer says signed out.
+
+Expected effect: After adopt-session, help reports the 16 session commands (4 reads, 12 writes) as runnable instead of blocked, and SKILL.md stops asserting a signed-out state that may no longer hold.
+
+### F15 live_check hard-codes the real site root, so a CITYMAPPER_ROOT run writes readiness to the real tree and counts 0 requests
+
+medium, other, confirmed. Target `program`, at `program/scripts/live_check.py:20`.
+
+Evidence: SITE_ROOT, READINESS_FILE (line 22), the verify log path (line 199) and count_requests_since (line 188) all come from PROGRAM_DIR.parent. The CLI child process inherits the environment, and config.site_paths honours CITYMAPPER_ROOT, so with an override the requests are logged under the override while live_check counts lines in the real var/logs (always 0 new lines) and still overwrites the real var/state/readiness.json. The main session hit exactly this: the baseline.json live.note says "scripts/live_check.py was not used because it writes readiness and logs under the real site root regardless of CITYMAPPER_ROOT", and it had to time 7 commands by hand.
+
+Verify pass: live_check.py:20-22 and 188/199 derive SITE_ROOT from PROGRAM_DIR.parent and ignore CITYMAPPER_ROOT, while config.site_paths honours it for the child CLI. The baseline live.note records that the main session avoided live_check for exactly this reason.
+
+Fix: Import citymapper_client.config.site_paths in live_check.py and derive the readiness file, logs dir and request log from it. Add a --root flag that sets CITYMAPPER_ROOT for the child processes. Refuse to start when CITYMAPPER_ROOT is set but empty so a typo cannot fall back to the real root.
+
+Expected effect: Live verification and optimize baselines can run under a throwaway root through the standard script, with correct per-command request counts (7 of 7 instead of 0) and no writes to the real readiness file.
+
+### F16 Redirects forward the sessionid (Session-Id header), User-Device and X-CSRFToken to any host, and the extra hop skips pacing and logging
+
+medium, safety, confirmed. Target `program`, at `program/src/citymapper_client/transport.py:51`.
+
+Evidence: In httpx 0.28.1, Client._redirect_headers drops only Cookie (and Authorization when the redirect is not an https upgrade). Custom headers stay. pass_headers (account.py:67) puts the sessionid cookie value into Session-Id and uid into User-Device. Offline probe with httpx.MockTransport: a 302 from turnstile-api.citymapper.com to https://elsewhere.example.net made the second request carry session-id and user-device to the foreign host. The redirect hop ran outside pacer.turn() and the request log got 1 line for 2 requests. A 307/308 on a write would also re-send the body to the new location with no pacing.
+
+Verify pass: httpx 0.28.1 _redirect_headers drops only Cookie, plus Authorization on a non-https-upgrade cross-origin hop, so Session-Id, User-Device and X-CSRFToken follow a redirect, and the hop runs inside one pacer turn with one log line. I lowered it to medium because it needs a cross-origin redirect from Citymapper, and Session-Id goes only to the still-pending turnstile endpoints.
+
+Fix: Build the client with `event_hooks={"request": [refuse_foreign_host]}`, where the hook raises ContractBroken unless request.url.host is citymapper.com or turnstile-api.citymapper.com. A simpler option is follow_redirects=False with a 3xx classified as ContractBroken for writes and signed-in endpoints, keeping same-origin follow for the HTML reads. Add a MockTransport test that asserts no Session-Id, User-Device or X-CSRFToken header ever reaches a host outside that allowlist.
+
+Expected effect: No session-bearing header can leave the two Citymapper hosts. Every request that goes out is paced and logged, instead of 2 requests going out for 1 log line on a redirect.
+
+### F17 Provenance gate passes unbacked endpoints that use non-/api paths, foreign hosts, string host= values or no finding comment
+
+medium, safety, confirmed. Target `program`, at `program/scripts/check_provenance.py:26`.
+
+Evidence: I imported check_source and fed it planted lines offline, using 65 real findings. Five of six defects gave 0 violations: (1) `GHOST = Endpoint("no-such-finding", "GET", "/meet/ghost")` in endpoints.py with no `# finding:` comment; (2) `Endpoint("journeys", "GET", "/news/ghost")` built in a capability file; (3) `PendingEndpoint("gettrip", ..., host="https://collector.example.net")  # finding: gettrip`, because HOST_ARGUMENT (line 24) only matches UPPERCASE constant names and falls back to the default host; (4) `"https://collector.example.net/api/1/journeys"` in a capability file; (5) an Endpoint line hidden by `# provenance: ignore, ...`. Only `/api/9/ghost` with no comment was caught. The positive controls (line 129) cover none of these shapes. The current tree is clean: the gate counts 35 Endpoint plus 22 PendingEndpoint, matching len(endpoints.ALL_ENDPOINTS)=57.
+
+Verify pass: I imported check_source with the 65 findings and fed it the planted lines. The no-comment /meet/ghost Endpoint, the capability-file /news/ghost Endpoint, the string host= value, the foreign-host literal and the ignore-marked Endpoint each gave 0 violations. Only /api/9/ghost was caught (1 violation). HOST_ARGUMENT at line 24 matches only uppercase constant names.
+
+Fix: Add a second pass that imports citymapper_client.endpoints and checks each object in ALL_ENDPOINTS (finding, method, host, path shape) against the findings. Fail when the regex count differs from len(ALL_ENDPOINTS). Widen the literal scan to any http(s) URL and to any `Endpoint(`/`PendingEndpoint(` call outside endpoints.py. Refuse ignore markers on Endpoint lines. Add the five cases above as positive controls, so the expected count goes from 3 to 8.
+
+Expected effect: All 6 probe defects get caught instead of 1 of 6. This strengthens the gate and does not loosen it.
+
+### F18 Nothing ties --yes to the approved dry run; text places are re-resolved so the sent body can differ from what the user approved
+
+medium, safety, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/account.py:22`.
+
+Evidence: The SKILL requires approval of 'that exact call', but perform_write (account.py:20-28) and perform_write_public (sharing.py:35-39) rebuild the request from scratch on the --yes run. save_place (account.py:119), update_place (156), create_go_link (sharing.py:18) and add_favourite (185, 192) resolve free text through live search or stop/line lookups on each run. Offline probe with a stub context whose place() returned two different search hits: dry run and --yes for the same `save-place --near "Central Park"` sent different coords ([40.7678,-73.9718] vs [40.7812,-73.9733]) and a different name ('Central Park Zoo' vs 'Central Park West'), with no error. grep finds no confirm, digest or hash anywhere in src/.
+
+Verify pass: perform_write (account.py:20-28) and perform_write_public rebuild the request on every run. save_place, update_place, create_go_link and add_favourite resolve text again on the --yes run, and grep finds no confirm, digest or hash in src. I confirmed this by reading the code. A live search returning different results between the two runs is plausible, but I did not observe it.
+
+Fix: Have the dry run return `confirm`, a short sha256 of method + url + body with the volatile created, modified and last_used fields removed. Make every write require `--confirm <digest>` together with --yes, and raise UsageError when the recomputed digest differs, showing both requests. Add `confirm` to each write's input_schema in schemas.json. Change the SKILL Writes section so the call the user approves includes `--confirm <digest>` from the dry run.
+
+Expected effect: The program, not prose, enforces 'approve the exact call': a --yes run whose body differs from the approved dry run sends 0 requests. The fix can be proven offline with fake transports in test_writes.py.
+
+### F20 adopt-session instruction uses a bare `citymapper` binary that is not on PATH
+
+medium, skill-quality, confirmed. Target `citymapper`, at `~/.claude/skills/citymapper/SKILL.md:98`.
+
+Evidence: `which citymapper` prints 'citymapper not found' (exit 1). The console script exists only at program/.venv/bin/citymapper (pyproject [project.scripts]). Every other call in the skill uses the `uv run --project ... citymapper --env-file ...` prefix from line 14, but the Writes section tells the user to pipe the Cookie header into bare `citymapper adopt-session --stdin`, which gives 'command not found' (exit 127). adopt-session is the only way to unblock the 22 commands whose readiness says 'needs your Citymapper session'.
+
+Verify pass: SKILL.md:98 has a bare `citymapper adopt-session --stdin`, and `which citymapper` returns 'not found' (exit 1). I lowered it to medium because line 14 gives the full uv prefix and the failure is immediate and obvious rather than wrong output.
+
+Fix: Replace the bare command on lines 97-98 with the full form: `uv run --project program citymapper --env-file .env adopt-session --stdin` (or `--from-file <path>`), and say that adopt-session writes to the site root .env regardless of --env-file (local.py uses context.paths.env_file).
+
+Expected effect: The sign-in handoff works on the first try instead of failing with exit 127; unblocks the path to all 22 session-gated commands.
+
+### F21 HH:MM times always mean today, so a later-day trip is planned in the past
+
+medium, skill-quality, confirmed. Target `citymapper`, at `~/.claude/skills/citymapper/SKILL.md:22`.
+
+Evidence: context.py line 91 builds HH:MM as datetime.now(zone).replace(hour, minute) with no rollover. Offline probe (send patched to raise, CITYMAPPER_ROOT in a tempdir, London zone): at 14:30 local, '13:30' converted to 2026-10-10T12:30:00.000Z while now was 13:30Z, a time in the past. So 'leave at 07:00 tomorrow' passed as `--depart-at 07:00` in the evening plans today's 07:00. The skill presents HH:MM as equivalent to ISO 8601 with no warning. Same path feeds get-stop-schedule --time (departures.py line 188).
+
+Verify pass: In my probe at 14:34 London time, --depart-at '13:34' became 2026-10-10T12:34:00.000Z, an hour in the past (context.py:91 has no rollover). SKILL.md:22 gives no warning. The doc fix is safe. Rolling over automatically could misread an arrive-by time that has just passed, so a test should cover that case.
+
+Fix: In SKILL.md line 22 say HH:MM means today in the city's timezone and that any other day needs a full ISO 8601 time (2026-10-11T07:00). Better also in program/src/citymapper_client/context.py to_utc_iso: when an HH:MM time is already more than a few minutes past, roll it to tomorrow, and add a unit test that goes red without the rollover.
+
+Expected effect: Removes a silent wrong-output case for every plan-* and get-stop-schedule call made with an HH:MM time earlier than the current local time (roughly half of 'tomorrow morning' style requests made after noon).
+
+### F22 `--format table` and `--city` guidance fails when followed literally
+
+medium, skill-quality, confirmed. Target `citymapper`, at `~/.claude/skills/citymapper/SKILL.md:19`.
+
+Evidence: --format and --env-file are top-level argparse options (cli.py lines 43-44), so they must come before the command. Offline probe: main(['get-line-status','--city','london','--format','table']) exits 2 with 'citymapper: error: unrecognized arguments: --format table'. The skill only says 'add `--format table`'. It also says 'Each site command takes `--city`', but reverse-geocode has no city option: main(['reverse-geocode','--city','london','--lat','51.5','--lng','-0.1']) exits 2 with 'unrecognized arguments: --city london'. open-go-link, list-news, get-legal, vote-for-city (uses --city-slug), update-place, remove-place, remove-favourite, remove-saved-journey and the pass-* commands also lack --city.
+
+Verify pass: Offline probe: `get-line-status --city london --format table` and `reverse-geocode --city london --lat 51.5 --lng -0.1` both exited 2 from argparse. --format is a top-level option (cli.py:44), and reverse-geocode's schema has only lat and lng.
+
+Fix: Rewrite lines 17-22: 'Put `--format table` right after `--env-file`, before the command.' and 'Most commands take `--city` ...; reverse-geocode, open-go-link, list-news, get-legal and the account id commands do not.' Alternatively register --format on every subparser in cli.py with argparse.SUPPRESS defaults so either position works.
+
+Expected effect: Removes two exit-2 round trips that an agent following the skill text hits today; each wasted call costs about 110-150 ms locally (baseline cli --help median 110 ms) plus a turn of agent reasoning.
+
+### F23 Workflow omits required flags (find-nearby --mode) and help does not show which inputs are required
+
+medium, skill-quality, confirmed. Target `citymapper`, at `~/.claude/skills/citymapper/SKILL.md:89`.
+
+Evidence: schemas.json marks find-nearby required = [city, near, mode]; offline probe of main(['find-nearby','--city','london','--near','51.5,-0.1']) exits 2 with 'the following arguments are required: --mode'. The skill workflow never mentions --mode or where its values come from (get-city nearby_modes, e.g. tube, bus, bike). get-map-around similarly requires --size (small|large). help_output (cli.py line 67) lists only sorted input names with no required marker, type or enum, and the skill never points to `<command> --help`, which is the only place required flags and enums show.
+
+Verify pass: main(['find-nearby','--city','london','--near','51.5,-0.1']) exited 2 with 'the following arguments are required: --mode'. SKILL.md:89 never mentions --mode. help_output (cli.py:67) lists only sorted input names, with no required marker.
+
+Fix: Change line 89 to: 'For departures, run `find-nearby --near <place> --mode <mode>` (modes come from get-city: tube, bus, bike, rail, ferry...), then `get-departures --stop <alias or id>`.' Add one line after the command table: 'Run `<command> --help` for its flags, required ones and allowed values.' Optionally make help_output include required names per command.
+
+Expected effect: The documented departures flow succeeds first try instead of costing one exit-2 call and a guess at mode names; `<command> --help` removes flag guessing for the other 55 commands.
+
+### F24 Text places are re-searched on every plan-* / find-nearby call, and the skill tells users to search twice
+
+medium, speed, confirmed. Target `citymapper`, at `program/src/citymapper_client/context.py:70`.
+
+Evidence: Context.place sends SEARCH (plus PLACE_RESOLVE when the first hit lacks coords) for every text --from/--to/--near, with no cache. The request log shows the same 'Grand Central' NYC search (searchpost, 2470 B each) sent 4 times: 09:05:03, 09:08:47, 09:11:39, 09:12:14. plan-journey-nyc with one text place took 9991 and 11773 ms for 2 requests, and plan-walk with coords took 5209 ms for 1. Two text places cost 3 requests (or up to 5 with placeresolve). SKILL.md line 87 says to use 'search-places to check a place name, then plan-journey', and that sends the same search twice because plan-journey does not reuse the search-places result.
+
+Verify pass: context.py:70 calls search() with no cache, and SKILL.md:87 sends search-places then plan-journey. The request log has four 2470 B searchpost calls (09:05:03, 09:08:47, 09:11:39, 09:12:14), but the log has no query text, so it does not show they were all 'Grand Central'. plan-journey-nyc took 9991 and 11773 ms for 2 requests in the verify logs. The extra paced request per place is a moderate cost, not a large one.
+
+Fix: Cache successful text resolutions per region (var/cache/places-{region_id}.json, normalised query to Place dict with coords, 30 day TTL). Context.place checks the cache before search() and writes it after a hit with coords. Change SKILL.md line 87 to tell the caller to pass the chosen search-places result's coords to plan-journey as lat,lng, so the program does not search a second time.
+
+Expected effect: Each repeated text place saves 1 to 2 paced requests (about 4.4 s each). For example, plan-journey with two known text places goes from 3 requests (about 13 s) to 1 (about 4.4 s). Following the search-places then plan-journey flow saves 1 request (about 4.4 s) per place.
+
+### F25 list-brands downloads the 446 KB static brand directory on every call
+
+medium, speed, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/cities.py:58`.
+
+Evidence: list_brands sends BRAND_DIRECTORY uncached. The log shows /resource/brand-directory at 446,728 bytes. verify-2026-10-10-090820.json shows list-brands --city nyc at 8174 ms with 2 requests (brand directory plus region-info). The directory is a global resource (2051 brands per replay-2026-10-10-090058.json) like the /cities catalogue, which the program already caches for 7 days.
+
+Verify pass: cities.py:58 sends BRAND_DIRECTORY on every call with no cache. The log shows /resource/brand-directory at 446728 bytes, and verify-2026-10-10-090820.json has list-brands at 8174 ms with 2 requests. Catalogue and RegionConfigs in catalogue.py already give a cache pattern to copy.
+
+Fix: Cache the brands list in var/cache/brand-directory.json with a fetched_at stamp and a 7 day TTL (reuse CATALOGUE_MAX_AGE_SECONDS or a new constant), following the Catalogue/RegionConfigs pattern in catalogue.py. Add a --refresh flag like list-cities if the schema allows it.
+
+Expected effect: Repeat list-brands drops from 1 request (446 KB, about 4.4 s paced) to 0 requests (about 0.2 s). list-brands --city with a cached region config goes from about 8.2 s to about 0.2 s.
+
+### F26 Place search silently defaults a missing results key to empty
+
+medium, stability, confirmed. Target `citymapper`, at `program/src/citymapper_client/context.py:120`.
+
+Evidence: search() is the place resolver behind search-places, plan-journey, plan-walk, plan-cycle, plan-cab, find-nearby and create-go-link, and it is the only top-level container in the program read with .get(..., []) instead of require_list (every other parser uses require_list for its top container, e.g. lines.py:30, departures.py:45, journeys.py:43). Offline probe via cli.main with searchpost returning {"places": [...]}: search-places exits 0 with {"results": []}; plan-journey with the same drift exits 17 NotFound "No place with coordinates matches 'Main St'". The skill maps 17 to 'no such place', so a site change is reported to the user as a bad place name instead of exit 14 ContractBroken.
+
+Verify pass: context.py:120 reads response.get("results", []). With a fake transport returning {"places": [...]}, search() returned [] and Context.place raised NotFound (exit 17), not ContractBroken (14). I lowered the severity because this only happens when the site changes shape, not in normal use.
+
+Fix: Replace `response.get("results", [])` with `require_list(response, "results", "search response")` (import from .models). Add a test in tests/test_commands.py that a searchpost body without 'results' raises ContractBroken for search-places and plan-journey.
+
+Expected effect: Search shape drift exits 14 ContractBroken for all 7 commands that resolve text places, instead of exit 0 with no results or a misleading exit 17.
+
+### F27 Unreadable pacer state locks every command out forever while promising 900 seconds
+
+medium, stability, confirmed. Target `program`, at `program/src/citymapper_client/pacing.py:41`.
+
+Evidence: _load_state rebuilds the fail-closed halt from the current clock on every read and never writes it, and turn() raises in _raise_if_halted before the try/finally that would rewrite the file. Offline probe with var/state/pacer.json = '{not json' and an injected clock: after +0 s, +1000 s and +86400 s each turn() raised RateLimited 'stays stopped for 900 more seconds'; the file stayed '{not json'; status() reported seconds_remaining 900. Every site command then exits 12, and SKILL.md line 108 tells the user to wait, which never helps. Fail-closed is right; the endless sliding window and false countdown are the defect.
+
+Verify pass: pacing.py:41 returns a fresh halt at clock()+900 on every read of an unreadable file. turn() raises in _raise_if_halted before the try/finally that would rewrite it, so the halt slides forever while status reports 900 s left.
+
+Fix: When the file is unreadable, persist the fail-closed halt once: inside the lock, write {"last_request_at": now, "halted_until": now + HALT_SECONDS_AFTER_THROTTLE, "halt_reason": UNREADABLE_REASON} over the bad file (use _write_state), then return it, so the halt expires after 900 s as stated. Add a test in tests/test_pacing.py that a corrupt file halts, then allows a turn after the clock passes 900 s.
+
+Expected effect: A torn or hand-edited pacer.json costs one 15-minute halt instead of an indefinite lockout of all commands, and the reported seconds_remaining counts down.
+
+### F28 200 error envelope detection misses bodies with 4+ keys or a boolean error
+
+medium, stability, confirmed. Target `program`, at `program/src/citymapper_client/classify.py:49`.
+
+Evidence: Offline probe of classify(200, application/json, ...): {"error": "Invalid region", "code": 400, "message": "x", "details": {}} is returned as a success body; {"error": true, "message": "bad"} is returned as a success body. The site's own bundle (research/bundle/bundle.js) rejects any response with a truthy error: `t&&!t.error?e(t):n(new Error(t&&t.error||...))`. None of the 33 JSON fixtures in tests/fixtures has a top-level 'error' key, so widening the check does not reclassify any recorded success. The len(body) <= 3 cutoff is arbitrary, and a missed envelope then surfaces as an uncaught KeyError or a silent empty result downstream.
+
+Verify pass: classify.py:49 has the anchor. classify(200, json) returned both probe bodies as success: the 4-key error envelope and {error: true}. The bundle contains `t&&!t.error?e(t):n(new Error(t&&t.error`. None of the 31 JSON fixtures has a top-level error key, so the stricter check does not reclassify any recorded success.
+
+Fix: Change the condition to `isinstance(body, dict) and bool(body.get("error"))` and keep the per-item 'error' handling in get-journey-times untouched since it is nested. Add tests in tests/test_classify.py for a 4-key envelope and for error: true.
+
+Expected effect: Both probed envelope shapes raise ApiError (exit 13) instead of passing as data; all 372 existing tests should still pass because no fixture carries a top-level error.
+
+### F19 Six Pass commands claim adopt-session unblocks them, but scope says Pass is out of reach on the web and the Session-Id source is a guess
+
+medium, scope, plausible. Target `citymapper`, at `program/src/citymapper_client/capabilities/account.py:67`.
+
+Evidence: scope/scope.json line 1094 (cap-pass-payments) says 'needs a Session-Id and User-Device. Out of reach without the app and an account.' The bundle inventory gives Session-Id source as 'sessionid argument' with callers [], so no web code shows where it comes from. KB turnstile-*.md says 'Where each value comes from: fill in.' Yet plan.json (e.g. lines 5328, 5384), readiness.json and SKILL.md lines 67-68 and 80-84 tell the user that signing in and running adopt-session unblocks pass-account, pass-session-time and the four pass-* writes. The code copies the Django web sessionid cookie into Session-Id. Because the turnstile endpoints are signed_in=True (endpoints.py lines 89-94), it also sends the whole citymapper.com Cookie header to turnstile-api.citymapper.com. The browser does not do that for host-only cookies.
+
+Verify pass: scope.json says Pass is 'Out of reach without the app and an account', the turnstile KB files say 'Where each value comes from: fill in', and pass_headers maps the sessionid cookie to Session-Id. Turnstile endpoints are signed_in=True, so _headers sends the full Cookie to turnstile-api. Whether the browser's cookies are host-only, and whether sessionid works as Session-Id, can only be settled live.
+
+Fix: Set readiness for all six in plan.json, readiness.json and SKILL.md to 'blocked: needs a Citymapper Pass session from the app (Session-Id source unknown)'. Mark the turnstile endpoints sends_cookies False so the web cookie jar is not forwarded to that host. Keep the sessionid-to-Session-Id mapping only behind an explicit opt-in, recorded as a hypothesis in the turnstile KB files.
+
+Expected effect: 6 of 57 command statuses become accurate. The user is no longer steered into signing in for Pass commands that the evidence says cannot work, and the web session cookie stops going to a second host on an unproven guess. Needs a live write to verify.
+
+### F29 adopt-session with a bad --from-file crashes with a traceback and exit 1, which is outside the exit-code table
+
+low, correctness, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/local.py:9`.
+
+Evidence: cli.main catches only CitymapperError. Offline probe: `adopt-session --from-file <tmp>/missing.txt` raised FileNotFoundError out of main with no JSON on stderr. As a process this exits 1, and neither the SKILL.md table nor references/program-architecture.md (0, 2, 10-16) has exit 1. The skill tells the agent to use --from-file, so a mistyped path gives a raw traceback where the table promises UsageError 2.
+
+Verify pass: Offline probe: `adopt-session --from-file <tmp>/missing.txt` raised an uncaught FileNotFoundError out of cli.main with no JSON on stderr. Not a duplicate of stability-2, because that fix's except list does not include OSError.
+
+Fix: Wrap the read in local.adopt_session: catch OSError and UnicodeDecodeError and raise UsageError("Cannot read --from-file <path>: <reason>", {"from_file": path}).
+
+Expected effect: A bad cookie-file path exits 2 with a one-line JSON UsageError, matching the documented table.
+
+### F30 The skill says to report live values with their fetch time, but no live command outputs one, and bus departures return updated: null
+
+low, other, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/departures.py:100`.
+
+Evidence: SKILL.md:90 (rendered from render_skill.py:93) says "Live transit values change on every call; report them with the time they were fetched." The only output with fetched_at is list-cities, and that value is the catalogue cache time. get-departures returns seconds_away relative to an unstated instant. For bus feeds, updated is hard-coded to None (departures.py:100) because the real /api/1/departures body has no last_updated_time: I checked var/captures/run-2026-10-10-082844-stop-nyc-bus.jsonl and the replay captures. plan-journey, get-journey-times and get-vehicles have no timestamp field in their output schemas either. Claude has to make up the time from its own clock.
+
+Verify pass: departures.py:100 returns None for updated, and the only fetched_at in any output is list-cities' catalogue cache time. The single last_updated_time in the nyc bus capture comes from /api/2/nearby, not departures. The agent can use its own clock as an approximation, so I lowered the severity.
+
+Fix: In cli.main, after command.function returns a dict for a non-local command, add "fetched_at": the UTC ISO time taken just before the first request (Transport can record it at the first send). In get_departures, fall back to that time when the feed gives no last_updated_time. Add fetched_at to each read output_schema through plan.json and sync_schemas.py, and assert it in test_read_output_matches_its_schema.
+
+Expected effect: All 28 verified-live read commands carry a machine-readable fetch time, so the instruction at SKILL.md:90 can be followed without guessing. Bus departure output goes from updated: null to a concrete time.
+
+### F31 Request log lines cannot be tied to the command or invocation that sent them
+
+low, other, confirmed. Target `program`, at `program/src/citymapper_client/transport.py:85`.
+
+Evidence: Each line in var/logs/requests-YYYY-MM-DD.jsonl holds only at, finding, method, path, status, ms, bytes and class (transport.py:83-92). The tail of requests-2026-10-10.jsonl shows stopinfo and departures-rail lines with nothing linking them to the get-departures run. live_check.py:187-190 works around this by diffing the file's line count before and after each CLI call. That miscounts whenever another process shares the pacer and log (a second Claude session, or a run that crosses midnight and switches file). Retried GETs log ms 0 with no attempt number (line 116).
+
+Verify pass: The log line at transport.py:83-92 carries only at, finding, method, path, status, ms, bytes and class. live_check.py count_requests_since counts requests by diffing the log file's line count, which miscounts when another process writes to the same log.
+
+Fix: Generate a run id in cli.main (uuid4 hex[:8]) and pass it with the command name into Transport. Add "run", "command" and "attempt" to every log line. Print the run id in the stderr error JSON detail so a failed command can be found in the log. Have live_check pass the run id through an environment variable and count lines with that id instead of diffing line counts.
+
+Expected effect: Each live failure can be traced to its exact requests, and live_check request counts stay correct under concurrent use. Each log line grows by about 40 bytes.
+
+### F32 Captures store the raw User-Device header (the uid that the Pass API takes as a credential with sessionid) in 24 world-readable files
+
+low, safety, confirmed. Target `program`, at `~/.claude/skills/webapp-re/scripts/cdp_capture.py:30`.
+
+Evidence: A header scan of var/captures/*.jsonl found the Cookie header redacted in every record ('<redacted len=322>'). User-Device was raw in request_headers and wire_headers in 24 of 26 run files, for example run-2026-10-10-082844-meet.jsonl line 5 and run-2026-10-10-082844-cities.jsonl line 141. Every one of those files is mode 0644. The value is not printed here. The knowledge base (turnstile-*.md required_headers: [user-device, session-id]) and research/bundle/api-methods.txt line 173 ('"uid" required', '"sessionid" required') show that this value is the uid paired with sessionid for the Pass payment API. The redaction regex does not match 'user-device'. var/ is gitignored, so the exposure is local.
+
+Verify pass: The cdp_capture.py:30 regex does not match user-device. My scan found raw User-Device in 24 of 27 capture files (48 occurrences), all mode 0644; I printed no values. I lowered it to low because the paired sessionid is redacted, uid alone is not sufficient, and var/ is local.
+
+Fix: Add user-device (and device-id or uid in general) to SENSITIVE_HEADER in cdp_capture.py. Write the capture files with mode 0600. Scrub the 24 existing files by replacing the User-Device value with '<redacted len=N>' in request_headers and wire_headers, and chmod them to 600.
+
+Expected effect: 0 raw User-Device values in captures, down from 48 occurrences across 24 files. Capture files become owner-only.
+
+### F33 create-go-link advertises a title and message, but the only known caller always sends both empty
+
+low, scope, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/sharing.py:19`.
+
+Evidence: In the bundle inventory, createGoLink has query keys title and message, both with shape 'constant ""'. The evidence string shows title:"",message:"". The KB createshorturl.md is a hypothesis with verify_count 0. Scope cap-create-go-link and SKILL.md lines 3 and 78 ('with a title and message') promise the feature, and PENDING-APPROVALS.md proposes a title and message for the first live call. Nothing shows the server stores or displays them. The link is public and cannot be deleted, so a silently dropped message produces a permanent link without what the user approved.
+
+Verify pass: sharing.py:19 sends the user's title and message. api-inventory.json gives createGoLink title and message the shape 'constant ""'. createshorturl.md is a hypothesis with verify_count 0, and PENDING-APPROVALS.md:54 promises 'your title and message'. Nothing shows the server keeps these fields, but losing a message is a minor harm.
+
+Fix: Until a live round trip with open-go-link shows title and message echoed back, mark --title and --message as unverified in schemas.json and plan.json. Have create-go-link return the server's echoed title and message and warn when they are empty. Reword the SKILL.md row to 'link to a place (title and message unverified)'.
+
+Expected effect: The skill stops promising an unverified field on a write with no undo. The first approved run reports whether the message stuck. Needs a live write to verify.
+
+### F34 plan-cab accepts --step-free, --limit and --with-paths and silently ignores all three
+
+low, scope, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/journeys.py:90`.
+
+Evidence: plan.json (plan-cab, line 1975) and schemas.json give plan-cab the shared journey input schema [city, from, to, depart_at, arrive_by, step_free, limit, with_paths]. plan_cab (lines 90-104) never reads step_free, limit or with_paths. It builds routes and services from the full response, unlike plan_with/journeys_output, which apply all three. A user asking for one cab estimate or step-free rides gets every route and no indication that the flag did nothing.
+
+Verify pass: schemas.json gives plan-cab limit, step_free and with_paths. plan_cab (journeys.py:90-104) reads none of them, and journey_query does not use them either, unlike journeys_output, which applies all three.
+
+Fix: Drop step_free and with_paths from plan-cab's input_schema in plan.json and regenerate schemas.json, so the CLI rejects them with UsageError. Apply limit to routes and services in plan_cab. Add a test with a two-route taxi fixture, and confirm it fails red on the current code first.
+
+Expected effect: Three no-op options become either honored or rejected, so plan-cab output matches what the user asked for.
+
+### F35 Error table hides the 15 minute self-halt after a 429 or bot check
+
+low, skill-quality, confirmed. Target `citymapper`, at `~/.claude/skills/citymapper/SKILL.md:108`.
+
+Evidence: transport.py lines 126-133 call pacer.halt on RateLimited and ChallengeRequired; pacing.py HALT_SECONDS_AFTER_THROTTLE = 900 and _raise_if_halted makes every later network command in any process fail with exit 12 (or 11) 'stays stopped for N more seconds'. help reports pacer.halted and pacer.seconds_remaining. The skill rows for exit 11 and 12 say only 'Wait before the next command' and 'complete it there. Do not retry', so the agent cannot tell the user how long, will keep issuing commands that all fail, and will tell a user who has just cleared the browser check to try again when the program will still refuse for up to 15 minutes. A corrupt pacer.json also fails closed into the same halt (pacing.py line 41).
+
+Verify pass: SKILL.md:108 says only 'Wait before the next command', while transport.py halts the pacer for HALT_SECONDS_AFTER_THROTTLE=900 on RateLimited or ChallengeRequired. I lowered it to low because every later call's stderr already states the seconds remaining.
+
+Fix: Edit the 11 and 12 rows: 'The program stops itself for 15 minutes after this, across all calls. Run `help` and report pacer.seconds_remaining; do not run other site commands until it is 0.' Add for 11: 'Clearing the check in the browser does not lift the halt early.'
+
+Expected effect: Avoids a burst of failed commands (each exit 12 within 900 s) and gives the user an exact wait time instead of an open-ended 'wait'.
+
+### F36 Command table is 72% of the body, mostly repeated status text and a derivable Output column
+
+low, skill-quality, confirmed. Target `citymapper`, at `~/.claude/skills/citymapper/SKILL.md:26`.
+
+Evidence: Measured: body 12943 chars (about 3235 tokens at 4 chars/token), of which the 57 table rows are 9363 chars (about 2340 tokens). The Status column is 3016 chars: one 107-char string repeats 8 times, a 98-char string 5 times, a 97-char string 2 times, a 64-char string 3 times. The Output column (1394 chars, about 350 tokens) is always `<command with _ for ->_output` and tells the agent nothing. Three rows use status 'built, awaiting approval (...)', which does not start with any prefix the template allows (verified live, local, built, not verified, blocked); build_menu.py classify_status files it under 'unverified'. Description is 961 of 1024 chars, so the frontmatter has 63 chars headroom.
+
+Verify pass: I measured a 12943-char body and 57 table rows totalling 9363 chars. The Status column is 3016 chars, with a 107-char string repeated 8 times and a 98-char string 5 times, and the Output column is 1394 chars. The 3 'built, awaiting approval' statuses do not start with any prefix allowed by central-skill-template.md:70.
+
+Fix: Shorten repeated statuses to 'blocked: session' and 'blocked: session, then approval' with a two-line legend under the table pointing to readiness.json and PENDING-APPROVALS.md for detail; change the three share-journey/create-go-link/vote-for-city statuses to 'built, not verified: awaiting approval'. Keep the Output column only if the template must stay exact; otherwise drop it and amend central-skill-template.md to match.
+
+Expected effect: Cuts roughly 2500-3800 chars (about 650-950 tokens, 20-30% of the body) loaded on every /citymapper trigger, and makes the Status column match the template's prefixes.
+
+### F37 httpx import and Client construction run eagerly on every invocation, including zero-request commands
+
+low, speed, confirmed. Target `program`, at `program/src/citymapper_client/transport.py:51`.
+
+Evidence: python -X importtime: httpx accounts for about 58 ms of the 76 ms citymapper_client.cli import (cli to context to catalogue to transport to httpx). Offline timing with send stubbed: Context.build with a stub transport 0.1 ms, with the real Transport 43.6 ms (first httpx.Client builds the SSL context). Baseline 'cli help command wall time' is 153 ms, so about 100 ms of it is network setup that zero-request commands never use. Those commands are help, cached list-cities and get-city (baseline get-city 0 requests, 161 ms), signed-out whoami, the blocked commands (155 to 158 ms in verify) and every --dry-run.
+
+Verify pass: transport.py:51 builds httpx.Client eagerly, and httpx is imported only there. The effect is overstated: I measured the httpx import at about 21 ms of a 44 ms cli import and Client() at about 17.5 ms. That saves about 38 ms per zero-request command, not about 100 ms.
+
+Fix: Move 'import httpx' into a lazy client property on Transport that builds httpx.Client on the first _send_once. Catch transport errors through that lazily imported module, or wrap them in _send_once. catalogue.py and context.py keep importing Transport/Request, which no longer pull in httpx at import time.
+
+Expected effect: Zero-request commands drop from about 153 ms to about 50 to 55 ms wall time (about 100 ms saved: about 55 ms import plus about 44 ms client setup). Network commands are unchanged.
+
+### F38 get-line-status and get-disruptions fetch the identical routestatus response separately
+
+low, speed, confirmed. Target `citymapper`, at `program/src/citymapper_client/capabilities/lines.py:21`.
+
+Evidence: Both commands call route_status_groups with the same query and headers and then filter the result locally. Each call is 57 to 65 KB (log 09:10:24 and 09:10:29) and costs about 4.5 s paced (baseline get-line-status 4491 ms, get-disruptions 4544 ms). A user question like 'is the Tube OK and what is disrupted' runs both commands back to back, so the second request returns data the first one already fetched.
+
+Verify pass: lines.py:20-21: route_status_groups sends one identical query, and get_line_status (26) and get_disruptions (50) each call it separately. Baseline shows about 4.5 s for each.
+
+Fix: Cache the routestatus body per region in var/cache/routestatus-{region_id}.json for a short TTL (for example 60 s) and keep the response's last_updated_time in the output so freshness stays visible. Alternatively, document in SKILL.md that get-line-status already carries each line's status level, so get-disruptions is needed only for descriptions.
+
+Expected effect: The second of a status and disruptions pair within 60 s drops from 1 request (about 4.5 s, about 60 KB) to 0 (about 0.2 s).
+
+## Refuted by the verify pass
+
+- F04 GET-based approval writes (share-journey, create-go-link) are auto-retried up to 3 sends with no new approval: This duplicates stability-1 (GET writes retried up to 3 times at transport.py:108). It names the same line and anchor and gives the same probe result.
+- F05 Public link writes (share-journey, create-go-link) are retried as GETs, so one approved call can publish up to 3 undeletable links: The defect is real (transport.py:108 retries any GET, and CREATE_TRIP_URL/CREATE_SHORT_URL are GET at endpoints.py:84-85), but this duplicates stability-1, which is listed earlier in the index at the same file and line.
+- F12 plan-cab accepts --limit, --step-free and --with-paths and silently ignores all three: This duplicates scope-5 (plan-cab accepts --step-free, --limit and --with-paths and ignores all three). The code at journeys.py:90-104 matches that description.
+
+## Next
+
+`/webapp-re optimize citymapper --apply run-2026-10-10-092702` applies the kept findings.

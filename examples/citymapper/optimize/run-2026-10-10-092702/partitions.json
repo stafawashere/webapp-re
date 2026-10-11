@@ -1,0 +1,206 @@
+{
+   "program_dir": "program",
+   "size_cap": 5,
+   "max_per_wave": 8,
+   "waves": [
+      {
+         "wave": 1,
+         "partitions": [
+            {
+               "id": "P1-live-check",
+               "lane": "chain",
+               "findings": [
+                  "F01",
+                  "F03",
+                  "F13",
+                  "F14",
+                  "F15"
+               ],
+               "files": [
+                  "~/.claude/skills/citymapper/SKILL.md",
+                  "program/scripts/live_check.py",
+                  "program/src/citymapper_client/cli.py",
+                  "program/src/citymapper_client/registry.py",
+                  "program/tests/test_cli.py",
+                  "program/tests/test_live_check.py",
+                  "tools/engineer/pending_approvals.py",
+                  "tools/engineer/render_skill.py"
+               ]
+            },
+            {
+               "id": "P2-plan",
+               "lane": "chain",
+               "findings": [
+                  "F02",
+                  "F11",
+                  "F30",
+                  "F34"
+               ],
+               "files": [
+                  "plan/plan.json",
+                  "program/src/citymapper_client/capabilities/departures.py",
+                  "program/src/citymapper_client/capabilities/journeys.py",
+                  "program/src/citymapper_client/cli.py",
+                  "program/src/citymapper_client/schemas.json",
+                  "program/src/citymapper_client/transport.py",
+                  "program/tests/fixtures/taxi.json",
+                  "program/tests/support.py",
+                  "program/tests/test_cli.py",
+                  "program/tests/test_commands.py"
+               ]
+            },
+            {
+               "id": "P3-skill",
+               "lane": "chain",
+               "findings": [
+                  "F06",
+                  "F18",
+                  "F19",
+                  "F21",
+                  "F33"
+               ],
+               "files": [
+                  "~/.claude/skills/citymapper/SKILL.md",
+                  "plan/plan.json",
+                  "program/src/citymapper_client/capabilities/account.py",
+                  "program/src/citymapper_client/capabilities/sharing.py",
+                  "program/src/citymapper_client/context.py",
+                  "program/src/citymapper_client/endpoints.py",
+                  "program/src/citymapper_client/schemas.json",
+                  "program/src/citymapper_client/transport.py",
+                  "program/tests",
+                  "program/tests/test_writes.py",
+                  "var/state/readiness.json"
+               ]
+            },
+            {
+               "id": "P4-config",
+               "lane": "chain",
+               "findings": [
+                  "F07",
+                  "F09",
+                  "F24",
+                  "F25",
+                  "F38"
+               ],
+               "files": [
+                  "~/.claude/skills/citymapper/SKILL.md",
+                  "program/src/citymapper_client/capabilities/cities.py",
+                  "program/src/citymapper_client/capabilities/departures.py",
+                  "program/src/citymapper_client/capabilities/lines.py",
+                  "program/src/citymapper_client/catalogue.py",
+                  "program/src/citymapper_client/cli.py",
+                  "program/src/citymapper_client/config.py",
+                  "program/src/citymapper_client/context.py",
+                  "program/tests/test_cli.py",
+                  "program/tests/test_commands.py"
+               ]
+            },
+            {
+               "id": "P5-transport",
+               "lane": "chain",
+               "findings": [
+                  "F08",
+                  "F16",
+                  "F31",
+                  "F37"
+               ],
+               "files": [
+                  "program/scripts/live_check.py",
+                  "program/src/citymapper_client/cli.py",
+                  "program/src/citymapper_client/context.py",
+                  "program/src/citymapper_client/endpoints.py",
+                  "program/src/citymapper_client/transport.py",
+                  "program/tests/test_transport.py"
+               ]
+            },
+            {
+               "id": "P6-local",
+               "lane": "chain",
+               "findings": [
+                  "F10",
+                  "F26",
+                  "F29"
+               ],
+               "files": [
+                  "program/src/citymapper_client/capabilities/account.py",
+                  "program/src/citymapper_client/capabilities/local.py",
+                  "program/src/citymapper_client/cli.py",
+                  "program/src/citymapper_client/context.py",
+                  "program/tests/test_commands.py"
+               ]
+            },
+            {
+               "id": "P7-check-provenance",
+               "lane": "chain",
+               "findings": [
+                  "F17",
+                  "F27",
+                  "F28"
+               ],
+               "files": [
+                  "program/scripts/check_provenance.py",
+                  "program/src/citymapper_client/classify.py",
+                  "program/src/citymapper_client/pacing.py",
+                  "program/tests/test_classify.py",
+                  "program/tests/test_pacing.py"
+               ]
+            },
+            {
+               "id": "P8-skill",
+               "lane": "chain",
+               "findings": [
+                  "F20",
+                  "F22",
+                  "F23",
+                  "F35",
+                  "F36"
+               ],
+               "files": [
+                  "~/.claude/skills/citymapper/SKILL.md",
+                  "skills/webapp-re/references/central-skill-template.md"
+               ]
+            }
+         ]
+      },
+      {
+         "wave": 2,
+         "partitions": [
+            {
+               "id": "P9-run-2026-10-10-082844-cities",
+               "lane": "parallel",
+               "findings": [
+                  "F32"
+               ],
+               "files": [
+                  "var/captures/run-2026-10-10-082844-cities.jsonl",
+                  "var/captures/run-2026-10-10-082844-city-london.jsonl",
+                  "var/captures/run-2026-10-10-082844-city-nyc.jsonl",
+                  "var/captures/run-2026-10-10-082844-city-paris.jsonl",
+                  "var/captures/run-2026-10-10-082844-directions-london.jsonl",
+                  "var/captures/run-2026-10-10-082844-directions-nyc.jsonl",
+                  "var/captures/run-2026-10-10-082844-directions-paris-depart.jsonl",
+                  "var/captures/run-2026-10-10-082844-home.jsonl",
+                  "var/captures/run-2026-10-10-082844-line-london-bakerloo.jsonl",
+                  "var/captures/run-2026-10-10-082844-line-nyc-subway-6.jsonl",
+                  "var/captures/run-2026-10-10-082844-meet.jsonl",
+                  "var/captures/run-2026-10-10-082844-nearby-nyc-bike.jsonl",
+                  "var/captures/run-2026-10-10-082844-nearby-nyc-bus.jsonl",
+                  "var/captures/run-2026-10-10-082844-nearby-nyc-ferry.jsonl",
+                  "var/captures/run-2026-10-10-082844-nearby-nyc-rail.jsonl",
+                  "var/captures/run-2026-10-10-082844-nearby-nyc-subway.jsonl",
+                  "var/captures/run-2026-10-10-082844-nearby-paris-metro.jsonl",
+                  "var/captures/run-2026-10-10-082844-news.jsonl",
+                  "var/captures/run-2026-10-10-082844-status-nyc.jsonl",
+                  "var/captures/run-2026-10-10-082844-stop-nyc-bus.jsonl",
+                  "var/captures/run-2026-10-10-082844-stop-nyc-ferry.jsonl",
+                  "var/captures/run-2026-10-10-082844-stop-nyc-rail.jsonl",
+                  "var/captures/run-2026-10-10-082844-stop-nyc-subway.jsonl",
+                  "var/captures/run-2026-10-10-082844-stop-paris-metro.jsonl",
+                  "skills/webapp-re/scripts/cdp_capture.py"
+               ]
+            }
+         ]
+      }
+   ]
+}
