@@ -1,0 +1,41 @@
+/*
+   The project's own design tokens, copied from plugin/menu/standalone.template.html:9-49 so
+   the banner and the app share one palette. The app keeps them inline in its HTML template,
+   so there is no stylesheet file to link. Regenerating means re-copying that block when it
+   changes.
+*/
+
+:root {
+   --surface-0: #f5f4ef; --surface-1: #f9f8f5; --surface-2: #ffffff;
+   --text-primary: #1f1e1b; --text-secondary: #5f5e5a; --text-muted: #888780;
+   --border: rgba(31, 30, 27, 0.12); --border-strong: rgba(31, 30, 27, 0.22);
+   --bg-accent: #e6f1fb; --text-accent: #185fa5; --border-accent: #85b7eb;
+   --bg-tint-violet: #eeedfe; --text-tint-violet: #534ab7;
+   --bg-tint-aqua: #e1f5ee; --text-tint-aqua: #0f6e56;
+   --bg-tint-blue: #e6f1fb; --text-tint-blue: #185fa5;
+   --bg-tint-orange: #faece7; --text-tint-orange: #993c1d;
+   --bg-tint-green: #eaf3de; --text-tint-green: #3b6d11;
+   --bg-tint-red: #fcebeb; --text-tint-red: #a32d2d;
+   --bg-tint-yellow: #faeeda; --text-tint-yellow: #854f0b;
+   --bg-tint-magenta: #fbeaf0; --text-tint-magenta: #993556;
+   --radius: 8px;
+   --font-sans: system-ui, -apple-system, "Segoe UI", sans-serif;
+   --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+@media (prefers-color-scheme: dark) {
+   :root {
+      --surface-0: #1b1b19; --surface-1: #242422; --surface-2: #2c2c2a;
+      --text-primary: #f1efe8; --text-secondary: #b4b2a9; --text-muted: #888780;
+      --border: rgba(241, 239, 232, 0.12); --border-strong: rgba(241, 239, 232, 0.24);
+      --bg-accent: #0c447c; --text-accent: #b5d4f4; --border-accent: #378add;
+      --bg-tint-violet: #3c3489; --text-tint-violet: #cecbf6;
+      --bg-tint-aqua: #085041; --text-tint-aqua: #9fe1cb;
+      --bg-tint-blue: #0c447c; --text-tint-blue: #b5d4f4;
+      --bg-tint-orange: #712b13; --text-tint-orange: #f5c4b3;
+      --bg-tint-green: #27500a; --text-tint-green: #c0dd97;
+      --bg-tint-red: #791f1f; --text-tint-red: #f7c1c1;
+      --bg-tint-yellow: #633806; --text-tint-yellow: #fac775;
+      --bg-tint-magenta: #72243e; --text-tint-magenta: #f4c0d1;
+   }
+}

@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="color-scheme" content="light dark">
+<title>webapp-re README banner</title>
+<!--
+   Source for img/banner-light.png and img/banner-dark.png. Regenerate on macOS with
+   sh tools/banner/regenerate.sh. The colors come from tokens.css, which is the token block of
+   plugin/menu/standalone.template.html copied verbatim, so a palette change there is a
+   palette change here once the block is copied across again. Elements that carry text are
+   marked data-text with a data-role, which is what the contrast and phone-legibility checks
+   read.
+-->
+<link rel="stylesheet" href="tokens.css">
+<style>
+:root {
+   --banner-width: 900px;
+   --banner-height: 300px;
+}
+
+html, body {
+   margin: 0;
+   background: transparent;
+}
+
+.banner {
+   position: relative;
+   width: var(--banner-width);
+   height: var(--banner-height);
+   overflow: hidden;
+   box-sizing: border-box;
+   display: flex;
+   align-items: center;
+   padding: 0 56px 12px 56px;
+   background: var(--surface-0);
+   color: var(--text-primary);
+   font-family: var(--font-sans);
+   box-shadow: inset 0 0 0 0.5px var(--border-strong);
+}
+
+.tile {
+   flex: none;
+   width: 112px;
+   height: 112px;
+   border-radius: var(--radius);
+   background: var(--bg-tint-blue);
+   color: var(--text-tint-blue);
+   font-family: var(--font-mono);
+   font-size: 72px;
+   font-weight: 500;
+   line-height: 112px;
+   text-align: center;
+}
+
+.slash {
+   display: inline-block;
+   transform: translateY(-2px);
+}
+
+.copy {
+   margin-left: 40px;
+}
+
+.title {
+   font-size: 64px;
+   font-weight: 600;
+   line-height: 1;
+   margin: 0;
+   letter-spacing: -0.01em;
+}
+
+.tagline {
+   font-size: 36px;
+   font-weight: 400;
+   line-height: 1.2;
+   color: var(--text-secondary);
+   margin: 14px 0 0 0;
+}
+
+.strip {
+   position: absolute;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   height: 12px;
+   display: flex;
+}
+
+.strip span {
+   flex: 1;
+}
+
+.violet { background: var(--bg-tint-violet); }
+.aqua { background: var(--bg-tint-aqua); }
+.blue { background: var(--bg-tint-blue); }
+.orange { background: var(--bg-tint-orange); }
+.green { background: var(--bg-tint-green); }
+.red { background: var(--bg-tint-red); }
+.yellow { background: var(--bg-tint-yellow); }
+.magenta { background: var(--bg-tint-magenta); }
+</style>
+</head>
+<body>
+<div class="banner">
+   <div class="tile"><span class="slash" data-text data-role="text">/</span></div>
+   <div class="copy">
+      <h1 class="title" data-text data-role="title">webapp-re</h1>
+      <p class="tagline" data-text data-role="tagline">Never pay for an API again</p>
+   </div>
+   <div class="strip" aria-hidden="true">
+      <span class="violet"></span>
+      <span class="aqua"></span>
+      <span class="blue"></span>
+      <span class="orange"></span>
+      <span class="green"></span>
+      <span class="red"></span>
+      <span class="yellow"></span>
+      <span class="magenta"></span>
+   </div>
+</div>
+</body>
+</html>

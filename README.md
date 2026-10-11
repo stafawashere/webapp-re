@@ -1,3 +1,8 @@
+<picture>
+   <source media="(prefers-color-scheme: dark)" srcset="img/banner-dark.png">
+   <img alt="webapp-re" src="img/banner-light.png">
+</picture>
+
 # webapp-re
 
 A Claude Code plugin that finds the private HTTP API behind a web app you're signed into, and
@@ -12,7 +17,7 @@ out, and a call that would change data on the site waits for your approval.
 - [uv](https://docs.astral.sh/uv/). Every script is a uv inline script, so uv fetches Python 3.11
   or newer and the one dependency (`websockets`, for the CDP capture) on its own
 - A Chromium browser, driven either through the Claude in Chrome extension or over CDP on a
-  throwaway profile
+  separate profile you sign into by hand
 
 ## Installing it
 
@@ -27,8 +32,8 @@ every stage.
 
 ## Using it
 
-Each stage is its own skill, and each reads what the stage before it wrote, so you only name the
-site.
+Each stage is its own skill and reads what the stage before it wrote from a fixed path, so you
+never pass files between them.
 
 ```
 /webapp-re:reverse <site> <goal>             find and verify the request behind one goal
@@ -45,26 +50,59 @@ site.
 `reverse` is the method the other stages lean on. You give it a site and a goal phrased as
 something you'd do, like `app.example.com: list the items on my saved list`, and it captures the
 traffic, narrows it to the one call that does the job, replays it, and writes the result into the
-site's knowledge base. `scope` does that across the whole site without changing anything. `plan`
-works offline from what scope wrote. `engineer` builds the program, checks every command against the live
-site, and generates the site plugin. `optimize` audits a built site's plugin and program, and
-only edits after you accept its findings.
+site's knowledge base. `scope` runs the same method across the whole site, read-only, and
+`plan` turns its inventory into commands without sending any requests. Once a plan exists,
+`engineer` builds the program and the site plugin and checks every command against the live
+site. `optimize` audits a built site's plugin and program, and changes nothing until you've accepted
+its findings.
 
-`/webapp-re <stage> ...` also works and goes through the router skill.
+`/webapp-re <stage> ...` works too. It goes through the `webapp-re` skill, which hands off to the
+stage you name.
+
+## What you end up with
+
+For `app.example.com`, a full run leaves this under `$WEBAPP_RE_HOME/example/`:
+
+```
+site.json            slug, origins and the browser in use
+scope/               scope.md and scope.json, the inventory of the app
+plan/                plan.md and plan.json, the commands and their build order
+knowledge/           one file per verified endpoint, plus patterns, sessions and a changelog
+openapi/             example.openapi.yaml, rendered from the verified endpoints
+program/             the automation library and CLI, a uv project
+plugin/              the /example: plugin that calls program/
+```
+
+After that, `/example:help` lists the site's commands and `/example:example <command>` runs one
+through the program. The knowledge base is plain Markdown, and `reverse` reads it first, so a goal
+whose endpoint was verified and replayed in the last 30 days skips the capture and goes straight
+to reproducing the call.
+
+## Pacing and your account
+
+The generated program keeps one request in flight, waits at least 3 seconds between requests to
+the same origin with some jitter, and retries only transport errors. A 429, a challenge page or a
+checkpoint stops the whole client rather than the one call. Cookies come from a `.env` file you
+fill from your own browser, kept at mode 600 and redacted in every log. A password login is never
+automated unless you ask for it, and the password is never stored. The reasoning and the defaults
+are in [plugin/references/pacing-and-safety.md](plugin/references/pacing-and-safety.md).
+
+Use it on accounts you own, and read the site's terms first, because some sites don't allow
+automated access to their private API even from your own session.
 
 ## Where your sites go
 
 Every site gets one workspace under `$WEBAPP_RE_HOME/<slug>/`. `WEBAPP_RE_HOME` defaults to
-`~/dev/webapp-re/apps`, and you can point it anywhere. The slug is the domain without its suffix,
-so `app.example.com` becomes `example`. The full tree is in
+`~/dev/webapp-re/apps`, and you can point it anywhere. The slug is the registrable domain without
+its public suffix, so `app.example.com` and `www.example.com` both become `example`. The full tree is in
 [plugin/references/site-layout.md](plugin/references/site-layout.md).
 
-Each workspace is its own git repository (`kb.py init` runs `git init`) and holds the knowledge
-base, the plan, the program, and the site's generated plugin in `plugin/`. That plugin, the
+Each workspace is its own git repository (`kb.py init` runs `git init`). The generated plugin, the
 captures in `var/` and the cookie file `.env` are gitignored in the workspace, because they're
-tied to your account. The site plugins are listed in a local marketplace named `webapp-re-local`,
-written to `.claude-plugin/marketplace.json` in the parent of `WEBAPP_RE_HOME` (or
-`$WEBAPP_RE_MARKETPLACE`). The engineer stage adds it the first time it builds a site.
+tied to your account. Nothing is committed or pushed for you. The site plugins are listed in a
+local marketplace named `webapp-re-local`, written to `.claude-plugin/marketplace.json` in the
+parent of `WEBAPP_RE_HOME` (or `$WEBAPP_RE_MARKETPLACE`), and `kb.py init` adds each new site
+to it.
 
 ## How it's laid out
 
@@ -87,7 +125,8 @@ uv run --script tests/test_build_menu.py
 ```
 
 That runs 22 tests for the menu builder. [tests/README.md](tests/README.md) has the checker
-fixtures, the output each one should give, and the commands to run them.
+fixtures, the output each one should give, and the commands to run them. CI runs the same tests
+and checkers on every push.
 
 ## License
 
