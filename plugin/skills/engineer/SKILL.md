@@ -35,8 +35,11 @@ except through `claude plugin install`.
 
 ## Steps
 
-1. **Load.** `kb.py path --site <target>`; read `plan/plan.json`, `scope/scope.json`,
-   `knowledge/INDEX.md`, and `kb.py stats`. Run the plan checker
+1. **Load.** `kb.py path --site <target>`; read `plan/plan.json`, `knowledge/INDEX.md`, and
+   `kb.py stats`. Read the scope through
+   `${CLAUDE_PLUGIN_ROOT}/scripts/scope_query.py <root>/scope/scope.json` (index first, then `--id`
+   for the endpoints a command needs), never whole, and grep `knowledge/endpoints/` for the
+   endpoint ids instead of reading the folder. Run the plan checker
    (`${CLAUDE_PLUGIN_ROOT}/scripts/check_plan.py <root>`); if it fails, stop and
    suggest `/webapp-re:plan`. Pick the commands to build: the ones named in the arguments, or
    every command whose build step's dependencies are satisfiable.

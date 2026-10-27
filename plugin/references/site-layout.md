@@ -44,7 +44,7 @@ creating anything.
 | `var/menu/` | The last built menu page, the inline widget when asked for, `build.json` with input fingerprints and the cached program help, and `server.json` with the page server's port. Rebuilt by `/<slug>:menu` when an input changed | `build_menu.py build` |
 | `optimize/<run-id>/` | One audit and its fixes: snapshots, `baseline.json`, `findings.json`, `report.md`, then `before/`, `after.json` and `result.md` if fixes were applied. Format in `optimize-format.md` | `/webapp-re:optimize`, `optimize_run.py` |
 | `var/runs/<run-id>/` | Run notes | `kb.py new-run` |
-| `var/captures/` | Capture JSONL, bodies kept, credential values redacted at the writer | capture tools |
+| `var/captures/` | Capture JSONL, bodies kept, credential values redacted at the writer; per run `<run-id>/` with the scope probe files, `walk.json` and `draft-scope.json`; reverse exports for `replay.py`, which hold live values until `--consume` deletes them | capture tools, `scope-probe.js`, `walk_summary.py`, `reverse-export.js` |
 | `var/logs/` | JSONL event log | `kb.py` |
 | `.env` | Cookie material copied by the user from their browser. Mode 600. | the user |
 

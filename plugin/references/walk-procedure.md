@@ -2,31 +2,65 @@
 
 ## Order
 
-1. **Landing and shell.** Load the signed-in home. Read the accessibility tree with `read_page`
-   (filter `interactive`) to list the global navigation, account menu, search, notifications and
-   footer links. These are the breadth-first frontier.
-2. **Hook.** Inject `capture-hook.js` with `javascript_tool` on every new document. In a single-page
-   app one injection survives route changes; after a full navigation, inject again. Confirm with
-   the returned `{ installed: true }`.
-3. **Breadth.** Visit each frontier entry once. For each page record: URL pattern (ids replaced by
+1. **Landing and shell.** Load the signed-in home and probe it. The probe's link groups, folded
+   by `walk_summary.py` into the frontier, are the breadth-first frontier. Use `take_snapshot`
+   with a `filePath` only when a menu or dialog needs a `uid` to open.
+2. **Breadth.** Visit each frontier entry once. For each page record: URL pattern (ids replaced by
    `{name}`), title, purpose in one line, the controls on it, and the requests it fired.
-4. **Depth.** For each section: open one item of every detail type, page through every list
+3. **Depth.** For each section: open one item of every detail type, page through every list
    once (next page, infinite scroll, load more), apply one search, one filter and one sort, open
    every tab and dialog that does not commit anything.
-5. **Settings and account.** Read every settings page. Each toggle or field is a capability with
+4. **Settings and account.** Read every settings page. Each toggle or field is a capability with
    `mutates: true`, not exercised.
-6. **Write paths, observed safely.** For each state-changing control, open it and stop before the
+5. **Write paths, observed safely.** For each state-changing control, open it and stop before the
    commit. Many forms reveal their endpoint through validation calls, autosave drafts or bundle
    strings without submitting. Record what is visible; mark the endpoint `unknown` otherwise.
 
-## After every step
+## Capture, per page
 
-- `read_network_requests` for the tab, filtered past the noise list.
-- `window.__reCaptureDump({ match: "<api prefix>" })` for request header names, query keys and
-  response shapes. Ask for `{ values: true }` only for a specific request whose body shape is
-  ambiguous, and never copy values into the scope.
-- Note new cookies by name only, through the request headers' names and any `Set-Cookie` names
-  visible in response headers.
+Measured on a GitHub walk (2026-10-27, 9 pages): the old loop of `navigate_page`,
+`list_network_requests` and `get_network_request` cost 11,766 browser-tool tokens; this loop cost
+2,413 for 11 pages and a pagination check.
+
+1. **First page.** `navigate_page` with this `initScript`, which keeps every resource-timing entry
+   (Chrome keeps 250 by default, and GitHub loads about 300 and calls `clearResourceTimings`):
+
+   ```js
+   window.__wreTiming={clears:0,full:0};performance.setResourceTimingBufferSize(5000);performance.clearResourceTimings=()=>{__wreTiming.clears++};performance.onresourcetimingbufferfull=()=>{__wreTiming.full++};
+   ```
+
+2. **Probe.** `evaluate_script` with `sourcePath` `${CLAUDE_PLUGIN_ROOT}/assets/scope-probe.js`, `filePath`
+   `<capture-dir>/<nn>.json` and `waitForStableDom: false`. The reply is about 30 tokens. The
+   file holds call patterns (ids as `{id}`, query keys without values), noise counts, link
+   groups, pagination links, form methods and field names, CSRF input and meta names,
+   JS-visible cookie names, framework flags, and for up to four new same-origin GET calls a
+   refetch giving response header names and the JSON shape. It scrolls once to fire lazy loads.
+   It never prints a value.
+3. **Queue the rest.** One `evaluate_script` sets
+   `sessionStorage.setItem("__wreQueue", JSON.stringify([...paths]))` after the first probe. Each
+   later probe call takes the next path, moves there by Turbo or an in-page link click (the
+   timing hook survives), and probes it: one call per page, no tab list.
+4. **Full reloads.** When a probe returns "Execution context was destroyed", the site reloaded
+   the page. Call the probe again with the same `filePath`: it sees the pending path, probes the
+   landed page without moving, and reinstalls the hook. `timing.truncated: true` in that file
+   means the load filled the default buffer; probe that page again after a `navigate_page` with
+   the hook.
+5. **Pagination.** `evaluate_script` of `${CLAUDE_PLUGIN_ROOT}/assets/scope-paginate.js` clicks the next link or
+   load-more button and returns the requests it fired, about 120 tokens.
+6. **Summarize.** `walk_summary.py <capture-dir>` prints one line per page and endpoint, the
+   noise list (generic rules plus any same-origin call seen on half the pages, at least 3), the
+   frontier ordered pagination, detail, nav, and writes `walk.json`. `--endpoint <pattern>`
+   prints one endpoint's header names and shape.
+
+Render verdict: a page with at most two non-noise calls is server-rendered, and its `document`
+rows become `html` endpoints. An API-driven site has its shapes in the probe files already.
+
+Fall back to `list_network_requests` only to check a page the probe seems to miss. Do not call
+`get_network_request` during a scope: it prints `Cookie` and `Set-Cookie` values into the
+transcript and costs 2,000 to 3,500 tokens even with `responseFilePath`.
+
+Coverage by default: open one item of every detail kind the frontier lists, and run the
+pagination script once on every list that shows a next link or load-more control.
 
 ## What to look for, per category
 
@@ -44,22 +78,9 @@
 
 ## Framework probes
 
-Run these with `javascript_tool`. Each returns names and counts, never values.
-
-```js
-({
-   next: Boolean(document.getElementById("__NEXT_DATA__")),
-   nuxt: Boolean(window.__NUXT__),
-   apollo: Boolean(window.__APOLLO_CLIENT__),
-   reactRoot: Boolean(document.querySelector("[data-reactroot], #root, #__next")),
-   webpackChunks: Object.keys(window).filter((key) => key.startsWith("webpackChunk")),
-   serviceWorker: Boolean(navigator.serviceWorker && navigator.serviceWorker.controller),
-   csrfMeta: Array.from(document.querySelectorAll("meta")).map((meta) => meta.name).filter((name) => /csrf|xsrf|token/i.test(name)),
-   scripts: performance.getEntriesByType("resource").filter((entry) => entry.initiatorType === "script").length,
-   sockets: performance.getEntriesByType("resource").filter((entry) => /^wss?:/.test(entry.name)).length,
-   innerWidth: window.innerWidth,
-})
-```
+`scope-probe.js` returns the framework flags (Next, Nuxt, Apollo, Turbo, React root, webpack
+chunks, service worker, embedded JSON script ids) and the CSRF meta and hidden-input names, so
+no separate probe call is needed.
 
 ## Stopping
 

@@ -19,10 +19,14 @@ This stage makes no requests to the site.
 1. **Find the site.**
    `uv run --script ${CLAUDE_PLUGIN_ROOT}/scripts/kb.py path --site <target>`.
    If `scope/scope.json` is missing, stop and suggest `/webapp-re:scope <target>` first.
-2. **Load context.** Read `scope/scope.json`, `scope/scope.md`, the site's `knowledge/INDEX.md`, and
-   any existing `plan/plan.json` (extend it rather than replace it, and keep command names stable,
-   since users may already type them). Read [the reverse stage](${CLAUDE_PLUGIN_ROOT}/skills/reverse/SKILL.md) for the status ladder
-   and the contract fields a command will need.
+2. **Load context.** Do not read `scope/scope.json` whole (40 to 240 KB on existing sites).
+   `uv run --script ${CLAUDE_PLUGIN_ROOT}/scripts/scope_query.py <root>/scope/scope.json` prints a
+   one-line-per-item index (7 to 14 percent of the file), then `--id <item>` opens one item,
+   `--section auth` one section and `--grep <regex>` finds item ids. Read `scope/scope.md`, the
+   site's `knowledge/INDEX.md`, and any existing `plan/plan.json` (extend it rather than replace
+   it, and keep command names stable, since users may already type them). For the status ladder
+   and contract fields, read the "Status ladder" section of
+   [references/knowledge-base.md](${CLAUDE_PLUGIN_ROOT}/references/knowledge-base.md), not the whole reverse stage.
 3. **Ask what matters**, only if the user did not say: which capabilities they want first, whether
    writes are in scope at all, and the output they want by default (JSON or a table). One short
    message, then proceed with sensible defaults if they do not answer.
