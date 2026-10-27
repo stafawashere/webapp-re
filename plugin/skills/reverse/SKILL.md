@@ -68,6 +68,44 @@ Ordering decides whether a run is cheap. Climb only when the rung below did not 
 
 Never loop a replay. Never retry on a 429, a challenge or a checkpoint.
 
+## Fast path for a read triggered by one UI action
+
+Measured on hn.algolia.com search: 8,312 tool tokens and 5 failed calls by the step-by-step method
+below, against the figure in [references/capture.md](${CLAUDE_PLUGIN_ROOT}/references/capture.md)
+for this path. Use it whenever the goal is a read the page fires after an action. Fall back to the
+method for cold-load-only calls, writes, and computed signatures.
+
+```bash
+export KB_SITE=<host> KB_SLUG=<slug>   # every kb.py call below then needs no --site
+K() { uv run --script ${CLAUDE_PLUGIN_ROOT}/scripts/kb.py "$@"; }
+K init; K new-run --goal "<goal>"
+```
+
+1. `new_page` with the URL and `background: true`. Note the page id.
+2. `evaluate_script` with `sourcePath` `${CLAUDE_PLUGIN_ROOT}/assets/capture-hook.js` and
+   `format: "script"`. The hook keeps header values in page memory and never returns them.
+3. Perform the action with one small `evaluate_script` (set the input value and dispatch `input`,
+   or click), or with `fill`/`click` when a uid is already known.
+4. `evaluate_script` with `sourcePath` `${CLAUDE_PLUGIN_ROOT}/assets/reverse-capture.js`. Returns
+   ranked candidates with secret-named query values and body fields shown as `REDACTED`, header
+   names only, and a top-level response shape. It sets `window.__wreTarget` to the best one.
+   Do not call `list_network_requests` on this path: it prints query strings, keys included.
+5. If the target is a POST read (search, GraphQL query), set `window.__wreReadPost = true` in the
+   same call as step 6. Then `evaluate_script` with `sourcePath`
+   `${CLAUDE_PLUGIN_ROOT}/assets/reverse-ablate.js`: one call ablates every query parameter,
+   non-browser header and top-level body field at 350 ms pacing, and returns `required`,
+   `changesResult`, `ignored`, whether the minimal request still holds, and the request count.
+   This is the first in-page verify pass.
+6. `evaluate_script` with `sourcePath` `${CLAUDE_PLUGIN_ROOT}/assets/reverse-export.js` and a
+   `filePath` under the site's `var/captures/`. The file holds live values. Then
+   `uv run --script ${CLAUDE_PLUGIN_ROOT}/scripts/replay.py <file> --set <field>=<other input> --show <fields> --consume`
+   replays the minimal request outside the browser, prints status, header names and shape, and
+   deletes the file. This is the second, independent verify pass. Page JS cannot see HttpOnly
+   cookies, so on a cookie-gated site this pass needs the CDP driver instead.
+7. `K record-finding` (status `hypothesis`; `--surface` accepts `api` and `json` as `rest`),
+   `K verify` twice, `K record-pattern` for noise and quirks, `K close-run --requests <n>
+   --takeaway "<one line>"`. `close-run` refuses without `--requests` and `--takeaway`.
+
 ## Method
 
 ### 0. Load

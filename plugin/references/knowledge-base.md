@@ -23,7 +23,7 @@ Front matter, written and maintained by `kb.py`:
 | `id` | Slug from the goal. Stable across runs. |
 | `goal` | The user's goal in their own words. |
 | `method`, `url` | Observed. Full URL, query string included, ids replaced by `{name}` only when the shape is known. |
-| `surface` | `rest`, `graphql`, `rpc`, `websocket`, `sse`, `html`, `unknown`. |
+| `surface` | `rest`, `graphql`, `rpc`, `websocket`, `sse`, `html`, `unknown`. `record-finding --surface` also takes `api`, `json` and `http` as `rest`, `gql` as `graphql` and `ws` as `websocket`. |
 | `operation` | GraphQL operation name, RPC method, or empty. |
 | `operation_id` | Persisted query hash or doc id. Rotates. |
 | `status` | `hypothesis`, `verified`, `stale`, `dead`. |
@@ -57,7 +57,12 @@ anything the user typed or received from other people (messages, captions, other
 never reach `knowledge/`, `toolkit/`, `var/logs/`, or the reply. Record `len=42` instead.
 
 Capture files under `var/captures/` may keep response bodies, because later runs re-read them,
-but credential values are redacted at the writer and nothing from a body is copied out.
+but credential values are redacted at the writer and nothing from a body is copied out. The one
+exception is the file `reverse-export.js` writes for `replay.py`: it holds the live request,
+headers included, so `replay.py --consume` deletes it after the replay.
+
+Every `kb.py` command that takes `--site` reads `KB_SITE` (and `KB_SLUG` for the slug) from the
+environment when the flag is left out, so a run can export them once.
 
 `kb.py scan-secrets` looks for cookie assignments, bearer tokens, JWTs and long high-entropy
 values under `knowledge/`, `toolkit/` and `var/logs/`, and `close-run` refuses to close while it
