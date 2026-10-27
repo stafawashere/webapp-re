@@ -62,6 +62,26 @@
       return Object.keys(headers).map((name) => name.toLowerCase());
    };
 
+   const headerPairs = (headers) => {
+      if (!headers) {
+         return [];
+      }
+
+      if (headers instanceof Headers) {
+         return Array.from(headers.entries());
+      }
+
+      if (Array.isArray(headers)) {
+         return headers.map((pair) => [String(pair[0]).toLowerCase(), String(pair[1])]);
+      }
+
+      return Object.entries(headers).map((pair) => [pair[0].toLowerCase(), String(pair[1])]);
+   };
+
+   const keepPrivately = (record, name, value) => {
+      Object.defineProperty(record, name, { value: value, enumerable: false, writable: true });
+   };
+
    const originalFetch = window.fetch;
    window.fetch = async function (input, init) {
       const request = input instanceof Request ? input : null;
@@ -74,6 +94,7 @@
          requestBody: bodyText(init && init.body),
          startedAt: Date.now(),
       };
+      keepPrivately(record, "requestHeaders", headerPairs((init && init.headers) || (request && request.headers)));
 
       try {
          const response = await originalFetch.apply(this, arguments);
@@ -101,12 +122,14 @@
 
    OriginalXHR.prototype.open = function (method, url) {
       this.__reRecord = { via: "xhr", method: String(method).toUpperCase(), url: String(url), requestHeaderNames: [] };
+      keepPrivately(this.__reRecord, "requestHeaders", []);
       return originalOpen.apply(this, arguments);
    };
 
-   OriginalXHR.prototype.setRequestHeader = function (name) {
+   OriginalXHR.prototype.setRequestHeader = function (name, value) {
       if (this.__reRecord) {
          this.__reRecord.requestHeaderNames.push(String(name).toLowerCase());
+         this.__reRecord.requestHeaders.push([String(name).toLowerCase(), String(value)]);
       }
 
       return originalSetHeader.apply(this, arguments);
