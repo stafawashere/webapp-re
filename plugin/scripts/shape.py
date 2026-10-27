@@ -108,12 +108,14 @@ def render(document, max_depth=8):
 
 def main():
    parser = argparse.ArgumentParser()
+   parser.add_argument("path", nargs="?", help="same as --file")
    parser.add_argument("--file")
    parser.add_argument("--root", default="", help="dotted path to summarise instead of the whole body")
    parser.add_argument("--max-depth", type=int, default=8)
    args = parser.parse_args()
 
-   raw = open(args.file, "r", encoding="utf-8").read() if args.file else sys.stdin.read()
+   source = args.file or args.path
+   raw = open(source, "r", encoding="utf-8").read() if source else sys.stdin.read()
    document = json.loads(raw)
 
    if args.root:

@@ -98,11 +98,14 @@ def resolve_root(args):
    if getattr(args, "root", None):
       return os.path.abspath(os.path.expanduser(args.root))
 
-   if not getattr(args, "site", None):
-      sys.exit("kb: pass --site or --root")
+   site = getattr(args, "site", None) or os.environ.get("KB_SITE")
+   slug = getattr(args, "slug", None) or os.environ.get("KB_SLUG")
+
+   if not site and not slug:
+      sys.exit("kb: pass --site or --root, or export KB_SITE and KB_SLUG")
 
    home = os.environ.get("WEBAPP_RE_HOME", DEFAULT_HOME)
-   slug = args.slug if getattr(args, "slug", None) else site_slug(args.site)
+   slug = slug or site_slug(site)
 
    return os.path.join(os.path.expanduser(home), slug)
 
@@ -553,6 +556,14 @@ def command_close_run(args):
    print("log: {0}".format(log_path))
 
 
+SURFACE_ALIASES = {"api": "rest", "json": "rest", "http": "rest", "gql": "graphql", "ws": "websocket"}
+
+
+def surface_value(raw):
+   lowered = raw.strip().lower()
+   return SURFACE_ALIASES.get(lowered, lowered)
+
+
 def build_parser():
    parser = argparse.ArgumentParser(description="Per-site reverse engineering knowledge base")
    commands = parser.add_subparsers(dest="command", required=True)
@@ -576,7 +587,7 @@ def build_parser():
    finding.add_argument("--id")
    finding.add_argument("--method", required=True)
    finding.add_argument("--url", required=True)
-   finding.add_argument("--surface", choices=SURFACE_VALUES, default="unknown")
+   finding.add_argument("--surface", type=surface_value, choices=SURFACE_VALUES, default="unknown")
    finding.add_argument("--operation")
    finding.add_argument("--operation-id")
    finding.add_argument("--status", choices=STATUS_VALUES, default="hypothesis")
