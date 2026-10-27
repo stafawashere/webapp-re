@@ -16,8 +16,11 @@ out, and a call that would change data on the site waits for your approval.
 - Claude Code, with plugin support (tested on 2.1.296)
 - [uv](https://docs.astral.sh/uv/). Every script is a uv inline script, so uv fetches Python 3.11
   or newer and the one dependency (`websockets`, for the CDP capture) on its own
-- A Chromium browser, driven either through the Claude in Chrome extension or over CDP on a
-  separate profile you sign into by hand
+- A Chromium browser you're signed into, with the
+  [chrome-devtools MCP server](https://github.com/ChromeDevTools/chrome-devtools-mcp) attached to
+  it. [docs/browser-setup.md](docs/browser-setup.md) has the config. Claude in Chrome still works
+  as a fallback, and `cdp_capture.py` drives a separate profile over CDP when you need the raw
+  wire headers
 
 ## Installing it
 
@@ -113,11 +116,14 @@ to it.
 skills, `js-reverse` and `web-api-reverse-engineering`, both MIT and listed with their source
 commits in [docs/third-party-skills.md](docs/third-party-skills.md). `scripts/` has `kb.py` (the
 per-site knowledge base), `site_plugin.py` (the site plugin generator), `cdp_capture.py`,
-`shape.py`, the scope and plan checkers and `optimize_run.py`. `references/` has the method and
-format docs the skills load, and `menu/` the site menu builder.
+`shape.py`, `walk_summary.py` and `scope_query.py` for the scope, `replay.py` for checking a
+request outside the browser, the scope and plan checkers and `optimize_run.py`. `assets/` has the
+small scripts the stages run inside the page, so the browser does the repetitive work and only a
+short summary comes back. `references/` has the method and format docs the skills load, and
+`menu/` the site menu builder.
 
 [docs/architecture.md](docs/architecture.md) walks through the stages and the data flow between
-them.
+them. [CHANGELOG.md](CHANGELOG.md) has what changed in each release and why.
 
 ## Running the tests
 

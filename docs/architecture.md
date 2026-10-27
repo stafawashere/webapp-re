@@ -20,14 +20,17 @@ rather than a separate skill.
 ```
 /webapp-re:scope <url>
    kb.py init                         creates $WEBAPP_RE_HOME/<slug>/
-   walk the site in your Chrome (read-only)
+   walk the site in your browser (read-only) through chrome-devtools
+      one navigate_page with the timing hook, then one scope-probe.js call per page
+      each probe saves its result under var/captures/<run-id>/
+   walk_summary.py                    folds the probe files into a frontier, a noise list, a draft scope
    writes scope/scope.json + scope/scope.md
    check_scope.py                     structure, cross-references, secret scan
    kb.py record-finding (hypothesis) per endpoint, record-pattern per noise source, close-run
          |
          v
 /webapp-re:plan <slug>                no requests to the site
-   reads scope/, knowledge/INDEX.md, any existing plan
+   reads scope.json in slices through scope_query.py, scope.md, knowledge/INDEX.md, any existing plan
    writes plan/plan.json + plan/plan.md
    check_plan.py                      every dependency in scope, schemas present, build order complete
          |
@@ -69,20 +72,36 @@ you'd do on the site, and finds the one request behind it. It reads what the kno
 already has, finds the call, writes the request and any dead ends back, and closes the run with a
 ledger entry. The cheapest sources come first (the knowledge base, the DOM, framework state,
 cached bundles), before capturing traffic, replaying a request, or, last and only with your
-approval, sending a write. Capture goes through Claude in Chrome with `capture-hook.js`, or with
-`cdp_capture.py` against a separate Chromium. A finding starts as `hypothesis` and only
+approval, sending a write. Capture goes through the chrome-devtools MCP server in your own
+browser, or through `cdp_capture.py` against a separate Chromium when it needs the real wire
+headers or a search through the page's scripts. Claude in Chrome with `capture-hook.js` is the
+fallback, and only after you say so. A finding starts as `hypothesis` and only
 `kb.py verify` marks it `verified`. The later stages build on a finding once it has passed two
 independent replays. Success and failure are read from the response body, not the status code.
+
+When the goal is a read the page fires after one click or keystroke, there's a faster path.
+`capture-hook.js` goes into the page, the action runs, and `reverse-capture.js` ranks what was
+sent, with anything that looks like a key or token shown as `REDACTED`. `reverse-ablate.js` then
+drops each query parameter, header and body field one at a time in a single call to find what the
+request needs, which is the first verify pass. `reverse-export.js` saves that minimal request to a
+file, and `replay.py` sends it from outside the browser with a different input and deletes the
+file, which is the second. Requests made during the page load, writes and signed requests still
+go the long way.
 
 ### Scope
 
 [skills/scope/SKILL.md](../plugin/skills/scope/SKILL.md) walks the whole site read-only, in a new
-tab of your own Chrome through the Claude in Chrome extension. It goes breadth first over the
-navigation, then into each section, as in
-[walk-procedure.md](../plugin/references/walk-procedure.md). After each step it reads
-`read_network_requests` and the page hook `capture-hook.js`, injected with `javascript_tool`,
-which records fetch and XHR bodies. A control that would change something is recorded as a
-capability and marked "not exercised", unless you approve pressing that exact one.
+tab of your own browser through chrome-devtools. It goes breadth first over the navigation, then
+into each section, as in [walk-procedure.md](../plugin/references/walk-procedure.md). The first
+page load carries a small script that stops the site from clearing its resource-timing list, and
+from then on each page is one call to `scope-probe.js`. The probe moves to the next page in the
+queue without a full navigation, records the API calls, links, forms, cookie names and framework
+it sees, and saves all of that to a file instead of sending it back. `scope-paginate.js` checks
+one list's next page. `walk_summary.py` folds the files into the list of pages still to visit, the
+noise to ignore and a draft `scope.json`, and an interrupted walk picks up from its `walk.json`.
+Values never leave the page, only names, patterns and shapes. A control that would change
+something is recorded as a capability and marked "not exercised", unless you approve pressing
+that exact one.
 
 The output follows [scope-schema.json](../plugin/references/scope-schema.json). The walk is done
 when every top-level navigation entry was opened, every list paginated once, every kind of detail
@@ -100,7 +119,10 @@ writes, and any reverse-engineering work still open with a request budget. The b
 session and transport first, then the read that proves auth, shared reads, pagination, writes,
 and anything blocked on request signing last. The format is in
 [plan-format.md](../plugin/references/plan-format.md). Command names stay the same across
-re-plans, since people may already be typing them.
+re-plans, since people may already be typing them. A scope can run to a few hundred KB, so the
+plan stage never reads `scope.json` whole: `scope_query.py` prints a one-line index, then opens
+single items with `--id`, one section with `--section`, or finds ids with `--grep`. The engineer
+stage reads it the same way.
 
 ### Engineer
 
@@ -138,10 +160,15 @@ check, asks before any live write, and records the before and after numbers. The
 
 | Script | Where | Does | Dependencies |
 |---|---|---|---|
-| `kb.py` | plugin/scripts | Per-site knowledge base: `init`, `path`, `stats`, `new-run`, `record-finding`, `verify`, `record-pattern`, `index`, `scan-secrets`, `close-run`. Won't record a finding directly as `verified`, only `verify` raises its status | stdlib |
-| `shape.py` | plugin/scripts | JSON response to key names, types, counts and key coverage fractions, without printing any values | stdlib |
+| `kb.py` | plugin/scripts | Per-site knowledge base: `init`, `path`, `stats`, `new-run`, `record-finding`, `verify`, `record-pattern`, `index`, `scan-secrets`, `close-run`. Won't record a finding directly as `verified`, only `verify` raises its status. `KB_SITE` and `KB_SLUG` in the environment stand in for `--site` | stdlib |
+| `shape.py` | plugin/scripts | JSON response to key names, types, counts and key coverage fractions, without printing any values. Takes the file as an argument or on stdin | stdlib |
+| `walk_summary.py` | plugin/scripts | Folds a scope walk's probe files into one line per page and endpoint, the noise list and the pages left to visit, writes `walk.json`, and with `--draft-scope` a starting `scope.json` | stdlib |
+| `scope_query.py` | plugin/scripts | Reads `scope.json` in pieces: an index, `--id`, `--section`, `--grep` | stdlib |
+| `replay.py` | plugin/scripts | Sends a request saved by `reverse-export.js` from outside the browser. `--set` changes one input, `--consume` deletes the saved file afterwards because it holds live values. Prints the status, header names and response shape | stdlib |
 | `cdp_capture.py` | plugin/scripts | One capture window over CDP against an already-running Chromium. Opens its own tab at about:blank, enables Network, then navigates, so the cold load is inside the window. Redacts credential headers and token-like body fields at the writer. Closes only its own tab | `websockets>=12` |
-| `capture-hook.js` | plugin/assets | Page hook that wraps fetch and XHR, keeps up to 200 records with bodies up to 65536 chars, exposes `window.__reCaptureDump({match})` | none |
+| `capture-hook.js` | plugin/assets | Page hook that wraps fetch and XHR, keeps up to 200 records with bodies up to 65536 chars, exposes `window.__reCaptureDump({match})`. Request header values stay in page memory so the ablation can resend them, and a dump never prints them | none |
+| `scope-probe.js`, `scope-paginate.js` | plugin/assets | The scope walk's per-page probe and its pagination check, run through `evaluate_script` with the result saved to a file | none |
+| `reverse-capture.js`, `reverse-ablate.js`, `reverse-export.js` | plugin/assets | The reverse fast path: rank the captured calls with secrets redacted, ablate the target in one call, and save the minimal request for `replay.py` | none |
 | `check_scope.py` | plugin/scripts | Validates `scope.json`: structure, unique ids, cross-references, secret-looking values | stdlib |
 | `check_plan.py` | plugin/scripts | Validates a plan against its scope: kebab-case names, schemas, confirmation rule on writes, dependencies exist, build order covers every command once | stdlib |
 | `optimize_run.py` | plugin/scripts | Optimize runs: `new-run`, `latest`, `snapshot`, `compare`, `measure`, `validate`, `report`, `revalidate`, `partition`, `backup`, `result` | stdlib |

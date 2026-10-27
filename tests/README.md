@@ -42,3 +42,10 @@ That serves on `127.0.0.1:8765` and answers POST like GET. This one is a manual 
 `cdp_capture.py` against `http://127.0.0.1:8765/` and check that the capture JSONL has the token values redacted.
 `capture-hook-with-driver.js` is `capture-hook.js` with one extra line at the end that fires a
 fetch and an XHR and dumps the records, for pasting into a page console.
+
+## Not covered yet
+
+The scope probe and the reverse fast path (`scope-probe.js`, `scope-paginate.js`,
+`reverse-capture.js`, `reverse-ablate.js`, `reverse-export.js`, `walk_summary.py`,
+`scope_query.py` and `replay.py`) have no fixtures here yet. They were checked by live runs on
+GitHub and hn.algolia.com, and those captures hold account data, so they stay out of the repo.
