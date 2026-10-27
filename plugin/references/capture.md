@@ -1,41 +1,105 @@
 # Capture
 
-Two browser paths, one rule: capture inside a window that contains exactly one action.
+Two browser paths and a fallback, one rule: capture inside a window that contains exactly one action.
 
 ## Choosing a path
 
 | Need | Path |
 |---|---|
-| The user's real Chrome, real sign-in, no setup | Claude in Chrome |
-| Full response bodies for every request, cold load included | CDP driver |
+| The user's real browser, real sign-in, no setup | chrome-devtools |
+| Full response bodies, cold load included | chrome-devtools |
+| Scope walk across many pages | chrome-devtools |
 | Real wire headers, including `Cookie` | CDP driver |
 | Script search inside V8 without refetching bundles | CDP driver |
-| Scope walk across many pages | Claude in Chrome |
+| chrome-devtools not configured or not connecting | Claude in Chrome, only after asking |
 
 A site-specific skill can fix the path for its site.
 
-## Claude in Chrome
+## chrome-devtools
 
-Read the `anthropic-skills:chrome-browser` skill first, then load the tools in one ToolSearch
-call: `tabs_context_mcp`, `tabs_create_mcp`, `navigate`, `computer`, `read_page`, `find`,
-`get_page_text`, `javascript_tool`, `read_network_requests`, `read_console_messages`,
-`tabs_close_mcp`. Work in a new tab, never in one of the user's.
+The `chrome-devtools` MCP server attaches to the user's running browser over DevTools with
+`--autoConnect`. The browser asks the user to approve each new connection, once per session.
+Load the tools in one ToolSearch call: `mcp__chrome-devtools__list_pages`, `new_page`,
+`navigate_page`, `close_page`, `take_snapshot`, `click`, `fill`, `press_key`, `wait_for`,
+`evaluate_script`, `list_network_requests`, `get_network_request`, `list_console_messages`. If none
+match, the server is not configured or the user declined the prompt; say so and ask.
+
+Work in a page this process opened with `new_page` and `background: true`, never in one of the
+user's. Page-scoped tools need its `pageId`.
 
 What each tool gives:
 
-- `read_network_requests` lists method, URL and status for the tab. It is the endpoint map. It
-  does not give bodies.
-- `javascript_tool` evaluates in the page. Inject `${CLAUDE_PLUGIN_ROOT}/assets/capture-hook.js` once per document to
-  wrap `fetch` and `XMLHttpRequest`; it keeps the last 200 calls in `window.__reCapture` with
-  request bodies, response bodies truncated to 64 KB, and request header names. Read it back
-  with `window.__reCaptureDump({ match: "/api/" })`, which returns shapes by default and values
-  only with `{ values: true }`.
-- The hook cannot see the cold load, because it is installed after the document runs. Trigger
-  the action after injecting, or reload a single-page app route through its own router.
-- `read_page` and `get_page_text` read the DOM without any request to the API.
+- `new_page` with a `url` records from the first request, so the cold load is inside the window.
+- `list_network_requests` with `resourceTypes: ["document", "xhr", "fetch"]` is the endpoint map,
+  about 100 tokens a page. `pageSize` pages through long lists. `includePreservedRequests: true`
+  reaches the last three navigations.
+- `get_network_request` gives headers and bodies for one `reqid`. Always pass `responseFilePath`
+  (and `requestFilePath` for a POST) under `<site-root>/var/captures/<run-id>/`, which is
+  gitignored, then read only the
+  fields needed. Inline bodies cost thousands of tokens; a saved one costs a few hundred.
+- `take_snapshot` with `filePath` saves the accessibility tree (about 7,700 tokens inline on
+  Hacker News, about 30 saved). Grep the file for the `uid` to click.
+- `evaluate_script` returns one value cheaply. Use it for framework probes and counts, not for
+  dumping page state.
+- `list_console_messages` shows client errors that explain a failed action.
 
-Cookie values are invisible to `document.cookie` when HttpOnly, which is correct. Never try to
-extract them through the extension. Cookie adoption for the program is the user's step.
+Saving files only works inside the server's `--workspace`. An "Access denied" error means the
+path is outside it.
+
+`get_network_request` does show a `Cookie` request header (verified on GitHub), and `Set-Cookie`
+in the response headers. Both print their values inline in the tool result, and
+`responseFilePath` only moves the body, so the values enter the transcript. Do not call it on
+requests whose cookies you would not want in the transcript, and never copy header or cookie
+values into notes, findings or chat; names only. The headers also add about 1,500 tokens when the
+site sends a large `Content-Security-Policy`. For the wire headers of a request that must stay
+out of the transcript, use the CDP driver. Cookie adoption for the program is the user's step.
+
+Other measured behavior:
+
+- `new_page`, `navigate_page` and `close_page` all append the tab list, which also prints the
+  URLs of the user's other tabs (one showed an OAuth `state` value). In-page navigation through
+  `scope-probe.js` avoids it; see the walk procedure.
+- `new_page` with `isolatedContext` starts signed out (GitHub redirected to `/login`) and still
+  prints every tab. Do not use it for a signed-in walk.
+- In-page `performance` entries keep 250 resources by default and some sites call
+  `clearResourceTimings`, so page-side capture misses calls unless the timing hook in the walk
+  procedure runs before load.
+- `evaluate_script` with `filePath` replies in about 25 tokens whatever the result size, and
+  `sourcePath` keeps a long script out of the call. Both paths must sit under the server's
+  `--workspace`.
+
+- `new_page` and `navigate_page` append the list of every open tab to their reply (about 450
+  tokens with 13 tabs). Navigate less, and do not re-navigate to a URL just to refresh a request.
+- `new_page` with `background: true` can still leave the new page marked `[selected]`. Pass
+  `pageId` on every page-scoped call anyway.
+- `take_snapshot` rewrites the `filePath` extension to `.txt`. Use the path from the reply.
+- `list_network_requests` also lists requests from the user's other browser extensions
+  (`chrome-extension://` URLs). Filter them out.
+- A request answered with `304` still returns its cached body to `responseFilePath`, but a
+  revisit to the same URL gives `304`s, not fresh bodies. Open a different page that fires the
+  call, or reload with `ignoreCache: true`, when the first response is needed.
+
+`${CLAUDE_PLUGIN_ROOT}/assets/capture-hook.js` is not needed for a scope walk. The reverse fast
+path installs it after load (`format: "script"`), then reads it through `reverse-capture.js`, and
+the Claude in Chrome fallback uses it because `read_network_requests` gives no bodies.
+
+Reverse fast path, measured on hn.algolia.com, goal "search stories by keyword", 2026-10-27:
+
+| | step-by-step | fast path |
+|---|---|---|
+| tool tokens, whole run | 8,312 | 1,818 plus about 650 to read the fast path |
+| browser tool tokens | 2,199 | 1,147 |
+| tool calls | 23, 5 failed | 10, 0 failed |
+| wall time | 159 s | about 55 s |
+| search key in transcript | yes, `list_network_requests` URL | no, `REDACTED` |
+| ablation | hand-written, 21 elements | `reverse-ablate.js`, 21 elements plus minimal check |
+
+Two protocol facts from that run: a cross-origin API that answers `Access-Control-Allow-Origin: *`
+rejects `credentials: "include"`, so the ablation falls back to `same-origin`; and a server-side
+cache makes a repeated identical request look stable, so volatile keys are also filtered by name
+(`time`, `ms`, `server`, `params`, ids of the request). On GitHub `/search` the results sit
+three levels down beside a per-request timer, so the comparison runs on leaf paths, and `accept`
+is ablated like any other header because it switches the route between HTML and JSON.
 
 ## CDP driver
 
@@ -95,6 +159,9 @@ Filter before reading candidates. Generic sources that are almost never the answ
 | `logging`, `telemetry`, `beacon`, `sendBeacon` calls | First-party telemetry |
 | `.js`, `.css`, `.woff2`, images, `manifest.json` | Static assets |
 | `/__nextjs_original-stack-frame`, `/_next/static/`, `/sockjs-node` | Dev and build artefacts |
+| `chrome-extension://` | The user's other browser extensions, seen by `list_network_requests` |
+| `/_private/browser/rum` (its URL carries a key; never copy it) | GitHub Datadog RUM |
+| `/notifications/indicator`, `/github-copilot/chat`, `/in-product-messaging/` | GitHub shell polling and banners |
 
 Each site adds its own rows as `noise` patterns in its knowledge base. A source that survives
 the filter and proves irrelevant twice gets one.

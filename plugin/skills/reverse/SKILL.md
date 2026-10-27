@@ -86,12 +86,14 @@ outward-facing step. Derive everything derivable before that step runs.
 Two paths, chosen per site. Detail and the protocol facts that cost runs when forgotten are in
 [references/capture.md](${CLAUDE_PLUGIN_ROOT}/references/capture.md).
 
-- **Claude in Chrome** (`mcp__claude-in-chrome__*`, load the set in one ToolSearch call and read
-  the `anthropic-skills:chrome-browser` skill first). The user's real Chrome and real sign-in.
-  Request metadata from `read_network_requests`, bodies from the page hook in
-  `${CLAUDE_PLUGIN_ROOT}/assets/capture-hook.js` injected with `javascript_tool`.
+- **chrome-devtools** (`mcp__chrome-devtools__*`, load the set in one ToolSearch call). The
+  user's real browser and real sign-in. Endpoint map from `list_network_requests`, headers and
+  bodies from `get_network_request` saved to files, cold loads inside the window when the page is
+  opened with `new_page` and a `url`. The default.
 - **CDP driver** (`${CLAUDE_PLUGIN_ROOT}/scripts/cdp_capture.py`) against a dedicated Chromium profile started with
-  `--remote-debugging-port`. Full bodies, real wire headers, cold loads inside the window.
+  `--remote-debugging-port`. Real wire headers including `Cookie`, and script search inside V8.
+- **Claude in Chrome** only when chrome-devtools is unavailable and the user agrees. Bodies then
+  come from the page hook in `${CLAUDE_PLUGIN_ROOT}/assets/capture-hook.js`.
 
 Check `window.innerWidth`. Many sites drop whole surfaces on narrow layouts, which reads as a
 missing feature and is not one.

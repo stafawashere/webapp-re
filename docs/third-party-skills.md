@@ -34,9 +34,10 @@ The upstream section "按需自举 (On-Demand Bootstrap)" was removed. Its steps
 
 Each of those changes the machine outside the skill folder, and the script is Windows PowerShell. The
 replacement section, "Local install note", records the source and the cut, and maps the skill's
-`js-reverse_*` and `jshookmcp` tool names to tools that are usually there instead: the Claude in
-Chrome tools (`read_network_requests`, `javascript_tool`, `read_console_messages`) or a CDP
-driver such as `scripts/cdp_capture.py`.
+`js-reverse_*` and `jshookmcp` tool names to tools that are usually there instead: the
+chrome-devtools MCP tools (`list_network_requests`, `get_network_request`, `evaluate_script`,
+`list_console_messages`, `take_screenshot`), which share most of the `js-reverse_*` names without
+the prefix, or a CDP driver such as `scripts/cdp_capture.py`.
 
 ## Installing them separately
 
