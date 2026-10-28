@@ -151,7 +151,7 @@ def discover(endpoint_id, what, budget=2):
    return {"step": "observe {0} live for the first time: {1}".format(endpoint_id, what), "budget": budget, "endpoint": endpoint_id}
 
 
-ROUND_TRIP = "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>."
+ROUND_TRIP = "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>."
 APPROVAL = "Approval write: never sent without your approval of the exact --dry-run call in chat, then --yes --confirm <digest from that dry run>; listed in PENDING-APPROVALS.md."
 SESSION_NOTE = "Needs your Citymapper session (sessionid in .env via adopt-session). You are signed out, so this is blocked until you sign in yourself."
 

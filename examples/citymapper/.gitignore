@@ -16,3 +16,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 .DS_Store
+
+research/bundle/bundle.js
+research/bundle/bundle.js.map
+research/bundle/landing.js

@@ -7,13 +7,17 @@ from urllib.parse import urlencode, urlsplit
 from .classify import classify
 from .config import DEFAULT_USER_AGENT
 from .endpoints import ORIGIN
-from .errors import ChallengeRequired, ContractBroken, RateLimited, TransportError
+from .errors import ChallengeRequired, ContractBroken, RateLimited, SessionExpired, TransportError
 
 RETRY_DELAYS_SECONDS = (5, 10)
 MAX_REDIRECTS = 5
 CREDENTIAL_HEADER_NAMES = {"cookie", "x-csrftoken", "session-id", "user-device", "authorization"}
 VOLATILE_BODY_FIELDS = ("created", "modified", "last_used")
 CONFIRM_DIGEST_LENGTH = 12
+WRITE_MAY_HAVE_LANDED_MESSAGE = "The request may have reached Citymapper. Re-read before sending it again."
+LOGIN_PATH_MARKERS = ("/login", "/sign")  # provenance: ignore, matched against redirect targets, never requested
+CLIENT_TIMEOUT_SECONDS = 20.0
+CLIENT_CONNECT_TIMEOUT_SECONDS = 8.0
 
 
 def network_error_type():
@@ -21,6 +25,12 @@ def network_error_type():
    import httpx
 
    return httpx.HTTPError
+
+
+def is_connect_phase_failure(error):
+   import httpx
+
+   return isinstance(error, (httpx.ConnectError, httpx.ConnectTimeout))
 
 
 def origin_of(address):
@@ -104,7 +114,7 @@ class Transport:
       if self._client is None:
          import httpx
 
-         self._client = httpx.Client(timeout=40.0, follow_redirects=False)
+         self._client = httpx.Client(timeout=httpx.Timeout(CLIENT_TIMEOUT_SECONDS, connect=CLIENT_CONNECT_TIMEOUT_SECONDS), follow_redirects=False)
 
       return self._client
 
@@ -139,6 +149,13 @@ class Transport:
       return headers
 
    def _log(self, request, status, elapsed_ms, size, error_class=None, attempt=1):
+      try:
+         self._append_log_line(request, status, elapsed_ms, size, error_class, attempt)
+      except OSError:
+         # The log is best effort, and the response it describes has already been read.
+         pass
+
+   def _append_log_line(self, request, status, elapsed_ms, size, error_class, attempt):
       self.logs_dir.mkdir(parents=True, exist_ok=True)
       line = {
          "at": datetime.now().isoformat(timespec="seconds"),
@@ -183,6 +200,10 @@ class Transport:
    def _refused_redirect(self, request, response, target, is_read, hops_followed):
       stays_on_endpoint_host = origin_of(target) == request.endpoint.host
       detail = {"status": response.status_code, "url_path": request.endpoint.path}
+
+      sends_to_login = request.endpoint.signed_in and stays_on_endpoint_host and any(marker in target.path for marker in LOGIN_PATH_MARKERS)
+      if sends_to_login:
+         return SessionExpired("Citymapper redirected to a sign-in page. Sign in on citymapper.com in your browser, then run adopt-session.", detail)
 
       if not is_read:
          return ContractBroken("Citymapper redirected a {0} request, which was not followed. If it was a write it may have landed, so re-read before sending it again.".format(request.endpoint.method), detail)
@@ -229,6 +250,11 @@ class Transport:
          except network_error_type() as error:
             self._log(request, None, 0, 0, "TransportError", attempt)
             is_last_attempt = attempt == attempts
+
+            write_may_have_landed = is_last_attempt and not is_read and not is_connect_phase_failure(error)
+
+            if write_may_have_landed:
+               raise TransportError(WRITE_MAY_HAVE_LANDED_MESSAGE, {"url_path": request.endpoint.path, "write_may_have_landed": True}) from error
 
             if is_last_attempt:
                raise TransportError("Network error talking to Citymapper: {0}".format(type(error).__name__), {"url_path": request.endpoint.path}) from error

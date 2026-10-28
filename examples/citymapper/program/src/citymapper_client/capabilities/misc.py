@@ -52,7 +52,7 @@ def list_news(context, arguments):
 
    for post in require_list(response, "posts", "news posts"):
       url = post.get("url") or ""
-      identifier = re.search(r"/i/(\d+)", url)
+      identifier = re.search(r"/i/(\d+)", url)  # provenance: ignore, pattern for the post id inside a blog URL, never requested
       posts.append({"id": identifier.group(1) if identifier else "", "title": post.get("title", ""), "url": url, "summary": post.get("summary"), "date": post.get("post_date")})
 
    limit = arguments.get("limit")

@@ -38,13 +38,17 @@ class ContractBroken(CitymapperError):
    exit_code = 14
 
 
-class NotPermitted(CitymapperError):
-   exit_code = 15
-
-
 class TransportError(CitymapperError):
    exit_code = 16
 
 
 class NotFound(CitymapperError):
    exit_code = 17
+
+
+class NotPermitted(CitymapperError):
+   exit_code = 15
+
+
+class LocalFileError(CitymapperError):
+   exit_code = 18

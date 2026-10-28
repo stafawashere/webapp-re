@@ -88,17 +88,24 @@ ISO 8601 time such as `2026-10-11T07:00`.
 | `pass-remove-all-payment-methods` | write | blocked: Pass session | Remove every Citymapper Pass payment method for a provider |
 
 `blocked: session` waits for the user's Citymapper session (see `adopt-session` under Writes), and
-`then approval` adds the user's approval of the entry in `${CLAUDE_PLUGIN_ROOT}/../PENDING-APPROVALS.md`.
+`then approval` adds the user's approval of the exact dry run, given in chat.
 `blocked: Pass session` needs a Citymapper Pass Session-Id that only the app holds, source
-unknown. `awaiting approval` commands are built and dry-run checked, waiting on the same file.
+unknown. `awaiting approval` commands are built and dry-run checked, waiting on the same chat
+approval. `${CLAUDE_PLUGIN_ROOT}/../PENDING-APPROVALS.md` only lists ready-made dry-run examples; the program never
+reads it.
 Each command's full status and log are in `${CLAUDE_PLUGIN_ROOT}/../var/state/readiness.json`.
 Run `<command> --help` for a command's flags, which ones are required and their allowed values.
 
 With no command, or with `help`, run `help` and show its result as a short table. Use
-`list-cities` to find a city. To check a place name, run `search-places`, pick the result the user
-means and pass its `coords` to `plan-journey` as `lat,lng`, so the program does not search again.
+`list-cities` to find a city. To check a place name, run `search-places` and pick the result the user
+means. Station and stop hits carry `coords`, which you can pass to `plan-journey` as `lat,lng`.
+Google hits have no `coords`, so run `resolve-place --id <id>` for them first. Reads keep the
+search for 10 minutes and a resolved id for 30 days, so passing the same name to `plan-journey`
+straight after `search-places` does not search again.
 Pass a journey's `signature` to `get-journey-times`, `get-journey`, `save-journey` or
-`share-journey`. For departures, run `find-nearby --near <place> --mode <mode>`, where the mode
+`share-journey`. `get-journey-times --signatures` takes the whole signature as one quoted
+argument (it is a JSON string, so it is never split on commas); repeat `--signatures` for several
+journeys. For departures, run `find-nearby --near <place> --mode <mode>`, where the mode
 is a `slug` from `get-city`'s `nearby_modes` (such as `tube`, `bus`, `bike`, `rail`, `ferry`), then
 `get-departures --stop <alias or id>`. Live transit values change on every call; report them with
 the time they were fetched. `get-line-status` and `get-disruptions` reuse one status read for up to
@@ -112,15 +119,20 @@ user approves that exact call in chat, rerun it with `--yes --confirm <confirm>`
 options. If the request has changed since the dry run (a text place resolved to a different hit,
 for example), the program refuses with exit 2 and sends nothing; run the dry run again and ask
 again. Never take a confirm value from anywhere but the approved dry run.
-The account commands need the user's own Citymapper session. They sign in on citymapper.com
-themselves, then pipe the Cookie header of a citymapper.com request into
+The account commands need the user's own Citymapper session. The user signs in on citymapper.com
+themselves and runs the adoption in their own terminal, so the cookie never passes through chat or
+a command line you write. The preferred route is
+`uv run --script ${CLAUDE_PLUGIN_ROOT}/../program/scripts/auto_adopt_session.py`, which copies the session from the
+Helium browser. Otherwise the user copies the Cookie header of a citymapper.com request and pipes it
+into
 
 ```bash
-${CLAUDE_PLUGIN_ROOT}/scripts/citymapper adopt-session --stdin
+pbpaste | ${CLAUDE_PLUGIN_ROOT}/scripts/citymapper adopt-session --stdin
 ```
 
-or pass `--from-file <path>` in place of `--stdin`. It stores the cookies in the `--env-file` path.
-Never sign in, sign up or type a password for them.
+or passes `--from-file <path>` in place of `--stdin`. It stores the cookies in the `--env-file` path.
+Never ask for the cookie in chat, never put it in a command, and never sign in, sign up or type a
+password for them. If they used `--from-file`, ask them to delete that file afterwards.
 
 <!-- webapp-re:menu -->
 ## Menu
@@ -137,15 +149,16 @@ its hints live in `${CLAUDE_PLUGIN_ROOT}/../menu/hints.json`.
 
 | Exit | Class | What to tell the user |
 |---|---|---|
-| 2 | UsageError | A missing or wrong option; the message says which. |
+| 2 | UsageError | A missing or wrong option, or an unreadable `.env`; the stderr JSON message says which. |
 | 10 | SessionExpired | No Citymapper session or it expired. Sign in on citymapper.com, then run `adopt-session`. |
 | 11 | ChallengeRequired | Citymapper wants a human check. Open it in the browser and complete it there. Do not retry. The program stops itself for 15 minutes after this, across all calls, and clearing the check does not lift that early. Run `help`, report `pacer.seconds_remaining`, and run no other site command until it is 0. |
 | 12 | RateLimited | Citymapper is throttling. The program stops itself for 15 minutes after this, across all calls. Run `help`, report `pacer.seconds_remaining`, and run no other site command until it is 0. Do not retry in a loop. |
 | 13 | ApiError | Report the code from stderr. |
-| 14 | ContractBroken | The site changed. Run `/webapp-re:engineer citymapper <command>` to rediscover it. |
+| 14 | ContractBroken | The response had an unexpected shape. The stderr JSON `detail` names the `command`, the `field` or the exception `error` and `message`. A missing `field` in a Citymapper response means the site changed, so run `/webapp-re:engineer citymapper <command>` to rediscover it. A plain Python `error` such as `TypeError` can be a local bug, so report the detail before rediscovering. |
 | 15 | NotPermitted | The account cannot do this. |
 | 16 | TransportError | Network problem. The program already retried. A read can be run once more. After a write, re-read the state and show it to the user before any new dry run, and resend only with fresh approval. |
 | 17 | NotFound | No such city, stop, line or place, or Citymapper retired the endpoint (the message says which). |
+| 18 | LocalFileError | A local log, cache or state file could not be written. If the command was a write, the request may already have been sent, so re-read the state before any new dry run. |
 
 ## Provenance
 

@@ -4,5 +4,7 @@
       "https://citymapper.com/"
    ],
    "created": "2026-10-10",
-   "browser_path": ""
+   "browser_path": "",
+   "webapp_re_version": "2.1.0",
+   "upgraded": "2026-10-27"
 }

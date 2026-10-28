@@ -1,0 +1,141 @@
+{
+   "program_dir": "program",
+   "size_cap": 5,
+   "max_per_wave": 8,
+   "waves": [
+      {
+         "wave": 1,
+         "partitions": [
+            {
+               "id": "P1-cli",
+               "lane": "chain",
+               "findings": [
+                  "F01",
+                  "F08",
+                  "F12",
+                  "F22",
+                  "F24"
+               ],
+               "files": [
+                  "plan/plan.json",
+                  "plugin/skills/citymapper/SKILL.md",
+                  "program/README.md",
+                  "program/scripts/auto_adopt_session.py",
+                  "program/scripts/live_check.py",
+                  "program/src/citymapper_client/cli.py",
+                  "program/src/citymapper_client/models.py",
+                  "program/src/citymapper_client/schemas.json",
+                  "program/tests/test_cli.py",
+                  "tools/engineer/pending_approvals.py",
+                  "tools/plan/build_plan.py"
+               ]
+            },
+            {
+               "id": "P2-journeys",
+               "lane": "chain",
+               "findings": [
+                  "F04",
+                  "F09",
+                  "F17",
+                  "F20",
+                  "F28"
+               ],
+               "files": [
+                  "plugin/skills/citymapper/SKILL.md",
+                  "program/src/citymapper_client/capabilities/journeys.py",
+                  "program/src/citymapper_client/cli.py",
+                  "program/src/citymapper_client/context.py",
+                  "program/src/citymapper_client/endpoints.py",
+                  "program/tests/test_commands.py",
+                  "program/tests/test_writes.py"
+               ]
+            },
+            {
+               "id": "P3-transport",
+               "lane": "chain",
+               "findings": [
+                  "F05",
+                  "F06",
+                  "F07",
+                  "F18",
+                  "F26"
+               ],
+               "files": [
+                  "plugin/skills/citymapper/SKILL.md",
+                  "program/src/citymapper_client/catalogue.py",
+                  "program/src/citymapper_client/classify.py",
+                  "program/src/citymapper_client/cli.py",
+                  "program/src/citymapper_client/errors.py",
+                  "program/src/citymapper_client/transport.py",
+                  "program/tests/test_classify.py",
+                  "program/tests/test_transport.py"
+               ]
+            },
+            {
+               "id": "P4-check-provenance",
+               "lane": "chain",
+               "findings": [
+                  "F11",
+                  "F16",
+                  "F27"
+               ],
+               "files": [
+                  "program/scripts/check_provenance.py",
+                  "program/scripts/sync_schemas.py",
+                  "program/src/citymapper_client/config.py",
+                  "program/tests/test_registry.py"
+               ]
+            },
+            {
+               "id": "P5-session",
+               "lane": "chain",
+               "findings": [
+                  "F19",
+                  "F21"
+               ],
+               "files": [
+                  "program/src/citymapper_client/capabilities/local.py",
+                  "program/src/citymapper_client/session.py",
+                  "program/tests/test_session.py"
+               ]
+            },
+            {
+               "id": "P6-skill",
+               "lane": "chain",
+               "findings": [
+                  "F02",
+                  "F10",
+                  "F25"
+               ],
+               "files": [
+                  "plugin/skills/citymapper/SKILL.md",
+                  "tools/engineer/render_skill.py"
+               ]
+            },
+            {
+               "id": "P7-gitignore",
+               "lane": "parallel",
+               "findings": [
+                  "F23"
+               ],
+               "files": [
+                  ".gitignore",
+                  "research/bundle/bundle.js",
+                  "research/bundle/bundle.js.map",
+                  "research/bundle/landing.js"
+               ]
+            },
+            {
+               "id": "P8-readme",
+               "lane": "parallel",
+               "findings": [
+                  "F29"
+               ],
+               "files": [
+                  "README.md"
+               ]
+            }
+         ]
+      }
+   ]
+}

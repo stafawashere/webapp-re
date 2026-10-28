@@ -1,9 +1,6 @@
-import base64
-import zlib
-
 from .. import endpoints
 from ..context import resolve_place as resolve_search_result
-from ..context import search
+from ..context import place_query_key, search
 from ..errors import ContractBroken, NotFound, UsageError
 from ..models import Journey, Place, coords_of, require, require_list
 
@@ -12,13 +9,16 @@ RETIRED_ETA = "Citymapper's /api/1/eta answers 404 with its 'Page Not Found' HTM
 
 
 def journey_query(context, region, arguments):
-   start = context.place(region, arguments.get("from"), "from")
-   end = context.place(region, arguments.get("to"), "to")
    depart_at = arguments.get("depart_at")
    arrive_by = arguments.get("arrive_by")
 
    if depart_at and arrive_by:
       raise UsageError("Pass --depart-at or --arrive-by, not both.")
+
+   departure_time = context.to_utc_iso(region, depart_at)
+   arrival_time = context.to_utc_iso(region, arrive_by)
+   start = context.place(region, arguments.get("from"), "from")
+   end = context.place(region, arguments.get("to"), "to")
 
    query = {
       "start": "{0},{1}".format(*start.coords),
@@ -28,8 +28,8 @@ def journey_query(context, region, arguments):
       "saddr": start.address,
       "eaddr": end.address,
       "region_id": region["region_id"],
-      "departure_time": context.to_utc_iso(region, depart_at),
-      "arrival_time": context.to_utc_iso(region, arrive_by),
+      "departure_time": departure_time,
+      "arrival_time": arrival_time,
       "include_stepfree": "1",
       "include_via_microtransit": "1",
       "status_format": "html",
@@ -155,10 +155,6 @@ def get_journey(context, arguments):
    return {"journey": Journey.from_api(0, journey, include_path=bool(arguments.get("with_paths"))).as_dict(), "error": None}
 
 
-def trip_link(signature):
-   return endpoints.TRIP_META.url() + "?signature=" + base64.b64encode(zlib.compress(signature.encode("utf-8"))).decode("ascii")
-
-
 def open_trip_link(context, arguments):
    slug = arguments.get("slug")
 
@@ -203,6 +199,12 @@ def search_places(context, arguments):
       near = context.place(region, arguments["near"], "near").coords
 
    results = search(context, region, query, near)
+   first_result = results[0] if results else None
+   can_cache_first_result = context.cache_text_places and not near and first_result and first_result.coords
+
+   if can_cache_first_result:
+      context.place_cache(region).put([place_query_key(query)], first_result.as_dict())
+
    limit = arguments.get("limit")
    kept = results[:limit] if limit else results
    return {"query": query, "results": [place.as_dict() for place in kept]}

@@ -144,22 +144,12 @@ def iso_now():
    return datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.") + "{0:03d}Z".format(datetime.now(timezone.utc).microsecond // 1000)
 
 
-def address_for(context, coords):
-   response = context.send(endpoints.GEOCODE, query={"lat": coords[0], "lng": coords[1]})
-   results = response.get("results") if isinstance(response, dict) else None
-
-   if results:
-      return results[0].get("formatted_address") or ""
-
-   return ""
-
-
 def save_place(context, arguments):
    region = context.region(arguments.get("city"))
    place = context.place(region, arguments.get("near"), "near")
    now = iso_now()
    role = arguments.get("role") or ""
-   address = place.address or address_for(context, place.coords)
+   address = place.address or ""
    body = {
       "address": address,
       "coords": place.coords,

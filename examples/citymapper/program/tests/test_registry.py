@@ -1,6 +1,13 @@
+import importlib.util
+import json
+from pathlib import Path
+
 import pytest
 
 from citymapper_client import registry
+
+PROGRAM_DIR = Path(__file__).resolve().parents[1]
+PLAN_FILE = PROGRAM_DIR.parent / "plan" / "plan.json"
 
 SCHEMAS = registry.load_schemas()
 WRITE_COMMANDS = sorted(name for name, record in SCHEMAS.items() if record["kind"] == "write")
@@ -48,3 +55,14 @@ def test_write_command_inputs_have_yes_and_dry_run(name):
 def test_the_only_write_without_yes_and_dry_run_is_the_local_adopt_session():
    assert LOCAL_WRITE_COMMANDS == ["adopt-session"]
    assert "sends nothing" in SCHEMAS["adopt-session"]["confirmation"]
+
+
+@pytest.mark.skipif(not PLAN_FILE.exists(), reason="plan/plan.json is not next to the program")
+def test_schemas_json_matches_a_fresh_build_from_plan_json():
+   spec = importlib.util.spec_from_file_location("sync_schemas_under_test", PROGRAM_DIR / "scripts" / "sync_schemas.py")
+   module = importlib.util.module_from_spec(spec)
+   spec.loader.exec_module(module)
+   rebuilt = module.build_schemas(json.loads(PLAN_FILE.read_text()))
+   stored = json.loads((PROGRAM_DIR / "src" / "citymapper_client" / "schemas.json").read_text())
+
+   assert rebuilt == stored

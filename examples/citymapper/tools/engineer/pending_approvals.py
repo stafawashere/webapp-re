@@ -4,13 +4,14 @@ Dry runs send nothing to the write endpoint; a few resolve a city, place or line
    python3 tools/engineer/pending_approvals.py
 """
 import json
+import os
 import subprocess
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 PROGRAM = ROOT / "program"
-CLI = "uv run --project {0} citymapper --env-file {1}".format(PROGRAM, ROOT / ".env")
+CLI = "UV_PROJECT_ENVIRONMENT={0} uv run --frozen --project {1} citymapper --env-file {2}".format(PROGRAM / ".venv", PROGRAM, ROOT / ".env")
 SAMPLE_SIGNATURE_NOTE = "<signature from plan-journey>"
 
 APPROVAL_WRITES = [
@@ -37,7 +38,8 @@ ROUND_TRIP_WRITES = [
 
 
 def dry_run(command, argv):
-   result = subprocess.run(["uv", "run", "--project", str(PROGRAM), "citymapper", command, *argv, "--dry-run"], capture_output=True, text=True, cwd=PROGRAM)
+   program_environment = {**os.environ, "UV_PROJECT_ENVIRONMENT": str(PROGRAM / ".venv")}
+   result = subprocess.run(["uv", "run", "--frozen", "--project", str(PROGRAM), "citymapper", command, *argv, "--dry-run"], capture_output=True, text=True, cwd=PROGRAM, env=program_environment)
 
    if result.returncode != 0:
       return {"exit": result.returncode, "stderr": result.stderr.strip()[-400:]}

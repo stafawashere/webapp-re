@@ -298,6 +298,56 @@ def test_a_write_searches_a_text_place_again_even_when_a_read_cached_it(make_con
    assert fake.findings == ["searchpost", "journeys", "searchpost"]
 
 
+def test_plan_after_search_places_does_not_search_the_same_text_again(make_context):
+   responses = {"searchpost": load_fixture("searchpost_google_only.json"), "placeresolve": load_fixture("placeresolve.json"), "journeys": load_fixture("journeys.json")}
+   context, fake = make_context(responses)
+
+   cli.run_command(COMMANDS["search-places"], context, {"city": "portvale", "query": "Lantern Market"})
+   cli.run_command(COMMANDS["plan-journey"], context, {"city": "portvale", "from": " lantern  MARKET", "to": INSIDE_END})
+
+   assert fake.findings == ["searchpost", "placeresolve", "journeys"]
+
+
+def test_a_resolved_place_id_is_not_resolved_twice(make_context):
+   context, fake = make_context({"placeresolve": load_fixture("placeresolve.json")})
+   arguments = {"city": "portvale", "id": "google:ChIJFakePlaceAlpha"}
+
+   first = cli.run_command(COMMANDS["resolve-place"], context, dict(arguments))
+   second = cli.run_command(COMMANDS["resolve-place"], context, dict(arguments))
+
+   assert fake.findings == ["placeresolve"]
+   assert second["place"]["coords"] == first["place"]["coords"]
+
+
+def test_a_write_does_not_reuse_a_searched_place_id_resolution(make_context):
+   responses = {"searchpost": load_fixture("searchpost_google_only.json"), "placeresolve": load_fixture("placeresolve.json")}
+   context, fake = make_context(responses, session=signed_in_session())
+
+   cli.run_command(COMMANDS["resolve-place"], context, {"city": "portvale", "id": "google:ChIJFakePlaceAlpha"})
+   cli.run_command(COMMANDS["save-place"], context, {"city": "portvale", "near": "Lantern Market", "name": "Studio", "dry_run": True})
+
+   assert fake.findings == ["placeresolve", "searchpost", "placeresolve"]
+
+
+def test_a_time_with_an_offset_needs_no_region_config(make_context):
+   context, fake = make_context({}, with_cached_region=False)
+   region = context.region("portvale")
+
+   assert context.to_utc_iso(region, "2026-10-28T09:00:00Z") == "2026-10-28T09:00:00.000Z"
+   assert context.to_utc_iso(region, "2026-10-28T09:00:00+09:00") == "2026-10-28T00:00:00.000Z"
+   assert fake.findings == []
+
+
+@pytest.mark.parametrize("bad_options", [{"depart_at": "08:00", "arrive_by": "09:00"}, {"depart_at": "99:99"}, {"arrive_by": "tomorrow-ish"}])
+def test_bad_time_options_fail_before_any_place_is_searched(make_context, bad_options):
+   context, fake = make_context({})
+
+   with pytest.raises(UsageError):
+      cli.run_command(COMMANDS["plan-journey"], context, {"city": "portvale", "from": "Lantern Market", "to": "Harbour", **bad_options})
+
+   assert fake.findings == []
+
+
 def test_plan_walk_asks_for_two_walks(make_context):
    context, fake = make_context({"walk7": load_fixture("walk7.json")})
 

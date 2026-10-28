@@ -70,3 +70,36 @@ def test_describe_shows_lengths_but_not_values():
    assert description["cookies"] == {"sessionid": "len=20"}
    assert description["has_session_cookie"] is True
    assert "secret" not in str(description)
+
+
+def test_save_preserves_comments_blank_lines_and_quotes_in_other_lines(tmp_path):
+   env_file = tmp_path / ".env"
+   env_file.write_text('# my notes\nOTHER="a b"\n\nCITYMAPPER_COOKIES=sessionid=old\n')
+
+   Session(cookies={"sessionid": "abc"}).save(env_file)
+
+   assert env_file.read_text() == '# my notes\nOTHER="a b"\n\nCITYMAPPER_COOKIES=sessionid=abc\n'
+
+
+def test_save_failure_leaves_previous_env_file_intact(tmp_path, monkeypatch):
+   env_file = tmp_path / ".env"
+   env_file.write_text("CITYMAPPER_COOKIES=sessionid=old\n")
+
+   def failing_replace(source, destination):
+      raise OSError("disk full")
+
+   monkeypatch.setattr("citymapper_client.session.os.replace", failing_replace)
+
+   with pytest.raises(OSError):
+      Session(cookies={"sessionid": "new"}).save(env_file)
+
+   assert env_file.read_text() == "CITYMAPPER_COOKIES=sessionid=old\n"
+   assert [entry.name for entry in tmp_path.iterdir()] == [".env"]
+
+
+@pytest.mark.parametrize("header", ["\nCookie: sessionid=a; csrftoken=b", "  cookie: sessionid=a; csrftoken=b\n"])
+def test_parse_cookie_header_ignores_surrounding_whitespace_and_prefix(header):
+   cookies = parse_cookie_header(header)
+
+   assert cookies["sessionid"] == "a"
+   assert cookies["csrftoken"] == "b"

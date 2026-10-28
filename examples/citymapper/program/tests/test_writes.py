@@ -146,6 +146,46 @@ def test_public_write_with_yes_needs_no_session(make_context, name):
    assert fake.findings[-1] == WRITE_CASES[name].finding
 
 
+ID_WRITES = {
+   "update-place": ("id", "https://citymapper.com/api/1/identity/places/"),
+   "remove-place": ("id", "https://citymapper.com/api/1/identity/places/"),
+   "remove-favourite": ("id", "https://citymapper.com/api/1/identity/favorites/"),
+   "remove-saved-journey": ("document_id", "https://citymapper.com/api/1/identity/documents/SavedJourney/"),
+}
+HOSTILE_IDS = {"../sessions": "..%2Fsessions", "a?b=1": "a%3Fb%3D1", "x#y": "x%23y", "a b": "a%20b"}
+
+
+@pytest.mark.parametrize("hostile_id", sorted(HOSTILE_IDS))
+@pytest.mark.parametrize("name", sorted(ID_WRITES))
+def test_ids_are_percent_encoded_in_the_dry_run_url_and_the_sent_url(make_context, name, hostile_id):
+   argument_name, url_prefix = ID_WRITES[name]
+   expected_url = url_prefix + HOSTILE_IDS[hostile_id]
+   case = WRITE_CASES[name]
+   context, fake = make_context({**case.lookups, case.finding: case.reply}, session=signed_in_session())
+   arguments = {**case.arguments, argument_name: hostile_id}
+
+   dry_run = registry.FUNCTIONS[name](context, {**arguments, "dry_run": True})
+   registry.FUNCTIONS[name](context, approved_arguments(context, name, arguments))
+
+   sent = fake.only_request(case.finding)
+   assert dry_run["request"]["url"] == expected_url
+   assert sent.url == expected_url
+   assert str(httpx.Request(sent.endpoint.method, sent.url).url) == expected_url
+
+
+@pytest.mark.parametrize("dot_segment", [".", ".."])
+@pytest.mark.parametrize("name", sorted(ID_WRITES))
+def test_a_dot_segment_id_is_refused_before_anything_is_sent(make_context, name, dot_segment):
+   argument_name, _ = ID_WRITES[name]
+   case = WRITE_CASES[name]
+   context, fake = make_context({**case.lookups, case.finding: case.reply}, session=signed_in_session())
+
+   with pytest.raises(UsageError):
+      registry.FUNCTIONS[name](context, {**case.arguments, argument_name: dot_segment, "dry_run": True})
+
+   assert_sent_nothing(fake, name)
+
+
 def sent_write(make_context, name, **argument_overrides):
    case = WRITE_CASES[name]
    context, fake = make_context({**case.lookups, case.finding: case.reply, "routeinfo1": load_fixture("routeinfo1.json")}, session=signed_in_session())

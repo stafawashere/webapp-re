@@ -21,6 +21,13 @@ def require_list(record, key, context):
    return value
 
 
+def whole_number(value, key, context):
+   try:
+      return int(value)
+   except (TypeError, ValueError):
+      raise ContractBroken("Citymapper's {0} field '{1}' is not a number.".format(context, key), {"context": context, "field": key})
+
+
 def coords_of(value):
    is_pair = isinstance(value, (list, tuple)) and len(value) == 2
    if is_pair:
@@ -130,7 +137,7 @@ class Journey(Record):
       last_arrival = next((leg.arrival_time for leg in reversed(timed_legs) if leg.arrival_time), None)
       return cls(
          index=index,
-         duration_seconds=int(require(journey, "duration_seconds", "journey")),
+         duration_seconds=whole_number(require(journey, "duration_seconds", "journey"), "duration_seconds", "journey"),
          legs=[leg.as_dict() for leg in legs],
          signature=require(journey, "signature", "journey"),
          walk_seconds=journey.get("walk_seconds"),
@@ -154,7 +161,7 @@ class Status(Record):
    @classmethod
    def from_api(cls, status):
       status = status or {}
-      return cls(level=int(status.get("level", 0)), summary=status.get("summary") or "", description=status.get("description") or None)
+      return cls(level=whole_number(status.get("level", 0), "level", "status"), summary=status.get("summary") or "", description=status.get("description") or None)
 
 
 @dataclass(frozen=True)

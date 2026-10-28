@@ -3,7 +3,7 @@ import re
 from .. import endpoints
 from ..config import ROUTE_STATUS_MAX_AGE_SECONDS
 from ..errors import NotFound, UsageError
-from ..models import LineSummary, Status, coords_of, require_list
+from ..models import LineSummary, Status, coords_of, require_list, whole_number
 
 PLACEHOLDER = re.compile(r"\{(\d+)\}")
 
@@ -76,13 +76,13 @@ def get_disruptions(context, arguments):
 
          status = route.get("status") or {}
          items = status.get("disruptions") or []
-         has_status_only = not items and int(status.get("level", 0)) >= minimum_level
+         has_status_only = not items and whole_number(status.get("level", 0), "level", "line status") >= minimum_level
 
          if has_status_only:
             items = [{"level": status.get("level", 0), "summary": status.get("summary", ""), "description": status.get("description", ""), "replacements": status.get("replacements"), "stops": []}]
 
          for item in items:
-            level = int(item.get("level", 0))
+            level = whole_number(item.get("level", 0), "level", "disruption")
 
             if level < minimum_level:
                continue

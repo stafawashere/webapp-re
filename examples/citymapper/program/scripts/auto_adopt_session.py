@@ -17,6 +17,7 @@ later runs silent.
 import argparse
 import hashlib
 import json
+import os
 import shutil
 import sqlite3
 import subprocess
@@ -209,8 +210,9 @@ def diagnose(profile, services):
 
 
 def run_citymapper(env_file, arguments, stdin_text=None):
-   command = ["uv", "run", "--project", str(PROGRAM_DIR), "citymapper", "--env-file", str(env_file), *arguments]
-   result = subprocess.run(command, input=stdin_text, capture_output=True, text=True)
+   command = ["uv", "run", "--frozen", "--project", str(PROGRAM_DIR), "citymapper", "--env-file", str(env_file), *arguments]
+   program_environment = {**os.environ, "UV_PROJECT_ENVIRONMENT": str(PROGRAM_DIR / ".venv")}
+   result = subprocess.run(command, input=stdin_text, capture_output=True, text=True, env=program_environment)
    stopped_class = STOP_EXIT_CODES.get(result.returncode)
 
    if stopped_class:

@@ -43,6 +43,13 @@ def nyc_signature(outputs):
    return outputs["plan-journey-nyc"]["journeys"][0]["signature"]
 
 
+def one_clean_time_per_signature(output):
+   times = output["times"]
+   problems = [] if len(times) == 1 else ["sent 1 signature, got {0} times".format(len(times))]
+   problems.extend("signature {0}: {1}".format(item["signature_index"], item["error"]) for item in times if item.get("error"))
+   return problems
+
+
 def london_bus_stop(outputs):
    return outputs["find-nearby-london-bus"]["elements"][0]["id"]
 
@@ -144,7 +151,7 @@ RUNS = [
    {"label": "plan-walk", "command": "plan-walk", "argv": ["--city", "paris", "--from", "48.85837,2.347", "--to", "48.88093,2.35533"], "check": times_in_order},
    {"label": "plan-cycle", "command": "plan-cycle", "argv": ["--city", "berlin", "--from", "52.5219,13.4132", "--to", "52.5163,13.3777"], "check": times_in_order},
    {"label": "plan-cab", "command": "plan-cab", "argv": ["--city", "sfbayarea", "--from", "37.7749,-122.4194", "--to", "37.8080,-122.4177"], "check": non_empty("routes")},
-   {"label": "get-journey-times", "command": "get-journey-times", "argv": lambda outputs: ["--city", "nyc", "--signatures", nyc_signature(outputs)], "check": non_empty("times")},
+   {"label": "get-journey-times", "command": "get-journey-times", "argv": lambda outputs: ["--city", "nyc", "--signatures", nyc_signature(outputs)], "check": one_clean_time_per_signature},
    {"label": "get-journey", "command": "get-journey", "argv": lambda outputs: ["--city", "nyc", "--signature", nyc_signature(outputs)], "check": lambda output: [] if output["journey"] and output["journey"]["legs"] else ["no journey"]},
    {"label": "get-travel-time", "command": "get-travel-time", "argv": ["--city", "tokyo", "--from", "35.6812,139.7671", "--to", "35.6580,139.7016"], "check": lambda output: [] if output["seconds"] and output["seconds"] > 0 else ["no travel time"]},
    {"label": "find-nearby", "command": "find-nearby", "argv": ["--city", "nyc", "--near", "40.75773,-73.985708", "--mode", "bike", "--limit", "10"], "check": bikes_counted},
@@ -189,7 +196,8 @@ NOT_RUNNABLE = {
 
 def run_cli(argv):
    started = time.monotonic()
-   result = subprocess.run(["uv", "run", "--project", str(PROGRAM_DIR), "citymapper", *argv], capture_output=True, text=True, cwd=PROGRAM_DIR)
+   program_environment = {**os.environ, "UV_PROJECT_ENVIRONMENT": str(PROGRAM_DIR / ".venv")}
+   result = subprocess.run(["uv", "run", "--frozen", "--project", str(PROGRAM_DIR), "citymapper", *argv], capture_output=True, text=True, cwd=PROGRAM_DIR, env=program_environment)
    return result, int((time.monotonic() - started) * 1000)
 
 

@@ -11,6 +11,11 @@ SESSION_COOKIE = "sessionid"
 
 def parse_cookie_header(text):
    cookies = {}
+   text = text.strip()
+   has_prefix = text.lower().startswith("cookie:")
+
+   if has_prefix:
+      text = text.split(":", 1)[1]
 
    for part in text.replace("\n", ";").split(";"):
       name, separator, value = part.strip().partition("=")
@@ -37,6 +42,50 @@ def read_env_file(path):
          values[key.strip()] = value.strip().strip('"')
 
    return values
+
+
+def merge_env_text(original_text, updates):
+   remaining = dict(updates)
+   merged_lines = []
+
+   for line in original_text.splitlines(keepends=True):
+      stripped = line.strip()
+      key = stripped.partition("=")[0].strip()
+      is_assignment = "=" in stripped and not stripped.startswith("#")
+      is_updated = is_assignment and key in updates
+
+      if is_updated:
+         line_ending = "\r\n" if line.endswith("\r\n") else "\n"
+         merged_lines.append("{0}={1}{2}".format(key, updates[key], line_ending))
+         remaining.pop(key, None)
+      else:
+         merged_lines.append(line)
+
+   needs_separator = bool(merged_lines) and not merged_lines[-1].endswith("\n")
+
+   if needs_separator:
+      merged_lines[-1] += "\n"
+
+   for key, value in remaining.items():
+      merged_lines.append("{0}={1}\n".format(key, value))
+
+   return "".join(merged_lines)
+
+
+def write_atomically(path, text):
+   temp_path = path.with_name("{0}.{1}.tmp".format(path.name, os.getpid()))
+   descriptor = os.open(temp_path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+
+   try:
+      with os.fdopen(descriptor, "w") as handle:
+         handle.write(text)
+         handle.flush()
+         os.fsync(handle.fileno())
+
+      os.replace(temp_path, path)
+   except BaseException:
+      temp_path.unlink(missing_ok=True)
+      raise
 
 
 class Session:
@@ -75,18 +124,12 @@ class Session:
       if SESSION_COOKIE not in kept:
          raise UsageError("No sessionid cookie in the input. Sign in on citymapper.com in your browser, then copy the Cookie header of a citymapper.com request.")
 
-      existing = read_env_file(path)
-      existing[COOKIE_KEY] = "; ".join("{0}={1}".format(name, value) for name, value in kept.items())
+      updates = {COOKIE_KEY: "; ".join("{0}={1}".format(name, value) for name, value in kept.items())}
 
       if self.user_agent:
-         existing[USER_AGENT_KEY] = self.user_agent
+         updates[USER_AGENT_KEY] = self.user_agent
 
-      lines = ["{0}={1}".format(key, value) for key, value in existing.items()]
+      original_text = path.read_text() if path.exists() else ""
       path.parent.mkdir(parents=True, exist_ok=True)
-      descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
-
-      with os.fdopen(descriptor, "w") as handle:
-         handle.write("\n".join(lines) + "\n")
-
-      os.chmod(path, 0o600)
+      write_atomically(path, merge_env_text(original_text, updates))
       return sorted(kept)

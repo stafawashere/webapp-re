@@ -1,0 +1,839 @@
+{
+   "format": 1,
+   "site": "citymapper",
+   "run_id": "run-2026-10-27-192152",
+   "created": "2026-10-27T19:21:52",
+   "targets": {
+      "skills": [
+         "citymapper"
+      ],
+      "commands": [],
+      "program": "program"
+   },
+   "live_budget": 0,
+   "live_requests_spent": 0,
+   "workflow": {
+      "reviewers": 7,
+      "reviewers_failed": 0,
+      "duplicates_merged": 0,
+      "omitted_by_cap": 8,
+      "unverified": 0
+   },
+   "notes": [
+      "Run without the Workflow tool: the 7 reviewers and 2 verifiers ran as plain subagents with the prompts rendered from assets/optimize-audit.js.",
+      "Settled in the main session: get-disruptions parsed disruption levels with a bare int() in capabilities/lines.py (needs_files from P1); now whole_number(), with a new parametrised case that went red before the fix and green after.",
+      "Settled in the main session: the tightened provenance gate flagged a blog post-id regex (misc.py) and the login redirect markers (transport.py). Neither is an endpoint or ever requested, so both carry a provenance ignore marker with the reason. Gate: 12 of 12 controls, 0 violations.",
+      "Rules review: 7 items. Fixed here: four inline compound conditions split into named variables; the check_provenance docstring count; final newlines on test_session.py and .gitignore. Kept: the /login and /sign redirect markers, which are matched against Location headers and never requested.",
+      "pacing.py was not changed for F07. A failed pacer state write still fails closed, which is the safe direction, and cli.main now reports it as JSON exit 18.",
+      "The untracked bundle files still exist in earlier commits of the site repo, with the site's public browser keys and Sentry DSN. Scrub history only if this repo is ever published.",
+      "Timing metrics in after.json were taken at a load average of about 34 while agents ran; stdlib enum alone took 159 ms to import. No heavy import was added (only pathlib and urllib.parse), so the import-time and test-wall-time rises are load noise, not a regression.",
+      "Queued live reads for a later session (read only, no writes): live_check.py --only plan-journey-nyc,get-journey-times for F01; search-places then plan-journey on the same Google-only name for F04; one read that fills a path value, such as get-city, for the F09 percent-encoding."
+   ],
+   "findings": [
+      {
+         "dimension": "correctness",
+         "target": "get-journey-times",
+         "title": "--signatures splits on commas, but a journey signature is a JSON string full of commas",
+         "file": "program/src/citymapper_client/cli.py",
+         "line": 56,
+         "anchor": "options[\"type\"] = lambda text: [item.strip() for item in text.split(\",\") if item.strip()]",
+         "evidence": "Every array option is parsed by splitting on commas. The signature that plan-journey returns is a JSON object serialised as text (fixture tests/fixtures/journeys.json: '{\"car\": 4810, \"duration\": 1500, \"end\": {...}, ...}'), and knowledge/endpoints/journeytimes.md line 56 says the body is {signatures: [<journey signature JSON string>]}. I ran build_parser().parse_args(['get-journey-times','--city','x','--signatures',<fixture signature>]) offline and got 9 fragments such as '{\"car\": 4810' and '\"duration\": 1500' instead of 1 signature. The tests call the function with a Python list, and scripts/live_check.py line 147 only checks non_empty('times'), so neither exercises the argv path. The SKILL tells the agent to pass a journey's signature to get-journey-times, so the documented flow posts garbage, and the command is marked 'verified live'.",
+         "severity": "high",
+         "proposed_fix": "Give array options a parser that handles JSON: if the text starts with '[' use json.loads, if it starts with '{' treat it as one item, otherwise split on commas. Make the option repeatable (action='extend') so several signatures can be passed. Keep the comma split for the line-id options (get-lines, get-route-paths). Add a test that goes through build_parser with a real-shaped signature, and make live_check assert that len(times) equals the number of signatures sent and that no entry has an error.",
+         "expected_effect": "get-journey-times returns real times for the signature the user passes. Today the call sends 9 broken strings for a single journey.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/cli.py",
+            "program/tests/test_cli.py",
+            "program/scripts/live_check.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "I ran build_parser on get-journey-times --signatures with a JSON-object signature and got 4 comma fragments such as '{\"car\": 4810'. cli.py:56 splits every array option on commas, and journeys.py:119-124 posts the list as-is. The skill tells the agent to pass a journey signature to get-journey-times. The unit tests pass a Python list, so the argv path is untested.",
+         "id": "F01",
+         "outcome": "fixed",
+         "outcome_detail": "Confirmed at cli.py:56. `--signatures` now uses a JSON-aware parser. A single JSON-object signature stays one item. A JSON array of strings is accepted. The option is repeatable (action=extend). A value starting with `{` or `[` that is not valid JSON fails with a UsageError. Other text still splits on commas. `--lines` and the other array options keep the comma split. live_check now uses a new check, one_clean_time_per_signature, which fails if len(times) differs from the 1 signature sent or any entry has an error. SKILL.md now explains how to pass signatures.",
+         "tests_added": [
+            "test_one_json_signature_stays_one_item_through_argv",
+            "test_signatures_can_be_repeated_or_given_as_a_json_array",
+            "test_line_ids_still_split_on_commas",
+            "test_journey_times_live_check_fails_on_a_count_mismatch_or_an_entry_error"
+         ],
+         "bite_proof": "Defect caught: a JSON signature split on commas into fragments on the argv path. Broke the fix (JSON_ARRAY_OPTIONS = set()): 'FAILED tests/test_cli.py::test_one_json_signature_stays_one_item_through_argv', 'FAILED tests/test_cli.py::test_signatures_can_be_repeated_or_given_as_a_json_array', '2 failed, 60 deselected'. Restored: '2 passed, 60 deselected'. Live check defect: a count mismatch passes unnoticed. Broke it (count condition replaced by True): 'FAILED tests/test_cli.py::test_journey_times_live_check_fails_on_a_count_mismatch_or_an_entry_error', '1 failed, 65 deselected'. Restored: '1 passed, 65 deselected'. test_line_ids_still_split_on_commas guards unchanged behaviour and passed before and after the change."
+      },
+      {
+         "dimension": "skill-quality",
+         "target": "citymapper",
+         "title": "Site renderer still emits the pre-launcher skill, so the next engineer run reverts the plugin skill",
+         "file": "tools/engineer/render_skill.py",
+         "line": 137,
+         "anchor": "uv run --project {root}/program citymapper --env-file {root}/.env <command> [options]",
+         "evidence": "tools/engineer/render_skill.py writes plugin/skills/citymapper/SKILL.md (SKILL_DIR, line 12). Its template differs from the current SKILL.md in four ways. Lines 137 and 186 call `uv run --project {root}/program citymapper ...` directly, where SKILL.md uses `${CLAUDE_PLUGIN_ROOT}/scripts/citymapper` (SKILL.md lines 14 and 119). Line 201 says `/webapp-re engineer citymapper <command>`, where SKILL.md line 145 has `/webapp-re:engineer`. The template has no `<!-- webapp-re:menu -->` block (SKILL.md lines 125-134). The provenance date comes from `date.today()`. The current SKILL.md is therefore hand-patched, since render_skill.py cannot reproduce it. The direct `uv run` bypasses plugin/scripts/citymapper, which exports UV_PROJECT_ENVIRONMENT. When the shell points UV_PROJECT_ENVIRONMENT at another project's venv, the bypassed call runs in the wrong environment. plugin-layout.md says a skill calls its program only through the launcher. I only read the renderer. I did not run it, because it writes files.",
+         "severity": "high",
+         "proposed_fix": "Update the template in render_skill.py to match the current SKILL.md. Use `${CLAUDE_PLUGIN_ROOT}/scripts/citymapper <command> [options]` in both bash blocks, `/webapp-re:engineer` in the exit 14 row, and the `/citymapper:citymapper` form. Then run `build_menu.py install --site citymapper` so the Menu section returns. Add a test or check that the rendered output has no `uv run --project` and no `/webapp-re engineer`.",
+         "expected_effect": "Removes a silent regression: without it, the next render drops the launcher (and its UV_PROJECT_ENVIRONMENT pin) and the menu section, and the plugin check fails. Zero runtime cost.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tools/engineer/render_skill.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "render_skill.py has no CLAUDE_PLUGIN_ROOT and emits 'uv run --project {root}/program' at lines 137 and 186. It also says '/webapp-re engineer' and renders no menu block, while the live SKILL.md uses the launcher. A re-render would drop the UV_PROJECT_ENVIRONMENT pin and revert the hand-patched skill.",
+         "id": "F02",
+         "outcome": "fixed",
+         "outcome_detail": "Template in render_skill.py now matches the hand-patched SKILL.md, including the earlier partitions' edits. It uses the ${CLAUDE_PLUGIN_ROOT}/scripts/citymapper launcher, /webapp-re:engineer, the updated exit 2 and 14 rows, no exit 15 row, an exit 18 row, the --signatures advice and the Google-hit resolve-place advice. It also carries the menu block (an existing block in the target is kept, otherwise a default one is used). The script takes an optional output path and asserts the render has no 'uv run --project' and no '/webapp-re engineer'. I rendered to a temp path and diffed against SKILL.md before the F10 and F25 edits. The only differences were the F10 and F25 wording changes and the provenance date. After those edits, SKILL.md equals a fresh render except the date, which I kept at 2026-10-10. I did not add the '/citymapper:citymapper' form from the proposed fix, because the current SKILL.md does not use it. I did not run build_menu.py install, because the renderer now emits the menu itself.",
+         "tests_added": [],
+         "bite_proof": "No test file is in this partition, so the check is an assert inside render_skill.py. It catches a template that reverts to the direct 'uv run --project' call or to '/webapp-re engineer'. Broken (exit 14 row changed back to '/webapp-re engineer citymapper'): render failed with 'AssertionError: rendered skill contains /webapp-re engineer'. Restored: render printed 'skill: 57 commands; 24 blocked, 2 built, not verified, 2 local, 29 verified live'. No pytest run, because no pytest test was added."
+      },
+      {
+         "dimension": "other",
+         "target": "program",
+         "title": "Program bugs are reported as 'the site changed' and leave no trace",
+         "file": "program/src/citymapper_client/cli.py",
+         "line": 199,
+         "anchor": "except (KeyError, TypeError, AttributeError, ValueError) as error:",
+         "evidence": "main() turns any KeyError, TypeError, AttributeError or ValueError from any command into ContractBroken (exit 14) with only the exception class name and run id. A probe raising KeyError and AttributeError inside whoami (HTTP stubbed, CITYMAPPER_ROOT a tempdir) printed ContractBroken with detail {error: KeyError, run} and nothing in logs. SKILL.md exit 14 row tells the agent the site changed and to run engineer, so a program bug sends the user to rediscovery. Transport._log writes only per-request lines, so a run that fails before sending leaves no command-level record.",
+         "severity": "high",
+         "proposed_fix": "Add the exception message and innermost traceback frame (file:line) to the ContractBroken detail, append one command-level line (run, command, exit code, error class, ms, request_count) to var/logs/commands-<date>.jsonl, and add a cli test that a bug inside a command surfaces its message and location.",
+         "expected_effect": "A failed run is diagnosable from one stderr or log line; program bugs distinguishable from contract changes. About 10 lines, no extra requests.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/cli.py",
+            "program/tests/test_cli.py"
+         ],
+         "verdict": "refuted",
+         "verify_note": "Duplicate of correctness-4. It is the same cli.py:199 handler that turns KeyError, TypeError, AttributeError and ValueError into ContractBroken exit 14 without a field name or log.",
+         "id": "F03"
+      },
+      {
+         "dimension": "speed",
+         "target": "citymapper",
+         "title": "search-places and resolve-place feed no cache, and the skill's coords advice fails for Google results",
+         "file": "program/src/citymapper_client/capabilities/journeys.py",
+         "line": 205,
+         "anchor": "results = search(context, region, query, near)",
+         "evidence": "SKILL.md:99 tells the agent to run search-places, pick a result and pass its coords to plan-journey 'so the program does not search again'. Google results carry no coords (tests/fixtures/searchpost.json, tests/test_commands.py:349 asserts results[1].coords is None). Neither search_places (journeys.py:205) nor resolve_place (journeys.py:218) writes the place cache, and the raw search response and placeresolve-by-id are never cached. Offline probe with a stubbed transport: search-places sent 1 request, then plan-journey from/to 'Lantern Market' sent searchpost, placeresolve and journeys, so the same query was searched again. A repeat run sent only journeys, so the place cache works once the full text path has run. Each paced request costs 3.6 to 4.2 s (3.0 s gap with 20-40% jitter) plus about 0.5 s, so the duplicate pair is about 9 s on top of the 1 or 2 needed.",
+         "severity": "medium",
+         "proposed_fix": "In context.search, cache the raw results per (region, normalised query, near) for about 10 minutes through KeyedCache, used only when cache_text_places is true. Cache placeresolve results by place id for 30 days, and have resolve_place and search_places for coordinate-bearing hits write the place cache under the query and name. Writes must keep resolving afresh. Correct SKILL.md:99 to say Google hits need resolve-place for coords, or that plan-journey can take the name once the search is cached.",
+         "expected_effect": "The common 'check the place, then plan' flow drops from 4 to 2 requests per Google place (about 8 s saved per place). Repeat resolve-place calls become free.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/context.py",
+            "program/src/citymapper_client/capabilities/journeys.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "context.search (context.py:167) and context.resolve_place (context.py:179) never touch the place cache, and only Context.place writes it. Plan-journey with a text place therefore repeats searchpost, placeresolve and journeys after a search-places call, and SKILL.md:99 advice fails for coordinate-less Google hits.",
+         "id": "F04",
+         "outcome": "fixed",
+         "outcome_detail": "context.search now caches the place list per region, normalised query and near for 10 minutes. context.resolve_place caches the merged place by id for 30 days. Both caches are used only when cache_text_places is true, so writes still search and resolve afresh. search_places writes the place cache under the query when the first hit has coords and no near is given, which is the same pick Context.place makes. SKILL.md now says Google hits have no coords and need resolve-place, and that a repeated name after search-places does not search again. I left out the extra write under the name key, because it could pin a name to a different place than the search would pick.",
+         "tests_added": [
+            "test_plan_after_search_places_does_not_search_the_same_text_again",
+            "test_a_resolved_place_id_is_not_resolved_twice",
+            "test_a_write_does_not_reuse_a_searched_place_id_resolution"
+         ],
+         "bite_proof": "Defect caught: search-places then plan-journey on the same text repeats searchpost, and repeat resolve-place repeats placeresolve. Search cache disabled: 'FAILED tests/test_commands.py::test_plan_after_search_places_does_not_search_the_same_text_again' and '1 failed, 160 deselected'. Resolve cache disabled: 'FAILED tests/test_commands.py::test_a_resolved_place_id_is_not_resolved_twice' and '1 failed, 160 deselected'. Both restored: '9 passed, 152 deselected' on the selector covering all new and neighbouring tests. test_a_write_does_not_reuse_a_searched_place_id_resolution is a guard that passes on both sides, with no broken-fix run, and the existing test_a_write_searches_a_text_place_again_even_when_a_read_cached_it also still passes."
+      },
+      {
+         "dimension": "stability",
+         "target": "program",
+         "title": "A write that times out is reported as a plain network error with no warning that it may have landed",
+         "file": "program/src/citymapper_client/transport.py",
+         "line": 234,
+         "anchor": "raise TransportError(\"Network error talking to Citymapper: {0}\"",
+         "evidence": "Probe with a fake client raising httpx.ReadTimeout on a POST (SAVED_JOURNEY_CREATE): TransportError 'Network error talking to Citymapper: ReadTimeout', detail only {url_path}. Writes correctly get one attempt (attempts = 1 when not is_read), but the error text carries no hint. The redirect refusal at transport.py:188 does say 'If it was a write it may have landed, so re-read before sending it again'. A caller (or the agent) that sees a bare TransportError will naturally rerun the write, and the confirm digest is the same for the rerun, so a duplicate saved place, favourite or journey is possible.",
+         "severity": "medium",
+         "proposed_fix": "When not is_read and the error is not a connect-phase failure (httpx.ConnectError, httpx.ConnectTimeout), raise TransportError with the message 'The request may have reached Citymapper. Re-read before sending it again.' and detail {'write_may_have_landed': true}. Keep the plain message for reads and for connect failures.",
+         "expected_effect": "Removes the duplicate-write path after a read/write timeout. Zero extra requests. Message and detail change only.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/transport.py",
+            "program/tests/test_transport.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "transport.py:234 raises a bare 'Network error' for a write timeout, though writes get only one attempt. The exit 16 row in SKILL.md already says to re-read after a write and resend only with fresh approval, so the duplicate-write risk is mitigated and high is too severe.",
+         "id": "F05",
+         "outcome": "fixed",
+         "outcome_detail": "A write that fails after the connect phase (for example a ReadTimeout) now raises TransportError 'The request may have reached Citymapper. Re-read before sending it again.' with detail write_may_have_landed true. Reads and httpx.ConnectError or ConnectTimeout keep the plain 'Network error' message.",
+         "tests_added": [
+            "test_a_write_that_times_out_warns_it_may_have_landed",
+            "test_a_write_that_never_connected_keeps_the_plain_network_error",
+            "test_a_read_that_times_out_keeps_the_plain_network_error"
+         ],
+         "bite_proof": "Defect caught: a write timeout reported as a plain network error invites a duplicate write. Fix disabled (condition set to False): '1 failed in 0.31s'. Fix restored: '1 passed in 0.06s'. The two keeps_the_plain tests are boundary guards and still pass with the fix disabled ('2 passed, 30 deselected'), so they do not bite on that break."
+      },
+      {
+         "dimension": "stability",
+         "target": "program",
+         "title": "HTML where JSON was expected is ContractBroken, so a login page or a non-Cloudflare bot check is neither SessionExpired nor ChallengeRequired and never halts the pacer",
+         "file": "program/src/citymapper_client/classify.py",
+         "line": 42,
+         "anchor": "raise ContractBroken(\"Expected JSON from Citymapper, got {0}.\"",
+         "evidence": "classify(200,'text/html',\"<form action='/login'>\",'json',True), '<title>px-captcha</title>' and 'datadome' all raise ContractBroken (exit 14, 'rerun discovery'). CHALLENGE_MARKERS (classify.py:5) lists only Cloudflare strings, while references/failure-classification.md step 2 names the login form action, _abck, px-captcha and datadome. Because ChallengeRequired is not raised, Transport.send never calls pacer.halt('challenge'), so the next command sends immediately. A signed-in endpoint answering 200/302 HTML for an expired cookie also gets exit 14 instead of exit 10 (SessionExpired). Only 401/403 map to SessionExpired (classify.py:~28), and the only signed-out evidence in the KB is a 403.",
+         "severity": "medium",
+         "proposed_fix": "In classify: when expect is json and the body is HTML, raise SessionExpired if signed_in_endpoint, else ChallengeRequired if the head contains _abck, px-captcha, datadome, or a captcha script, else ContractBroken. Add those markers to CHALLENGE_MARKERS. Treat a redirect to a path containing /login or /sign as SessionExpired in Transport._refused_redirect/_exchange for signed_in endpoints.",
+         "expected_effect": "Expired sessions exit 10 with the adopt-session instruction instead of exit 14. A bot check on a 200 now stops the client for 900 s instead of letting follow-up commands keep sending.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/classify.py",
+            "program/src/citymapper_client/transport.py",
+            "program/tests/test_classify.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "Offline classify() calls with 200 text/html bodies containing a login form, px-captcha and datadome all raise ContractBroken, and CHALLENGE_MARKERS holds only the cf-chl and Cloudflare strings. plugin/references/failure-classification.md lines 12-14 and 30 say these cases should be SessionExpired or a challenge. No capture shows the site doing this, since the only signed-out evidence is a 403, so it is a classification gap and not a seen failure. High is too strong.",
+         "id": "F06",
+         "outcome": "fixed",
+         "outcome_detail": "classify now raises SessionExpired for an HTML body where JSON was expected on a signed-in endpoint. On other endpoints it raises ChallengeRequired when the head contains _abck, px-captcha, datadome or captcha, and ContractBroken otherwise. The new markers sit in a separate BOT_CHECK_MARKERS tuple and not in CHALLENGE_MARKERS, because CHALLENGE_MARKERS is checked on every body including expect=html pages and the new markers could false-positive there. Transport._refused_redirect now returns SessionExpired when a signed-in endpoint redirects to a same-host path containing /login or /sign. ChallengeRequired already halts the pacer in Transport.send.",
+         "tests_added": [
+            "test_html_where_json_was_expected_on_a_signed_in_endpoint_is_session_expired",
+            "test_a_bot_check_page_on_a_200_is_a_challenge",
+            "test_a_login_page_on_a_signed_in_read_is_session_expired",
+            "test_a_bot_check_on_a_200_halts_the_pacer",
+            "test_a_redirect_to_a_login_path_on_a_signed_in_read_is_session_expired"
+         ],
+         "bite_proof": "Defect caught: HTML login or bot-check pages classified as ContractBroken, so no exit 10 and no pacer halt. Signed-in HTML branch disabled: '1 failed in 0.04s', restored '1 passed in 0.02s'. Bot-check branch disabled: '3 failed, 30 deselected in 0.16s', restored '3 passed, 30 deselected in 0.03s'. Login-redirect branch disabled: '2 failed, 30 deselected in 0.09s', restored '2 passed, 30 deselected in 0.16s'. The pacer-halt test was not broken separately. It passes through the same ChallengeRequired branch as the classify bot-check tests, which were broken."
+      },
+      {
+         "dimension": "stability",
+         "target": "program",
+         "title": "An OSError after the response (request log or cache write) escapes as a traceback, even after a write landed",
+         "file": "program/src/citymapper_client/cli.py",
+         "line": 199,
+         "anchor": "except (KeyError, TypeError, AttributeError, ValueError) as error:",
+         "evidence": "Transport._log (transport.py:141-159) does mkdir and open('a') with no guard and runs after the response is read (transport.py:252). With a read-only logs dir and a fake 200 response to a POST, send() raised PermissionError. main() catches CitymapperError and (KeyError, TypeError, AttributeError, ValueError) only, so OSError (PermissionError, disk full) ends the process with a Python traceback and exit 1, no JSON error, no run id. For a write the site already acted on, the caller sees a crash and cannot tell. catalogue.write_cache_file (catalogue.py:48) and the pacer state write have the same exposure.",
+         "severity": "medium",
+         "proposed_fix": "Wrap the body of _log in try/except OSError and swallow it (logging is best effort), and make write_cache_file tolerate OSError the same way. In cli.main add an OSError branch that emits a CitymapperError-shaped JSON line with the run id and a distinct exit code, stating that the request may already have been sent.",
+         "expected_effect": "Full disk or permission problems no longer turn a successful call into a crash. Every failure exits with parseable JSON.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/transport.py",
+            "program/src/citymapper_client/catalogue.py",
+            "program/src/citymapper_client/cli.py",
+            "program/tests/test_transport.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "transport.py _log does mkdir and open('a') with no OSError guard, and it runs after the response is read. cli.main catches only CitymapperError and the four builtin types, so an OSError from the log would surface as a traceback and exit 1. Only catalogue.py:40 handles OSError. I read this and did not run it.",
+         "id": "F07",
+         "outcome": "fixed",
+         "outcome_detail": "Transport._log now swallows OSError (best effort), and catalogue.write_cache_file swallows OSError. cli.main has an OSError branch that prints CitymapperError-shaped JSON with the run id, command, exception name and a message saying the request may already have been sent. It exits with a new LocalFileError class, exit code 18, added to errors.py and to the SKILL.md error table. The pacer state write in pacing.py is outside this partition and still has the exposure, though the new cli branch now turns it into JSON and exit 18.",
+         "tests_added": [
+            "test_an_unwritable_log_directory_does_not_fail_a_sent_request",
+            "test_the_cli_reports_a_local_file_failure_as_json"
+         ],
+         "bite_proof": "Defect caught: an OSError after the response crashes the process with a traceback instead of JSON, and an unwritable log fails a request that was already sent. _log guard disabled: '1 failed in 0.07s', restored '1 passed in 0.03s'. cli OSError branch disabled: '1 failed in 0.06s', restored '1 passed in 0.04s'. No test was added for write_cache_file's OSError handling, so that change is unproven."
+      },
+      {
+         "dimension": "correctness",
+         "target": "program",
+         "title": "Any KeyError, TypeError, AttributeError or ValueError is reported as ContractBroken (exit 14), with no field name",
+         "file": "program/src/citymapper_client/cli.py",
+         "line": 199,
+         "anchor": "except (KeyError, TypeError, AttributeError, ValueError) as error:",
+         "evidence": "The handler wraps Context.build and the command. The detail it prints holds only type(error).__name__ and the run id, with no message, field or traceback. Local failures land in the same class as a real site change. Examples: a non-UTF-8 .env raises UnicodeDecodeError (a ValueError) in Session.from_env; a null 'level' makes int(status.get('level', 0)) fail in get-disruptions and Status.from_api; a local code bug raises AttributeError. SKILL.md and the error table tell the agent that exit 14 means 'The site changed. Run /webapp-re:engineer ... to rediscover it', which sends the user down the wrong path and gives nothing to debug with. The command name and exception message are not included.",
+         "severity": "medium",
+         "proposed_fix": "Include the command name and str(error) (truncated) in the detail. Raise ContractBroken with a field name from the parsers where the value is read, instead of relying on the catch-all. Report a failure from Context.build (unreadable .env) as UsageError or TransportError with the file name, not ContractBroken.",
+         "expected_effect": "Exit 14 means a real shape change, and the stderr JSON names the command and the failing key, so a failure can be diagnosed without re-running.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/cli.py",
+            "program/src/citymapper_client/models.py",
+            "program/tests/test_cli.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "cli.py:199 turns KeyError, TypeError, AttributeError and ValueError into ContractBroken with only the exception class name and run id. The command and message are not included, so local bugs read as 'the site changed'.",
+         "id": "F08",
+         "outcome": "fixed",
+         "outcome_detail": "Confirmed at cli.py:199. The catch-all detail now carries the command name, the exception class, the exception message cut to 300 characters, and the run id, with session cookie values replaced by [redacted]. An unreadable or non-UTF-8 .env, or any OSError from Context.build, is now a UsageError (exit 2) naming the file. models.py gained whole_number, so a non-numeric journey duration_seconds or status level raises ContractBroken with the field name. The existing shape-change test for a null level now asserts detail field == level. That is stricter than before. The old expectation was only the exception class name, and the null level now fails earlier with a named field. get-disruptions has its own int(status.get(\"level\")) in lines.py, which is outside this partition, so that path still reaches the catch-all, now with command and message. SKILL.md exit 14 and exit 2 rows updated.",
+         "tests_added": [
+            "test_exit_14_names_the_command_and_the_failing_message",
+            "test_exit_14_message_hides_session_cookie_values",
+            "test_an_unreadable_env_file_is_a_usage_error_naming_the_file",
+            "test_a_non_numeric_status_level_names_the_field"
+         ],
+         "bite_proof": "Defect caught: exit 14 gave no command or message. Broke the fix (removed the command key): 'FAILED tests/test_cli.py::test_exit_14_names_the_command_and_the_failing_message', '1 failed, 61 deselected'. Restored: '1 passed, 61 deselected'. Defect caught: a cookie value leaking into stderr. Broke the fix (redact does nothing): 'FAILED tests/test_cli.py::test_exit_14_message_hides_session_cookie_values', '1 failed, 61 deselected'. Restored: '1 passed, 61 deselected'. Defect caught: a non-UTF-8 .env reported as exit 14. Broke the fix (UnicodeDecodeError no longer caught): 'FAILED tests/test_cli.py::test_an_unreadable_env_file_is_a_usage_error_naming_the_file', '1 failed, 61 deselected'. Restored: '1 passed, 61 deselected'. Defect caught: a null level raising a bare TypeError. Broke the fix (back to int()): 'FAILED tests/test_cli.py::test_a_response_that_changed_shape_exits_14_with_a_json_error[argv3-responses3-expected_detail3]', 'FAILED tests/test_cli.py::test_a_non_numeric_status_level_names_the_field', '2 failed, 3 passed, 57 deselected'. Restored: '5 passed, 57 deselected'."
+      },
+      {
+         "dimension": "safety",
+         "target": "program",
+         "title": "Path values are not URL-quoted, so an approved dry run can send a different endpoint than the one it shows",
+         "file": "program/src/citymapper_client/endpoints.py",
+         "line": 22,
+         "anchor": "return self.host + self.path.format(**path_values)",
+         "evidence": "Probe with the HTTP client unused (httpx.Request only builds a URL, nothing is sent). Request(PLACE_DELETE, path_values={\"place_id\": \"../sessions\"}).url is https://citymapper.com/api/1/identity/places/../sessions, and httpx.Request(\"DELETE\", that).url becomes https://citymapper.com/api/1/identity/sessions. That is the sign-out endpoint, reached through remove-place --id. The same applies to remove-favourite --id, remove-saved-journey --document-id and update-place --id. A \"?\" or \"#\" in an id also changes the sent request: \"x#frag\" drops the fragment and \"a?b=1\" adds a query. The dry run prints the unnormalised string, so the user approves a URL that is not what goes out. The confirm digest also binds the unnormalised string.",
+         "severity": "medium",
+         "proposed_fix": "In Endpoint.url, quote each path value with urllib.parse.quote(str(value), safe=\"\") before str.format. Also reject empty values and the values \".\" and \"..\" with a UsageError. Add a test in tests/test_writes.py for each id-taking write: ids \"../sessions\", \"a?b\" and \"x#y\" must either raise or appear percent-encoded in both the dry-run URL and the sent URL.",
+         "expected_effect": "The URL shown in the dry run equals the URL on the wire for every write. Dot-segment retargeting of a DELETE or PUT to another endpoint becomes impossible. Ids that are already plain, such as pl-77, are unchanged, so the 502 existing tests should be unaffected.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/endpoints.py",
+            "program/tests/test_writes.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "Reproduced offline. PLACE_DELETE.url(place_id='../sessions') gives .../identity/places/../sessions, and httpx.Request('DELETE', that).url normalises to .../identity/sessions. The dry run and confirm digest therefore bind a different URL than the one sent. Quoting the path values fixes it.",
+         "id": "F09",
+         "outcome": "fixed",
+         "outcome_detail": "Endpoint.url now percent-encodes every path value with quote(safe=\"\") and raises UsageError for blank values and for \".\" and \"..\". The dry-run URL, the confirm digest and the sent URL all use the same quoted string. Plain ids such as pl-77 are unchanged.",
+         "tests_added": [
+            "test_ids_are_percent_encoded_in_the_dry_run_url_and_the_sent_url (4 write commands x 4 hostile ids)",
+            "test_a_dot_segment_id_is_refused_before_anything_is_sent (4 write commands x 2 values)"
+         ],
+         "bite_proof": "Defect caught: an id like ../sessions or a?b retargets the sent request to a URL other than the one the dry run showed. Quoting removed: '16 failed, 133 deselected' (for example FAILED ...percent_encoded...[update-place-x#y]). Dot-segment check disabled: '8 failed, 141 deselected'. Both restored: '24 passed, 125 deselected'."
+      },
+      {
+         "dimension": "safety",
+         "target": "citymapper",
+         "title": "Skill never says who runs adopt-session, so the agent may handle the raw Cookie header in chat or in its own command line",
+         "file": "plugin/skills/citymapper/SKILL.md",
+         "line": 116,
+         "anchor": "themselves, then pipe the Cookie header of a citymapper.com request into",
+         "evidence": "The Writes section tells the user to sign in, then \"pipe the Cookie header ... into adopt-session --stdin\", or pass --from-file. It does not say the user runs it, does not forbid asking for the cookie in chat, and does not say to delete a --from-file afterwards. A Bash call written by the agent such as echo '<cookie>' | ... puts the sessionid and csrftoken into the transcript and onto a process command line. The safe route exists but is not in the skill. PENDING-APPROVALS.md line 14 and tools/engineer/pending_approvals.py:115 use pbpaste, and program/scripts/auto_adopt_session.py exists. grep finds neither mentioned anywhere under plugin/. The program itself is clean: .env is mode 600 (stat) and Session.save chmods 0600.",
+         "severity": "medium",
+         "proposed_fix": "In the render_skill.py template, say the user runs the adoption command themselves in their own terminal. Give the pbpaste form and name program/scripts/auto_adopt_session.py as the preferred route. State that the agent must never ask for the cookie in chat, never put it in a command, and must ask the user to delete any --from-file file after use. Re-render the skill.",
+         "expected_effect": "Removes the one path by which session secrets can reach the transcript or a command line. No code change.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tools/engineer/render_skill.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "SKILL.md lines 115-123 say the user signs in, then 'pipe the Cookie header', without saying who runs the command or forbidding a pasted cookie in chat. PENDING-APPROVALS.md:14 and tools/engineer/pending_approvals.py:115 hold the pbpaste route, and grep finds neither pbpaste nor auto_adopt under plugin/. render_skill.py:183 contains the same sentence, so a renderer edit is the right place to fix it.",
+         "id": "F10",
+         "outcome": "fixed",
+         "outcome_detail": "The Writes section in both the template and SKILL.md now says the user runs adoption in their own terminal. The preferred route is program/scripts/auto_adopt_session.py, with a pbpaste pipe into plugin/scripts/citymapper adopt-session --stdin as the fallback. The agent is told never to ask for the cookie in chat or put it in a command, and to ask the user to delete any --from-file file afterwards. I chose the full launcher path for the pbpaste line, because ${CLAUDE_PLUGIN_ROOT} does not expand in the user's own terminal.",
+         "tests_added": [],
+         "bite_proof": "Not applicable. This is a wording change and no test was added."
+      },
+      {
+         "dimension": "safety",
+         "target": "program",
+         "title": "Provenance gate path regex is a hardcoded prefix list and misses most unbacked literals",
+         "file": "program/scripts/check_provenance.py",
+         "line": 34,
+         "anchor": "PATH_LITERAL = re.compile(r'[\"\\'](https?://[^\"\\'\\s]+|/(?:api|resource|geocode|trip|web/1|cities/vote)[^\"\\']*)[\"\\']')",
+         "evidence": "The gate itself runs clean: 8 of 8 planted source defects and 3 of 3 planted objects caught, 0 violations, Endpoint 35, PendingEndpoint 22, ALL_ENDPOINTS 57. I then fed check_source single lines as capabilities/x.py using the real findings. Caught: \"/api/1/hidden\", \"https://evil.example.net/x\", \"/trip/abc\". Missed: \"/cities\", \"/news\", \"/london/hidden\", \"/go/abc\", \"{0}/api/1/hidden\".format(ORIGIN), \"//evil.example.net/x\", \"wss://evil.example.net/x\" and \"evil.example.net/api/1/x\". The page endpoints /cities, /news and /{region_slug} are real endpoints in endpoints.py, so a hand-typed copy of them in a capability file passes. The gate scans only src/, so scripts/ is not covered. The positive controls use only the prefixes that are already in the regex, so they cannot reveal this gap.",
+         "severity": "medium",
+         "proposed_fix": "Derive the path prefixes from the findings. Take the first path segment of every finding URL, plus every host in the findings, and build PATH_LITERAL from that set. Also match any quoted string that starts with \"/\" followed by a letter, or with \"//\" or a scheme://. Allow only explicit ignore markers. Add planted controls for \"/cities\", the .format host form and \"//host/x\", and raise EXPECTED_SOURCE_CONTROLS to match. Tightening a gate is allowed; loosening is not.",
+         "expected_effect": "Closes at least 8 probed bypass shapes. A future edit that hardcodes a site path outside endpoints.py fails the gate and names file and line.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/scripts/check_provenance.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "check_provenance.py:34 PATH_LITERAL matches only the prefixes api, resource, geocode, trip, web/1 and cities/vote, so '/cities', '/news' and scheme-relative '//host' literals pass. Tightening the gate is allowed under the rules.",
+         "id": "F11",
+         "outcome": "fixed",
+         "outcome_detail": "check_provenance.py now builds its literal regex from the findings. It takes every host and first path segment from the finding URLs. It also flags any quoted string that starts with /letter, //, scheme://, {..}/letter, or a bare domain followed by /. Four planted controls were added (\"/cities\", the {0}/api format-host form, \"//host/x\" and a bare host/path), and EXPECTED_SOURCE_CONTROLS went from 8 to 12. I also changed load_endpoint_objects to use importlib.import_module (with src on sys.path). The old spec_from_file_location load failed on endpoints.py's relative import of .errors, so the second pass could not run before that change. The tightened gate now reports 3 violations in files outside this partition: misc.py:55 (regex /i/(\\d+)) and transport.py:18 (\"/login\" and \"/sign\" redirect markers). These are not endpoints, so each needs a '# provenance: ignore, <reason of 10+ chars>' marker. The gate stays red until a session with access to those files adds them.",
+         "tests_added": [],
+         "bite_proof": "The planted controls are the test. With the old prefix-only regex the gate printed 'positive control: 8 of 12 planted source defects and 3 of 3 planted objects caught; gate unrunnable'. With the fix restored it printed 'positive control: 12 of 12 planted source defects and 3 of 3 planted objects caught', followed by 'Endpoint 35, PendingEndpoint 22, ALL_ENDPOINTS 57' and 'provenance violations: 3'. The 3 violations are the unmarked lines in misc.py and transport.py."
+      },
+      {
+         "dimension": "safety",
+         "target": "program",
+         "title": "live_check.py and auto_adopt_session.py call uv run without pinning UV_PROJECT_ENVIRONMENT",
+         "file": "program/scripts/live_check.py",
+         "line": 192,
+         "anchor": "[\"uv\", \"run\", \"--project\", str(PROGRAM_DIR), \"citymapper\", *argv]",
+         "evidence": "The shell exports UV_PROJECT_ENVIRONMENT pointing at another project's venv. plugin/scripts/citymapper line 9 pins it to the program's .venv, but live_check.py:192 and auto_adopt_session.py:212 spawn uv run with the inherited environment and no --frozen or --no-sync. With the foreign value inherited, uv would sync citymapper's dependencies into the other project's venv, or run the CLI against the wrong packages. Both scripts handle live traffic and session cookies, and live_check passes cookies implicitly through the default .env. program/README.md lines 6-8 and 27-28 and tools/engineer/pending_approvals.py:40 use the same unpinned pattern.",
+         "severity": "medium",
+         "proposed_fix": "Pass env={**os.environ, \"UV_PROJECT_ENVIRONMENT\": str(PROGRAM_DIR / \".venv\")} to subprocess.run in both scripts and in pending_approvals.py. Add --frozen to those invocations. Add the export to the README examples.",
+         "expected_effect": "The live check and session adoption always use the program's own venv. No cross-project package writes, and no wrong-version runs on live traffic.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/scripts/live_check.py",
+            "program/scripts/auto_adopt_session.py",
+            "tools/engineer/pending_approvals.py",
+            "program/README.md"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "live_check.py:192, auto_adopt_session.py:212 and pending_approvals.py:40 call 'uv run --project' with no UV_PROJECT_ENVIRONMENT. plugin/scripts/citymapper:9 pins it, but a shell profile can export another project's venv. Running these scripts from the user's shell would target the wrong venv.",
+         "id": "F12",
+         "outcome": "fixed",
+         "outcome_detail": "Confirmed at live_check.py:192, auto_adopt_session.py:212 and pending_approvals.py:40. All three now pass env with UV_PROJECT_ENVIRONMENT set to the program's .venv and add --frozen. pending_approvals.py's printed CLI prefix also sets UV_PROJECT_ENVIRONMENT and --frozen. README examples carry the export and --frozen, with one line explaining why.",
+         "tests_added": [
+            "test_scripts_pin_the_program_venv_before_calling_uv",
+            "test_pending_approvals_pins_the_program_venv_before_calling_uv"
+         ],
+         "bite_proof": "Defect caught: a script inheriting another project's UV_PROJECT_ENVIRONMENT. Broke the fix in live_check.py and auto_adopt_session.py (replaced the pinned entry): 'FAILED tests/test_cli.py::test_scripts_pin_the_program_venv_before_calling_uv[live_check-<lambda>]', 'FAILED tests/test_cli.py::test_scripts_pin_the_program_venv_before_calling_uv[auto_adopt_session-<lambda>]', '2 failed, 64 deselected'. Restored: '2 passed, 64 deselected'. Broke it in pending_approvals.py: 'FAILED tests/test_cli.py::test_pending_approvals_pins_the_program_venv_before_calling_uv', '1 failed, 65 deselected'. Restored: '1 passed, 65 deselected'. The auto_adopt test stubs the cryptography imports because the program venv lacks that package."
+      },
+      {
+         "dimension": "stability",
+         "target": "program",
+         "title": "Status.from_api turns a missing status into level 0, which means Good Service",
+         "file": "program/src/citymapper_client/models.py",
+         "line": 164,
+         "anchor": "level=whole_number(status.get(\"level\", 0)",
+         "evidence": "Ran Status.from_api(None) and Status.from_api({}) in-process: both return Status(level=0, summary='', description=None). In tests/fixtures/routestatus.json level 0 is the 'Good Service' level (line C), 1 is 'Diversion', 2 is 'Part Suspended'. LineSummary.from_api (models.py ~177) and lines.py:133 call it with route.get('status') / item.get('status'), so a route with no status object, or a renamed level field, is reported as running normally. Other tolerant defaults of the same kind: lines.py:198 `response.get(\"route\") or {}`, lines.py:149 `response.get(\"stops\") or {}`.",
+         "severity": "medium",
+         "proposed_fix": "In Status.from_api use require(status, 'level', 'line status') and raise ContractBroken when status is None, not a dict, or has no level. Keep summary/description optional. Add a test that a route without status raises ContractBroken (break the fix first and watch it go red).",
+         "expected_effect": "A shape change surfaces as exit 14 ContractBroken instead of silently showing every affected line as Good Service. Removes a wrong-output path on get-line-status and get-line.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/models.py",
+            "program/tests/test_commands.py"
+         ],
+         "verdict": "plausible",
+         "verify_note": "Status.from_api(None) and from_api({}) both return level 0 with an empty summary, reproduced in-process. The proposed fix would break find-line: lines.py:133 calls it on find-transport results, and those results in tests/fixtures/findtransport.json have no status key, so a strict require would make find-line raise. The strict check can only apply to the LineSummary and routestatus path (models.py:177); find-line needs a null status instead of a fabricated Good Service.",
+         "id": "F13"
+      },
+      {
+         "dimension": "stability",
+         "target": "program",
+         "title": "Departures, saved places and favourites return empty lists when their list field disappears",
+         "file": "program/src/citymapper_client/capabilities/departures.py",
+         "line": 135,
+         "anchor": "for service in stop.get(\"services\") or []:",
+         "evidence": "bus_departures (departures.py:135) uses stop.get('services') or [], metro_departures iterates station.get('sections') or [] and grouping.get('departures') or [], rail_departures station.get('departures') or [], with item.get('route_id', '') defaulting to an empty id. account.py:68 and :80 use (response or {}).get('items') or [] for list-saved-places and list-favourites, and classify returns None for a JSON null (probe: classify(200,'application/json','null',...) returns None). Only the outer list (stops/stations/results) is checked with require_list. A renamed inner key yields 'no departures' or 'no saved places' with exit 0. failure-classification.md step 4 says a null or empty value is never 'no results' without proof. Saved-place and favourite endpoints are still PendingEndpoint (never replayed signed in), so the present key names are unverified.",
+         "severity": "medium",
+         "proposed_fix": "Use require_list for the inner arrays that every fixture carries (services on a bus stop, sections/departure_groupings on metro stations, departures on rail stations, items on identity lists) and treat only a present empty list as empty. Make route_id required on metro and rail items. Reject a None body in list_saved_places and list_favourites with ContractBroken.",
+         "expected_effect": "A renamed key surfaces as exit 14 on the first call, so the stale-contract signal reaches the user and the stop cache's forget_stop path (departures.py:226) runs, instead of an empty answer that looks valid.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/capabilities/departures.py",
+            "program/src/citymapper_client/capabilities/account.py",
+            "program/tests/test_commands.py"
+         ],
+         "verdict": "plausible",
+         "verify_note": "departures.py:135 uses stop.get('services') or [], and account.py uses (response or {}).get('items') or [], so a renamed inner key gives an empty exit-0 answer. Making these keys required could raise false ContractBroken if real responses omit an empty list, which I could not check offline.",
+         "id": "F14"
+      },
+      {
+         "dimension": "skill-quality",
+         "target": "citymapper",
+         "title": "adopt-session instructions do not say who runs the pipe, so the cookie header can end up in chat",
+         "file": "plugin/skills/citymapper/SKILL.md",
+         "line": 115,
+         "anchor": "The account commands need the user's own Citymapper session. They sign in on citymapper.com",
+         "evidence": "Lines 115-123 say 'They sign in ... then pipe the Cookie header ... into adopt-session --stdin'. 'They' and 'pipe' leave open whether Claude or the user does it. Claude's Bash tool has no way to receive a pasted header except inline in the command, which puts the session cookie into the transcript. PENDING-APPROVALS.md (lines 8-15) holds the safe route: the user copies the header to the clipboard and runs `pbpaste | ... adopt-session --stdin`. The skill lacks that route. It also omits that sessionid is mandatory (session.py line 75 raises UsageError without it) and that csrftoken is needed for vote-for-city (account.py line 21).",
+         "severity": "medium",
+         "proposed_fix": "Replace the paragraph with: ask the user to copy the Cookie request header of a citymapper.com request while signed in, never paste it in chat, and either run the launcher with `adopt-session --from-file <path>` on a file they saved (then delete the file) or run `pbpaste | ${CLAUDE_PLUGIN_ROOT}/scripts/citymapper adopt-session --stdin`. Mention that the header must include sessionid and, for vote-for-city, csrftoken. Say never to read or print .env.",
+         "expected_effect": "Prevents session-cookie exposure in the transcript and removes one failed adopt-session attempt (exit 2) for users who copy a header without sessionid.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tools/engineer/render_skill.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "refuted",
+         "verify_note": "Duplicate of safety-2, which covers the same paragraph (SKILL.md 115-123), the same missing owner of the pipe and the same pbpaste fix.",
+         "id": "F15"
+      },
+      {
+         "dimension": "speed",
+         "target": "program",
+         "title": "Region config (timezone, nearby modes) is refetched every 24 hours though it is static",
+         "file": "program/src/citymapper_client/config.py",
+         "line": 9,
+         "anchor": "REGION_CONFIG_MAX_AGE_SECONDS = 24 * 3600",
+         "evidence": "region-uk-london.json and region-us-nyc.json in var/cache were written 2026-10-10 09:08 and have been expired for 17 days. The next find-nearby, get-city, list-brands --city, or timed plan-journey or get-stop-schedule pays one /resource/region-info request (log: 215 to 371 ms, about 15 KB) plus a 3.6 to 4.2 s pacing gap. The catalogue, stop cache and brand directory use 7 days, and the only 2 region-info requests in the 137-line log were identical in shape.",
+         "severity": "low",
+         "proposed_fix": "Raise REGION_CONFIG_MAX_AGE_SECONDS to 7 * 24 * 3600 to match the other static caches. The existing mismatch path already refetches if the region id is wrong.",
+         "expected_effect": "About 6 of every 7 daily region-info refetches removed, roughly 4 s and 15 KB each, per region used.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/config.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "config.py:9 holds 24 * 3600 and catalogue.py:169 is its only user. region-uk-london.json and region-us-nyc.json in var/cache are dated Oct 10 09:08 and the request log has 2 region-info lines. Moving to 7 days matches the other static caches and breaks no rule, but it saves a refetch roughly once a week at most.",
+         "id": "F16",
+         "outcome": "fixed",
+         "outcome_detail": "REGION_CONFIG_MAX_AGE_SECONDS is now 7 * 24 * 3600, the same as the other static caches. catalogue.py:173 is its only user. It is a constant change and I added no test for it. The existing region-id mismatch path still refetches.",
+         "tests_added": [],
+         "bite_proof": "No test added for this finding."
+      },
+      {
+         "dimension": "speed",
+         "target": "program",
+         "title": "to_utc_iso fetches region config even for offset-qualified ISO times",
+         "file": "program/src/citymapper_client/context.py",
+         "line": 118,
+         "anchor": "zone = self.timezone_for(region)",
+         "evidence": "The zone is resolved before the input is parsed, but it is only used for HH:MM input and for naive ISO strings (context.py:129-130, 136). Offline probe: to_utc_iso(region, '2026-10-28T09:00:00Z') called the region-info getter once and returned the same UTC value regardless. With a cold region cache that is one extra request (about 4 s paced, 15 KB) for plan-journey, get-stop-schedule or find-line style commands given a fully qualified time.",
+         "severity": "low",
+         "proposed_fix": "Parse the ISO branch first and compute the zone lazily, only when the input is HH:MM or the parsed datetime is naive. Keep local_now computation inside the HH:MM branch.",
+         "expected_effect": "Saves 1 request (about 4 s) on a cold cache for any time given with Z or an offset. No change otherwise.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/context.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "context.py:118 calls timezone_for(region) before parsing. That goes through region_config and a possible fetch, but the zone is only needed for HH:MM and naive ISO input, so a Z or offset time pays for an unneeded request on a cold cache.",
+         "id": "F17",
+         "outcome": "fixed",
+         "outcome_detail": "to_utc_iso now resolves the timezone only for HH:MM input and for naive ISO strings. An input with Z or an offset triggers no region-config request.",
+         "tests_added": [
+            "test_a_time_with_an_offset_needs_no_region_config"
+         ],
+         "bite_proof": "Defect caught: a fully qualified time still fetches region config on a cold cache. Eager timezone lookup restored: 'FAILED tests/test_commands.py::test_a_time_with_an_offset_needs_no_region_config' and '1 failed, 160 deselected'. Fix restored: passes in the '9 passed, 152 deselected' run. Test_times.py tests also pass in the final 314-test run."
+      },
+      {
+         "dimension": "speed",
+         "target": "program",
+         "title": "40 second HTTP timeout multiplies across read retries",
+         "file": "program/src/citymapper_client/transport.py",
+         "line": 107,
+         "anchor": "httpx.Client(timeout=40.0, follow_redirects=False)",
+         "evidence": "Reads get 3 attempts (RETRY_DELAYS_SECONDS = (5, 10), transport.py:12) and httpx applies 40 s per phase. A hung read can take 3 x 40 s + 15 s of sleeps + two paced gaps, about 140 s or more, before TransportError. In requests-2026-10-10.jsonl (137 requests) the slowest was /api/7/journeys at 4332 ms and the 2.7 MB /cities page took 1.5 s, so 40 s is about 9x the worst observed.",
+         "severity": "low",
+         "proposed_fix": "Use httpx.Timeout(20.0, connect=8.0) so a dead connection fails fast while the slowest observed responses still have 4x margin. Leave retries and pacing unchanged.",
+         "expected_effect": "Worst-case failing read drops from about 140 s to about 75 s, with no effect on normal runs.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/transport.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "transport.py:107 sets timeout=40.0 and reads get 3 attempts with 5 s and 10 s sleeps, so a hung read can take about 135 s plus pacing gaps. I did not re-derive the 4.3 s slowest observed request. Cutting the timeout is not a loosening and breaks no rule.",
+         "id": "F18",
+         "outcome": "fixed",
+         "outcome_detail": "The default httpx client now uses httpx.Timeout(20.0, connect=8.0), set through named constants. Retries and pacing are unchanged.",
+         "tests_added": [
+            "test_the_default_client_fails_a_dead_connection_fast"
+         ],
+         "bite_proof": "Defect caught: the default client allows 40 s per phase. Reverted to timeout=40.0: '1 failed in 0.13s'. Restored: '1 passed in 0.07s'."
+      },
+      {
+         "dimension": "stability",
+         "target": "program",
+         "title": "Session.save truncates .env in place and rewrites it without comments, blank lines or quotes",
+         "file": "program/src/citymapper_client/session.py",
+         "line": 86,
+         "anchor": "os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600",
+         "evidence": "The file is opened with O_TRUNC and then written, so a crash or full disk between the two leaves an empty .env and loses the cookies. Probe: an .env containing '# my notes', 'OTHER=\"a b\"', 'CITYMAPPER_COOKIES=old' and a blank line came back as 'OTHER=a b\\nCITYMAPPER_COOKIES=sessionid=abc\\n' after save(): the comment and blank line are dropped and the quotes are stripped. read_env_file (session.py:~30) discards comments and strips double quotes, and save rebuilds the file from that dict. Only the user's own file is affected, but it is the only copy of the session.",
+         "severity": "low",
+         "proposed_fix": "Write to a temp file in the same directory (mode 0600 via os.open with O_EXCL), fsync, then os.replace. Rewrite only the CITYMAPPER_COOKIES and CITYMAPPER_USER_AGENT lines in the existing text and keep every other line byte for byte.",
+         "expected_effect": "A failed adopt-session leaves the previous cookies intact and unrelated .env content is preserved.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/session.py",
+            "program/tests/test_session.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "I saved into a temp .env that held a comment, a quoted value and a blank line. The result was 'OTHER=a b\\nCITYMAPPER_COOKIES=sessionid=abc\\n', so the comment, the blank line and the quotes were lost, and session.py:86 opens with O_TRUNC in place. Only the user's own .env is affected and the file holds just the cookies and user agent, so medium is too high.",
+         "id": "F19",
+         "outcome": "fixed",
+         "outcome_detail": "Session.save now merges only the CITYMAPPER_COOKIES and CITYMAPPER_USER_AGENT lines into the existing .env text and keeps every other line byte for byte. It writes through a 0600 O_EXCL temp file, fsyncs, then os.replace, and removes the temp file on failure.",
+         "tests_added": [
+            "test_save_preserves_comments_blank_lines_and_quotes_in_other_lines",
+            "test_save_failure_leaves_previous_env_file_intact"
+         ],
+         "bite_proof": "Defect caught: save drops comments, blank lines and quotes from other .env lines, and a failed write loses the old cookies. Broke the fix by writing in place from the read_env_file dict, so the preserve and failure tests went red: '4 failed, 7 passed in 0.14s' (two older save tests also failed under that break). After restoring the fix: '11 passed in 0.07s'."
+      },
+      {
+         "dimension": "correctness",
+         "target": "plan-journey",
+         "title": "Option conflicts and bad times are checked only after the places have been resolved over the network",
+         "file": "program/src/citymapper_client/capabilities/journeys.py",
+         "line": 15,
+         "anchor": "start = context.place(region, arguments.get(\"from\"), \"from\")",
+         "evidence": "journey_query resolves both places (line 15 and 16) before it checks 'depart_at and arrive_by' (line 20) and before context.to_utc_iso validates the time strings (line 29). I called plan-journey offline with a fake transport, passing text places and both --depart-at and --arrive-by. The first thing that happened was a searchpost request (the fake raised 'unexpected request to searchpost'), so the UsageError would only have been raised after up to 2 paced searches. The same order applies to plan-walk, plan-cycle, plan-cab and get-travel-time, which use the same helper.",
+         "severity": "low",
+         "proposed_fix": "Move the depart_at/arrive_by conflict check and the to_utc_iso calls above the two context.place calls. Compute the time values first, then resolve the places.",
+         "expected_effect": "A mistyped time or conflicting options fails with exit 2 immediately, with 0 requests. Today it costs up to 2 searches, about 6 s or more at the 3 s pacing gap, before the same error.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/capabilities/journeys.py",
+            "program/tests/test_commands.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "journey_query (journeys.py:15-29) resolves both places before the depart_at/arrive_by conflict check and before to_utc_iso. A usage error therefore costs up to 2 searches first. It only affects the error path, so low.",
+         "id": "F20",
+         "outcome": "fixed",
+         "outcome_detail": "journey_query now checks the depart_at/arrive_by conflict and runs both to_utc_iso calls before it resolves either place. It serves plan-journey, plan-walk, plan-cycle, plan-cab and get-travel-time. get-travel-time resolves its places in its own code with no time options, so it is unaffected.",
+         "tests_added": [
+            "test_bad_time_options_fail_before_any_place_is_searched (3 cases: conflicting options, 99:99, a non-time string)"
+         ],
+         "bite_proof": "Defect caught: a usage error is raised only after up to two searches. Place resolution moved back above the checks: 'FAILED ...test_bad_time_options_fail_before_any_place_is_searched[bad_options0]', '[bad_options1]' and '[bad_options2]', '3 failed, 158 deselected'. Fix restored: passes in the '9 passed, 152 deselected' run."
+      },
+      {
+         "dimension": "correctness",
+         "target": "adopt-session",
+         "title": "A leading newline or space before 'Cookie:' makes adopt-session store the wrong cookie names and report 'No sessionid cookie'",
+         "file": "program/src/citymapper_client/capabilities/local.py",
+         "line": 27,
+         "anchor": "if text.lower().startswith(\"cookie:\"):",
+         "evidence": "I ran the same prefix strip plus parse_cookie_header offline. 'Cookie: sessionid=a; csrftoken=b\\n' gives ['csrftoken','sessionid'], which is correct. '\\nCookie: sessionid=a; csrftoken=b' gives ['Cookie: sessionid','csrftoken'], so sessionid is lost. '  cookie: sessionid=a' gives ['cookie: sessionid']. The failure is then reported by Session.save as 'No sessionid cookie in the input', which sends the user back to sign in again, though the cookie was there. A leading newline or space is common when the header is pasted or read from a file or heredoc.",
+         "severity": "low",
+         "proposed_fix": "Call text.strip() (or lstrip) before the startswith('cookie:') test in adopt_session. Also make parse_cookie_header drop a leading 'Cookie:' on the first part. Add a test with leading whitespace.",
+         "expected_effect": "Pasted headers with surrounding whitespace are accepted. Today the first adopt attempt fails with a misleading error.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/capabilities/local.py",
+            "program/src/citymapper_client/session.py",
+            "program/tests/test_session.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "I reproduced it: '\\nCookie: sessionid=a; csrftoken=b' parses to ['Cookie: sessionid','csrftoken'] and ' cookie: sessionid=a' parses to ['cookie: sessionid'], because local.py:27 tests startswith without stripping. Session.save then reports 'No sessionid cookie'. Piped pbpaste output normally starts with 'Cookie:', so this only hits hand-pasted files; the fix is a one-line strip.",
+         "id": "F21",
+         "outcome": "fixed",
+         "outcome_detail": "adopt_session now strips the pasted text before the 'cookie:' prefix test. parse_cookie_header also strips the text and drops a leading 'Cookie:' on its own. The fix is in local.py and session.py.",
+         "tests_added": [
+            "test_parse_cookie_header_ignores_surrounding_whitespace_and_prefix"
+         ],
+         "bite_proof": "Defect caught: a leading newline or space before 'Cookie:' makes the parser keep 'Cookie: sessionid' as a name, so sessionid is lost. Broke the fix by removing the strip and prefix handling in parse_cookie_header, and both parametrized cases went red: '2 failed, 9 passed in 0.10s'. After restoring the fix: '11 passed in 0.07s'. The local.py strip has no test of its own because it is covered by the parser fix."
+      },
+      {
+         "dimension": "correctness",
+         "target": "program",
+         "title": "--limit is not validated: 0 is ignored and negative values slice from the end",
+         "file": "program/src/citymapper_client/capabilities/departures.py",
+         "line": 35,
+         "anchor": "limit = arguments.get(\"limit\") or 50",
+         "evidence": "All commands that take --limit (plan-*, search-places, get-departures, list-news and others) use 'journeys[:limit] if limit else journeys' or 'elements[:limit]' with no bounds check, so --limit 0 silently returns everything and --limit -1 drops the last item. find-nearby sends str(limit) to the API, so --limit -5 is sent upstream as limit=-5 and then elements[:-5] is applied. The schema declares 'type: integer' with no minimum, and argparse only enforces int. Also, argparse errors (for example 'argument --limit: invalid int value') go to stderr as plain usage text, not the JSON error object that cli.py's docstring and the architecture reference promise, though exit 2 is correct. A caller parsing stderr as JSON would fail on them.",
+         "severity": "low",
+         "proposed_fix": "Add 'minimum: 1' to every limit property in schemas.json (and plan.json), enforce it in add_property via a type function that raises argparse.ArgumentTypeError, and subclass ArgumentParser.error to print a UsageError JSON object and return exit 2.",
+         "expected_effect": "--limit 0 or a negative value fails fast with exit 2 and a JSON error, not wrong or truncated output. All usage errors parse as JSON.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/cli.py",
+            "program/src/citymapper_client/schemas.json",
+            "plan/plan.json"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "departures.py:35 uses 'limit or 50', journeys.py:50, 207 and misc.py:59 use 'x[:limit] if limit else x', and departures.py:36 sends str(limit) upstream, so 0 is ignored and negatives slice from the end. argparse usage errors print plain 'usage:' text to stderr, which I saw when a required option was missing. The impact is small and exit 2 is already returned.",
+         "id": "F22",
+         "outcome": "fixed",
+         "outcome_detail": "The schemas.json and plan.json limit properties already had minimum 1, so neither file needed an edit. Added enforcement in cli.py: integer options with a schema minimum now reject lower values at parse time, and non-integers, with an argparse type error. A JsonArgumentParser subclass (also used by the subparsers) prints a UsageError JSON object to stderr and exits 2 for every argparse error. The existing tests that check 'unrecognized arguments' and 'required: --city' in stderr still pass because the message text is kept inside the JSON.",
+         "tests_added": [
+            "test_a_limit_below_one_exits_2_with_a_json_error"
+         ],
+         "bite_proof": "Defect caught: --limit 0 or -1 accepted. Broke the fix (type back to plain int): 'FAILED tests/test_cli.py::test_a_limit_below_one_exits_2_with_a_json_error[0]', 'FAILED tests/test_cli.py::test_a_limit_below_one_exits_2_with_a_json_error[-1]', '2 failed, 1 passed, 59 deselected'. Restored: '3 passed, 59 deselected'. Defect caught: usage errors printed as plain text. Broke the fix (renamed JsonArgumentParser.error): 'FAILED ...[0]', 'FAILED ...[-1]', 'FAILED ...[abc]', '3 failed, 59 deselected'. Restored: '3 passed, 59 deselected'."
+      },
+      {
+         "dimension": "safety",
+         "target": "program",
+         "title": "Git-tracked site bundles embed third-party API keys and a Sentry DSN",
+         "file": "research/bundle/bundle.js",
+         "line": 2,
+         "anchor": "GOOGLE_MAPS_API_KEY:\"",
+         "evidence": "git ls-files lists research/bundle/bundle.js and landing.js. A pattern scan found an AIza-style Google key on bundle.js lines 2 and 51 and on landing.js lines 2 and 49, plus a https://<hex>@...sentry DSN on the same line numbers. These are the site's own browser-side keys, not the user's, and I did not print any value. A secret scanner will flag them, and the files are 2.7 MB and 3.4 MB of minified third-party code. The README says research/ holds bundle copies. .gitignore does not exclude them.",
+         "severity": "low",
+         "proposed_fix": "Untrack research/bundle/bundle.js, landing.js and bundle.js.map with git rm --cached and add them to .gitignore. Keep api-inventory.* and api-methods.txt, which are the derived output. If the history will ever be published, scrub the keys from history as well.",
+         "expected_effect": "Removes the flagged key and DSN strings and about 6 MB of third-party code from the tree. The repo would then pass a secret scan on the working tree.",
+         "needs_live_write": false,
+         "files_touched": [
+            ".gitignore",
+            "research/bundle/bundle.js",
+            "research/bundle/landing.js",
+            "research/bundle/bundle.js.map"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "research/bundle/bundle.js and landing.js are tracked and not ignored. Each has AIza strings, GOOGLE_MAPS_API_KEY: keys and one sentry DSN, all on line 2; the reviewer's lines 51 and 49 do not match. These are the site's own public browser keys, so low.",
+         "id": "F23",
+         "outcome": "fixed",
+         "outcome_detail": "Ran git rm --cached on research/bundle/bundle.js, bundle.js.map and landing.js inside apps/citymapper. The files are still on disk. Added the three paths to .gitignore, and git check-ignore confirms all three are now ignored. api-inventory.json, api-inventory.md, api-methods.txt and en.json are still tracked. Nothing was committed and history was not rewritten, so the keys and DSN remain in earlier commits. If the history is ever published, those commits need scrubbing.",
+         "tests_added": [],
+         "bite_proof": "No test added. This is a git index and ignore change, so no pytest bite proof applies."
+      },
+      {
+         "dimension": "safety",
+         "target": "program",
+         "title": "Stale 'standing overnight grant' wording on eight account writes contradicts the skill's per-call approval rule",
+         "file": "program/src/citymapper_client/schemas.json",
+         "line": 5312,
+         "anchor": "Runs live only under the standing overnight grant",
+         "evidence": "The confirmation text of save-place, update-place, remove-place, add-favourite, remove-favourite, save-journey, remove-saved-journey and update-profile says they run live under a standing overnight grant, and otherwise need approval in chat. The overnight run is dated 2026-10-10 and no grant exists now. The text reaches the interactive menu page (var/menu/menu.page.html line 170). The skill's Writes section requires dry run, then the user's approval of the exact call, then --yes --confirm for every write, with no grant exception. Code enforces --yes and --confirm for every write (perform_write in account.py lines 38-51). Only the wording is stale. Its source is ROUND_TRIP at tools/plan/build_plan.py:154, copied through plan/plan.json into schemas.json.",
+         "severity": "low",
+         "proposed_fix": "Edit ROUND_TRIP in build_plan.py to drop the overnight-grant clause. It should say the round-trip test runs only after the user approves the exact call in chat. Regenerate plan.json and run scripts/sync_schemas.py to refresh schemas.json. The skill table can also mark irreversible writes (share-journey, create-go-link, sign-out, pass-remove-*).",
+         "expected_effect": "One approval rule across the skill, the menu and the schema. No agent can read a standing grant as permission to skip the per-call approval.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tools/plan/build_plan.py",
+            "plan/plan.json",
+            "program/src/citymapper_client/schemas.json"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "'standing overnight grant' appears 8 times in schemas.json (first at line 5312), and ROUND_TRIP in tools/plan/build_plan.py:154 is the source. The SKILL Writes section and perform_write require per-call approval with no grant exception. The wording is stale but the code still enforces --yes and --confirm, so the harm is confusion only.",
+         "id": "F24",
+         "outcome": "fixed",
+         "outcome_detail": "Confirmed. Removed the overnight-grant clause from ROUND_TRIP in build_plan.py. It now reads 'Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>.' The same text was replaced in 8 places in plan.json and 8 in schemas.json by direct text substitution, because regenerating would have rewritten the generated stamp and plan.md, which is outside this partition. A check confirmed every command's confirmation in plan.json equals schemas.json, and both parse as valid JSON. plan/plan.md has no 'overnight' text. The optional marking of irreversible writes in the skill table was not done. No test was added because this is wording only, and the existing test_cli.py run still passes.",
+         "tests_added": [],
+         "bite_proof": "No new test: the change is wording only, no behaviour changed. 'grep overnight' over build_plan.py, plan.json and schemas.json now returns nothing, and tests/test_cli.py ends with '66 passed in 0.34s'."
+      },
+      {
+         "dimension": "skill-quality",
+         "target": "citymapper",
+         "title": "Legend implies a second approval channel (PENDING-APPROVALS.md) that the program never checks",
+         "file": "plugin/skills/citymapper/SKILL.md",
+         "line": 91,
+         "anchor": "`then approval` adds the user's approval of the entry in",
+         "evidence": "Lines 91-94 say `then approval` and `awaiting approval` commands wait on the user's approval of the entry in PENDING-APPROVALS.md. A grep of program/src finds no read of that file. The only gate is perform_write in capabilities/account.py, which requires --dry-run, then --yes with --confirm <digest>. The Writes section (lines 107-114) correctly says approval is given in chat. The two passages disagree, and the legend could lead to waiting for, or editing, a file that has no effect.",
+         "severity": "low",
+         "proposed_fix": "Reword the legend to say these commands need the user's chat approval of the exact dry run, and that PENDING-APPROVALS.md only lists ready-made dry-run examples.",
+         "expected_effect": "Removes a contradiction in the write-safety instructions. No token change.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tools/engineer/render_skill.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "SKILL.md:91-94 and render_skill.py:158 say 'then approval' waits on the entry in PENDING-APPROVALS.md. No file under program/src reads that file, and the Writes section correctly says approval is given in chat. It is a wording contradiction that the Writes section softens.",
+         "id": "F25",
+         "outcome": "fixed",
+         "outcome_detail": "The legend now says 'then approval' and 'awaiting approval' mean the user's chat approval of the exact dry run. It also says PENDING-APPROVALS.md only lists ready-made dry-run examples and the program never reads it. The change is in both the template and SKILL.md.",
+         "tests_added": [],
+         "bite_proof": "Not applicable. This is a wording change and no test was added."
+      },
+      {
+         "dimension": "other",
+         "target": "citymapper",
+         "title": "Exit 15 NotPermitted is documented but never raised, and a 403 tells the user to re-adopt their session",
+         "file": "program/src/citymapper_client/classify.py",
+         "line": 28,
+         "anchor": "is_signed_out = signed_in_endpoint and status in (401, 403)",
+         "evidence": "errors.py:41 defines NotPermitted (exit 15), SKILL.md documents it, but nothing raises it. classify() maps every 401 or 403 on a signed-in endpoint to SessionExpired (exit 10), so a valid but forbidden session loops on adopt-session. No test exercises exit 15.",
+         "severity": "low",
+         "proposed_fix": "Split 401 (SessionExpired) from 403 (NotPermitted) for signed-in endpoints using knowledge-base evidence of a logged-out 403 body, or remove NotPermitted and the exit 15 row. Add a classify test.",
+         "expected_effect": "Exit codes match the SKILL.md error table; no wrong re-login advice on a 403.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/classify.py",
+            "program/src/citymapper_client/errors.py",
+            "program/tests/test_classify.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "NotPermitted is defined at errors.py:41 and listed in the SKILL.md error table but never raised. classify.py:28 maps 401 and 403 on signed-in endpoints to SessionExpired. The fix needs logged-out 403 evidence, so removing the dead exit-15 row is the safe option.",
+         "id": "F26",
+         "outcome": "skipped",
+         "outcome_detail": "Followed the verify_note and removed the dead path. The NotPermitted class is deleted from errors.py and the exit 15 row from SKILL.md, because nothing raised it and no logged-out 403 evidence exists to split 401 from 403. Final run of tests/test_classify.py and tests/test_transport.py: '65 passed in 1.01s'. No test was added because the fix only removes code. The SKILL.md edit will be overwritten when render_skill.py next regenerates the file, until that generator drops the row.",
+         "tests_added": [],
+         "bite_proof": "No test added, since the change only deletes an unused class and a doc row.",
+         "outcome_reason": "Reverted. The shared skill template requires exits 10 to 16 in every site's error table, and upgrade_check's skill-template check failed without exit 15. NotPermitted is restored in errors.py, SKILL.md, render_skill.py, build_plan.py, plan.json and docs. Splitting 403 from 401 still needs logged-out 403 evidence."
+      },
+      {
+         "dimension": "other",
+         "target": "program",
+         "title": "Nothing guards schemas.json against drifting from plan/plan.json",
+         "file": "program/scripts/sync_schemas.py",
+         "line": 12,
+         "anchor": "plan = json.loads((SITE_ROOT / \"plan/plan.json\").read_text())",
+         "evidence": "schemas.json is generated from plan.json by this script and drives the CLI parser, kind, tier, confirmation and help. No test reads plan.json or runs the sync. No drift today across 57 commands, so the gap is a missing guard: an unsynced plan edit would pass all 502 tests.",
+         "severity": "low",
+         "proposed_fix": "Move the build into a function in sync_schemas.py; add a test that rebuilds with the same KEPT_FIELDS logic and asserts equality with schemas.json, skipped when ../plan/plan.json is absent.",
+         "expected_effect": "A stale schemas.json is caught offline in about 1 s.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/scripts/sync_schemas.py",
+            "program/tests/test_registry.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "sync_schemas.py has only a main() that writes schemas.json. Grep finds no reference to plan.json or sync_schemas in program/tests, so a stale schemas.json would pass the 502 tests in the baseline. It is a missing guard and not an observed drift, so medium is too high. A skip-when-plan-absent test is acceptable.",
+         "id": "F27",
+         "outcome": "fixed",
+         "outcome_detail": "sync_schemas.py now has build_schemas(plan), and main() calls it. The new test rebuilds schemas from plan/plan.json and asserts equality with the stored schemas.json. It skips when plan/plan.json is absent. The test catches a stale schemas.json that passes all other tests. I did not run the whole suite.",
+         "tests_added": [
+            "tests/test_registry.py::test_schemas_json_matches_a_fresh_build_from_plan_json"
+         ],
+         "bite_proof": "With schemas.json intact the test gave '1 passed in 0.10s'. After I changed one command's purpose to 'stale' in schemas.json it gave 'FAILED tests/test_registry.py::test_schemas_json_matches_a_fresh_build_from_plan_json' and '1 failed in 0.09s'. After restoring schemas.json it gave '1 passed in 0.10s'."
+      },
+      {
+         "dimension": "other",
+         "target": "program",
+         "title": "Dead code: unused constant, helper, error class and endpoint constants",
+         "file": "program/src/citymapper_client/cli.py",
+         "line": 14,
+         "anchor": "PYTHON_KEYWORDS = {\"from\"}",
+         "evidence": "Only definitions found for cli.py PYTHON_KEYWORDS (14), journeys.py trip_link (158), endpoints.py CITY_PAGE (33), WALK_V1 (43), NEARBY_V2 (53), NEWS_PAGE (69), PENDING_ENDPOINTS (99).",
+         "severity": "low",
+         "proposed_fix": "Delete PYTHON_KEYWORDS and trip_link; keep endpoint constants only if the provenance gate needs them; confirm with check_provenance.py.",
+         "expected_effect": "About 8 fewer dead lines, no behaviour change.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/cli.py",
+            "program/src/citymapper_client/capabilities/journeys.py",
+            "program/src/citymapper_client/endpoints.py"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "PYTHON_KEYWORDS (cli.py:14) and trip_link (journeys.py:158) are defined and never referenced. The endpoint constants are picked up by the globals scan behind ALL_ENDPOINTS, which the provenance gate counts, so they should stay. The 'unused error class' in the title is not evidenced here and duplicates other-2.",
+         "id": "F28",
+         "outcome": "fixed",
+         "outcome_detail": "Deleted PYTHON_KEYWORDS from cli.py and trip_link from journeys.py, plus the base64 and zlib imports that only trip_link used. Left all endpoint constants in endpoints.py, as the verify_note says, because the globals scan behind ALL_ENDPOINTS and the provenance gate count them. I did not run check_provenance.py, and no test covers the deletion.",
+         "tests_added": [],
+         "bite_proof": "No new test. Grep showed no remaining reference to either name, and 'tests/test_commands.py tests/test_writes.py tests/test_times.py' gave '314 passed in 0.84s' after all edits."
+      },
+      {
+         "dimension": "other",
+         "target": "program",
+         "title": "Site README says var/logs holds only the kb.py log, but the program writes its request log there",
+         "file": "README.md",
+         "line": 16,
+         "anchor": "| `var/logs/` | `kb.py` JSONL event log only |",
+         "evidence": "transport.py _log appends requests-<date>.jsonl to var/logs, which also holds verify-*.json and replay-*.json; docs/implementation/workspace-and-tooling.md line 75 already names requests-<date>.jsonl.",
+         "severity": "low",
+         "proposed_fix": "List requests-<date>.jsonl, verify-*.json, replay-*.json and kb-<date>.jsonl in that row.",
+         "expected_effect": "The run log is findable from the README.",
+         "needs_live_write": false,
+         "files_touched": [
+            "README.md"
+         ],
+         "verdict": "confirmed",
+         "verify_note": "README.md:16 says var/logs holds the kb.py log only. var/logs actually contains requests-2026-10-10.jsonl, replay-*.json and verify-*.json, and transport.py writes the request log there.",
+         "id": "F29",
+         "outcome": "fixed",
+         "outcome_detail": "The README var/logs row now lists kb-<date>.jsonl, requests-<date>.jsonl, verify-*.json and replay-*.json. I confirmed those files exist in var/logs. I did not open transport.py, because my grep for it failed on a glob.",
+         "tests_added": [],
+         "bite_proof": "Not applicable. This is a documentation-only change and no test was added or changed."
+      },
+      {
+         "dimension": "speed",
+         "target": "program",
+         "title": "dataclasses (and inspect) dominate CLI import time",
+         "file": "program/src/citymapper_client/models.py",
+         "line": 2,
+         "anchor": "from dataclasses import asdict, dataclass, field",
+         "evidence": "Median of 25 subprocess runs with the venv python: bare interpreter 32.7 ms, 'import dataclasses' alone 60.8 ms, 'import citymapper_client.cli' 101.6 ms, and the stdlib modules cli needs without dataclasses (json, argparse, re, uuid, os) 46.6 ms. -X importtime shows dataclasses 11 to 59 ms cumulative (it pulls inspect, 2 to 9 ms) and models self time 6 to 20 ms from eight @dataclass classes. Other users are config.py:16, context.py:19, registry.py:74 and endpoints.py:8,25. Tests, argparse building (4.4 ms) and build_registry (0.9 ms) are not the cost. The 711 ms median in the baseline's --help samples is dominated by outliers (101 to 1671 ms), not these imports.",
+         "severity": "low",
+         "proposed_fix": "Replace the dataclasses with plain classes using __slots__ and explicit __init__/as_dict (or tuple-based records), including Endpoint and PendingEndpoint, and drop typing.Optional annotations. Keep behaviour and frozen semantics.",
+         "expected_effect": "About 25 to 35 ms off every invocation (roughly 25 to 30% of the 101 ms import), which is felt on help and on cache-hit commands that send nothing.",
+         "needs_live_write": false,
+         "files_touched": [
+            "program/src/citymapper_client/models.py",
+            "program/src/citymapper_client/config.py",
+            "program/src/citymapper_client/context.py",
+            "program/src/citymapper_client/registry.py",
+            "program/src/citymapper_client/endpoints.py"
+         ],
+         "verdict": "plausible",
+         "verify_note": "I measured the import cost: median of 15 runs was 40 ms bare, 67 ms for dataclasses, 118 ms for the cli import, and in-process dataclasses was about 22 ms cumulative. The saving is overstated for commands that send requests, because httpx already imports inspect (checked) and the 4 s pacing gap dominates them. The gain is mostly on help and cache-hit commands, and the fix touches 5 files for it.",
+         "id": "F30"
+      },
+      {
+         "dimension": "skill-quality",
+         "target": "citymapper",
+         "title": "Static 'blocked: session' status on 16 rows steers Claude away from commands that work once a session is adopted",
+         "file": "plugin/skills/citymapper/SKILL.md",
+         "line": 90,
+         "anchor": "`blocked: session` waits for the user's Citymapper session",
+         "evidence": "The table is a snapshot of var/state/readiness.json from 2026-10-10 and shows `blocked: session` for 8 session commands (list-saved-places, list-favourites, save-place, update-place, remove-place, add-favourite, remove-favourite, save-journey, remove-saved-journey, update-profile) plus `blocked: session, then approval` on 2 more. The program computes this status per call in registry.readiness_of(has_session). With a cookie it returns 'session present, not verified live yet (run scripts/live_check.py --only <name>)', and without one 'blocked: needs your Citymapper session (sign in, then adopt-session)'. The table says nothing about that. A reader who sees 'blocked' may refuse a command that would run after adopt-session. The legend at lines 90-94 says only that full status is in readiness.json. A diff of table against readiness.json shows 20 rows worded differently, for example the stored 'needs session: round trip with inverse ready, dry run checked'.",
+         "severity": "low",
+         "proposed_fix": "Add one sentence to the legend in the renderer: the table is a snapshot, `help` reports the session-aware status, and a `blocked: session` command should be tried (dry run first for writes) once `help` shows a session. Alternatively render the status as `needs session` and keep `blocked` only for the retired endpoints and Pass rows. If the menu parser needs the `blocked` prefix, keep it there.",
+         "expected_effect": "Avoids wrongly refusing the 10 or more session commands after adopt-session. Adds about 40 tokens.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tools/engineer/render_skill.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "refuted",
+         "verify_note": "The legend at SKILL.md lines 90-94 already says 'blocked: session' waits for the user's session and points to adopt-session. Line 97 and the help command row (line 32) send the reader to help for the live status. I counted 13 'blocked: session' lines and not 16, and I did not verify the '20 rows differ' claim. The ambiguity is minor.",
+         "id": "F31"
+      },
+      {
+         "dimension": "skill-quality",
+         "target": "citymapper",
+         "title": "Body is about 3,400 tokens on every load, 57% of it a status table the model rarely needs in full",
+         "file": "plugin/skills/citymapper/SKILL.md",
+         "line": 30,
+         "anchor": "| Command | Kind | Status | Does |",
+         "evidence": "SKILL.md is 13,664 bytes, about 3,416 tokens at 4 characters per token. The 57 table rows are 7,746 bytes (about 1,940 tokens, 57% of the file). 11 of the rows describe blocked or retired commands (get-weather, get-transit-score, plan-vehicle-hire, get-shared-eta, the Pass rows) with long reason text in the status column. The /citymapper:help entry skill also tells Claude to read this whole file before running anything else. The description is 992 of 1024 characters, so there is little room left to add triggers.",
+         "severity": "low",
+         "proposed_fix": "Shorten the long status strings for the retired and blocked rows to a code plus a legend line (for example `blocked: retired`) and move the endpoint reasons to references/blocked-commands.md. Keep the table in SKILL.md, because build_menu.py reads the Status column from it. Trim the opening paragraph's per-flag detail into references/inputs.md if you want more savings. Shorten the description by cutting the write phrasing, which duplicates the table.",
+         "expected_effect": "About 400 to 600 tokens saved per skill load (roughly 15%), and about 100 characters of description headroom.",
+         "needs_live_write": false,
+         "files_touched": [
+            "tools/engineer/render_skill.py",
+            "plugin/skills/citymapper/SKILL.md"
+         ],
+         "verdict": "refuted",
+         "verify_note": "The numbers do not hold. The 57 table rows total 6,372 bytes (47% of 13,664), not 7,746 (57%). Only 6 Status cells exceed 40 characters, about 557 characters in all, so trimming them saves roughly 100 tokens, not 400 to 600.",
+         "id": "F32"
+      }
+   ]
+}

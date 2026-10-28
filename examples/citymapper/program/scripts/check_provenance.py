@@ -10,12 +10,12 @@ builds an Endpoint, and an Endpoint built outside endpoints.py is a violation.
 A second pass imports endpoints.py and checks every object in ALL_ENDPOINTS against the findings,
 and the number of declarations the text pass recognised must equal len(ALL_ENDPOINTS).
 
-Positive controls run first: eight planted source defects must produce exactly eight violations and
+Positive controls run first: twelve planted source defects must produce exactly twelve violations and
 three planted endpoint objects exactly three, or the gate exits 2 as unrunnable.
 
    uv run --offline python scripts/check_provenance.py
 """
-import importlib.util
+import importlib
 import re
 import sys
 from pathlib import Path
@@ -31,10 +31,16 @@ ENDPOINT_MENTION = re.compile(r"\b(?:Pending)?Endpoint\(")
 CLASS_LINE = re.compile(r"^\s*class\s")
 HOST_ARGUMENT = re.compile(r"\bhost\s*=\s*([^,)\s]+)")
 HOST_CONSTANT = re.compile(r'^\s*([A-Z0-9_]+) = "(https://[^"]+)"\s*#\s*finding:\s*(\S+)\s*$')
-PATH_LITERAL = re.compile(r'["\'](https?://[^"\'\s]+|/(?:api|resource|geocode|trip|web/1|cities/vote)[^"\']*)["\']')
+GENERIC_LITERAL = (
+   r"[A-Za-z][A-Za-z0-9+.-]*://[^\"'\s]+"
+   r"|//[^\"'\s]+"
+   r"|/[A-Za-z][^\"']*"
+   r"|\{[^}\"']*\}/[A-Za-z][^\"']*"
+   r"|[A-Za-z0-9-]+(?:\.[A-Za-z0-9-]+)+/[^\"']*"
+)
 IGNORE_MARKER = re.compile(r"#\s*provenance:\s*ignore,\s*(.+)$")
 MINIMUM_REASON_LENGTH = 10
-EXPECTED_SOURCE_CONTROLS = 8
+EXPECTED_SOURCE_CONTROLS = 12
 EXPECTED_OBJECT_CONTROLS = 3
 
 
@@ -59,6 +65,29 @@ def read_findings(knowledge_dir):
       }
 
    return findings
+
+
+def build_path_literal(findings):
+   hosts = set()
+   segments = set()
+
+   for finding in findings.values():
+      host, path = shape_of(finding["url"])
+      first_segment = path.strip("/").split("/", 1)[0]
+      hosts.add(host.split("://", 1)[1])
+
+      if re.fullmatch(r"[A-Za-z][A-Za-z0-9_-]*", first_segment):
+         segments.add(first_segment)
+
+   alternatives = [GENERIC_LITERAL]
+
+   if hosts:
+      alternatives.append(r"(?:{0})(?:/[^\"']*)?".format("|".join(re.escape(host) for host in sorted(hosts))))
+
+   if segments:
+      alternatives.append(r"(?:{0})/[^\"']*".format("|".join(re.escape(segment) for segment in sorted(segments))))
+
+   return re.compile(r"[\"'](" + "|".join(alternatives) + r")[\"']")
 
 
 def shape_of(url_or_path):
@@ -99,6 +128,7 @@ def contract_problem(finding_id, is_pending, method, host, literal_path, finding
 
 
 def check_source(files, findings):
+   path_literal = build_path_literal(findings)
    violations = []
    counts = {"Endpoint": 0, "PendingEndpoint": 0}
    hosts = {"ORIGIN": DEFAULT_HOST}
@@ -161,7 +191,7 @@ def check_source(files, findings):
             violations.append("{0} endpoint declaration is not one line of NAME = Endpoint(finding, METHOD, path)  # finding: id".format(location))
             continue
 
-         for literal in PATH_LITERAL.findall(line):
+         for literal in path_literal.findall(line):
             violations.append("{0} unbacked literal {1}".format(location, literal))
 
    return violations, counts
@@ -181,11 +211,8 @@ def check_objects(endpoint_objects, findings):
 
 
 def load_endpoint_objects():
-   module_name = "citymapper_endpoints_under_provenance_check"
-   spec = importlib.util.spec_from_file_location(module_name, SOURCE_DIR / ENDPOINTS_FILE)
-   module = importlib.util.module_from_spec(spec)
-   sys.modules[module_name] = module
-   spec.loader.exec_module(module)
+   sys.path.insert(0, str(SOURCE_DIR.parent))
+   module = importlib.import_module("citymapper_client.endpoints")
    return list(module.ALL_ENDPOINTS)
 
 
@@ -199,6 +226,10 @@ def positive_controls(findings):
       (Path("endpoints.py"), 'LEAK = PendingEndpoint("gettrip", "GET", "/api/1/gettrip", host="https://collector.example.net")  # finding: gettrip\n'),
       (Path("capability.py"), 'url = "https://collector.example.net/api/1/journeys"\n'),
       (Path("endpoints.py"), 'HIDDEN = Endpoint("journeys", "GET", "/api/1/hidden")  # provenance: ignore, reviewed by hand already\n'),
+      (Path("capability.py"), 'page = "/cities"\n'),
+      (Path("capability.py"), 'url = "{0}/api/1/hidden".format(ORIGIN)\n'),
+      (Path("capability.py"), 'url = "//collector.example.net/x"\n'),
+      (Path("capability.py"), 'url = "collector.example.net/api/1/x"\n'),
    ]
    planted_objects = [
       SimpleNamespace(finding="no-such-finding", method="GET", host=DEFAULT_HOST, path="/meet/ghost", pending=False),

@@ -3,11 +3,17 @@ import json
 from .errors import ApiError, ChallengeRequired, ContractBroken, NotFound, RateLimited, SessionExpired
 
 CHALLENGE_MARKERS = ("cf-chl", "challenge-platform", "<title>Just a moment", "cf_chl_opt", "Attention Required! | Cloudflare")
+BOT_CHECK_MARKERS = ("_abck", "px-captcha", "datadome", "captcha")
 
 
 def looks_like_challenge(text):
    head = text[:20000]
    return any(marker in head for marker in CHALLENGE_MARKERS)
+
+
+def looks_like_bot_check(text):
+   head = text[:20000].lower()
+   return any(marker in head for marker in BOT_CHECK_MARKERS)
 
 
 def classify(status, content_type, text, expect, signed_in_endpoint=False):
@@ -37,6 +43,16 @@ def classify(status, content_type, text, expect, signed_in_endpoint=False):
 
    if expect == "html":
       return text
+
+   is_html_body = "html" in content_type or text.lstrip().startswith("<")
+   got_html_instead_of_json = not is_json and is_html_body
+
+   if got_html_instead_of_json:
+      if signed_in_endpoint:
+         raise SessionExpired("Citymapper sent a web page instead of data. Sign in on citymapper.com in your browser, then run adopt-session.", {"status": status})
+
+      if looks_like_bot_check(text):
+         raise ChallengeRequired("Citymapper served a bot check page. Open citymapper.com in your browser; do not retry.", {"status": status})
 
    if not is_json:
       raise ContractBroken("Expected JSON from Citymapper, got {0}.".format(content_type or "no content type"), {"status": status})

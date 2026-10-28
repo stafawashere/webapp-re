@@ -52,6 +52,17 @@ def test_html_where_json_was_expected_is_contract_broken():
       classify(200, HTML_TYPE, "<html><body>hello</body></html>", "json")
 
 
+def test_html_where_json_was_expected_on_a_signed_in_endpoint_is_session_expired():
+   with pytest.raises(SessionExpired):
+      classify(200, HTML_TYPE, "<form action='/login'></form>", "json", signed_in_endpoint=True)
+
+
+@pytest.mark.parametrize("marker", ["<title>px-captcha</title>", "<script src='https://x.datadome.co/tags.js'>", "<script src='/_abck/x.js'>"])
+def test_a_bot_check_page_on_a_200_is_a_challenge(marker):
+   with pytest.raises(ChallengeRequired):
+      classify(200, HTML_TYPE, "<html>{0}</html>".format(marker), "json")
+
+
 def test_unparseable_json_is_contract_broken():
    with pytest.raises(ContractBroken):
       classify(200, JSON_TYPE, "{not json", "json")

@@ -5309,7 +5309,7 @@
      }
     }
    },
-   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-place with the returned id.",
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: remove-place with the returned id.",
    "depends_on": [
     {
      "endpoint": "identity-places-create",
@@ -5396,7 +5396,7 @@
      }
     }
    },
-   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: update-place with the values read before.",
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: update-place with the values read before.",
    "depends_on": [
     {
      "endpoint": "identity-places-update",
@@ -5472,7 +5472,7 @@
      }
     }
    },
-   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: save-place with the fields read before (the id changes).",
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: save-place with the fields read before (the id changes).",
    "depends_on": [
     {
      "endpoint": "identity-places-delete",
@@ -5557,7 +5557,7 @@
      }
     }
    },
-   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-favourite with the returned id.",
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: remove-favourite with the returned id.",
    "depends_on": [
     {
      "endpoint": "identity-favorites-create",
@@ -5633,7 +5633,7 @@
      }
     }
    },
-   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: add-favourite with the same target.",
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: add-favourite with the same target.",
    "depends_on": [
     {
      "endpoint": "identity-favorites-delete",
@@ -5717,7 +5717,7 @@
      }
     }
    },
-   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-saved-journey with the returned document_id (no list endpoint, so the id must come from the save response).",
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: remove-saved-journey with the returned document_id (no list endpoint, so the id must come from the save response).",
    "depends_on": [
     {
      "endpoint": "identity-save-journey",
@@ -5787,7 +5787,7 @@
      }
     }
    },
-   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Only for a document this program saved; otherwise a delete without inverse needs approval.",
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Only for a document this program saved; otherwise a delete without inverse needs approval.",
    "depends_on": [
     {
      "endpoint": "identity-delete-journey",
@@ -5863,7 +5863,7 @@
      }
     }
    },
-   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: update-profile with the values read from whoami.",
+   "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: update-profile with the values read from whoami.",
    "depends_on": [
     {
      "endpoint": "identity-update-user",

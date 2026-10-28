@@ -3,10 +3,13 @@
 Local client for the requests the citymapper.com website makes, used by the `/citymapper` skill.
 
 ```bash
-uv run --project . citymapper help
-uv run --project . citymapper plan-journey --city london --from "51.503324,-0.119543" --to "King's Cross St Pancras" --arrive-by 19:00
-uv run --project . citymapper get-departures --city nyc --stop times-sq-42-st
+export UV_PROJECT_ENVIRONMENT="$PWD/.venv"
+uv run --frozen --project . citymapper help
+uv run --frozen --project . citymapper plan-journey --city london --from "51.503324,-0.119543" --to "King's Cross St Pancras" --arrive-by 19:00
+uv run --frozen --project . citymapper get-departures --city nyc --stop times-sq-42-st
 ```
+
+The `UV_PROJECT_ENVIRONMENT` export keeps uv on this program's own venv when the shell exports another project's.
 
 Every command prints JSON (`--format table` for a table) and exits with a class-specific code on
 failure. Public commands need no session. Account commands read cookies from the site root `.env`,
@@ -24,6 +27,7 @@ written by `adopt-session` from a Cookie header you copy from your own signed-in
 Gates:
 
 ```bash
+export UV_PROJECT_ENVIRONMENT="$PWD/.venv"
 uv run --offline pytest -q
 uv run --offline python scripts/check_provenance.py
 ```

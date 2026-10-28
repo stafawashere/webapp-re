@@ -1,0 +1,87 @@
+{
+   "measured_at": "2026-10-27T20:01:23",
+   "root": ".",
+   "root_env": "CITYMAPPER_ROOT",
+   "metrics": [
+      {
+         "name": "tests",
+         "value": 0,
+         "unit": "exit code",
+         "seconds": 173.35,
+         "detail": "567 passed in 145.61s (0:02:25)",
+         "command": "uv run --frozen --no-sync --project program pytest -q -p no:cacheprovider"
+      },
+      {
+         "name": "tests passed",
+         "value": 567,
+         "unit": "tests"
+      },
+      {
+         "name": "tests wall time",
+         "value": 173.35,
+         "unit": "s"
+      },
+      {
+         "name": "provenance gate",
+         "value": 0,
+         "unit": "exit code",
+         "seconds": 0.91,
+         "detail": "provenance violations: 0",
+         "command": "uv run --frozen --no-sync --project program python scripts/check_provenance.py"
+      },
+      {
+         "name": "cli --help wall time, median",
+         "value": 1576,
+         "unit": "ms",
+         "detail": "samples [816, 1097, 4424, 1607, 1576]"
+      },
+      {
+         "name": "cli help command wall time, median",
+         "value": 494,
+         "unit": "ms",
+         "detail": "samples [1857, 2379, 458, 388, 494]"
+      },
+      {
+         "name": "import time of citymapper_client.cli",
+         "value": 757.9,
+         "unit": "ms"
+      },
+      {
+         "name": "check_scope",
+         "value": 0,
+         "unit": "exit code",
+         "seconds": 0.25,
+         "detail": "scope: 18 pages, 53 capabilities, 68 endpoints, 24 entities, 14 caveats, 6 open_questions; 0 problems",
+         "command": "uv run --script plugin/scripts/check_scope.py scope/scope.json"
+      },
+      {
+         "name": "check_plan",
+         "value": 0,
+         "unit": "exit code",
+         "seconds": 0.38,
+         "detail": "plan: 57 commands, 8 build steps, 22 open steps, budget 44 requests; 0 problems",
+         "command": "uv run --script plugin/scripts/check_plan.py ."
+      },
+      {
+         "name": "site plugin check",
+         "value": 0,
+         "unit": "exit code",
+         "seconds": 0.34,
+         "detail": "{\"site\":\"citymapper\"}",
+         "command": "uv run --script plugin/scripts/site_plugin.py check --site ."
+      },
+      {
+         "name": "claude plugin validate",
+         "value": 0,
+         "unit": "exit code",
+         "seconds": 5.9,
+         "detail": "\u2714 Validation passed",
+         "command": "claude plugin validate plugin --strict"
+      }
+   ],
+   "live": {
+      "budget": 0,
+      "spent": 0,
+      "commands": []
+   }
+}

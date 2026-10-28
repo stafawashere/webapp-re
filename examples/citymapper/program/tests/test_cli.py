@@ -1,13 +1,22 @@
+import dataclasses
+import importlib.util
 import json
+import subprocess
+import sys
+import types
+from pathlib import Path
 
 import pytest
 
 from citymapper_client import cli
 from citymapper_client.context import Context
+from citymapper_client.errors import ContractBroken
+from citymapper_client.models import Status
+from citymapper_client.registry import build_registry
 from citymapper_client.session import Session
 
 from support import load_fixture, signed_in_session
-from test_commands import READ_CASES, run_command
+from test_commands import JOURNEY_SIGNATURE, READ_CASES, run_command
 
 STORED_SESSION_STATUSES = {
    "list-saved-places": "blocked: needs your Citymapper session (you are signed out; sign in yourself, then adopt-session)",
@@ -73,11 +82,18 @@ def routestatus_with_a_null_level():
    return body
 
 
+def routestatus_with_a_null_disruption_level():
+   body = load_fixture("routestatus.json")
+   body["groupings"][0]["routes"][0]["status"]["disruptions"][0]["level"] = None
+   return body
+
+
 @pytest.mark.parametrize("argv, responses, expected_detail", [
    (["search-places", "--city", "portvale", "--query", "Harbour"], {"searchpost": []}, {"field": "results"}),
    (["search-places", "--city", "portvale", "--query", "Harbour"], {"searchpost": {"elapsed": 12}}, {"field": "results"}),
    (["plan-journey", "--city", "portvale", "--from", "Harbour", "--to", "10.5,20.5"], {"searchpost": {"elapsed": 12}}, {"field": "results"}),
-   (["get-disruptions", "--city", "portvale"], {"routestatus": routestatus_with_a_null_level()}, {"error": ("AttributeError", "TypeError")}),
+   (["get-disruptions", "--city", "portvale"], {"routestatus": routestatus_with_a_null_level()}, {"field": "level"}),
+   (["get-disruptions", "--city", "portvale"], {"routestatus": routestatus_with_a_null_disruption_level()}, {"field": "level"}),
 ])
 def test_a_response_that_changed_shape_exits_14_with_a_json_error(capsys, make_context, monkeypatch, argv, responses, expected_detail):
    context, _ = make_context(responses)
@@ -234,3 +250,163 @@ def test_help_says_how_to_unblock_session_commands_without_a_session(capsys, tmp
       "list-favourites": "blocked: needs your Citymapper session (sign in, then adopt-session)",
       "sign-out": "blocked: needs your Citymapper session (sign in, then adopt-session), then your approval (dry run checked; PENDING-APPROVALS.md)",
    }
+
+
+def parse_signatures(*extra_argv):
+   parser = cli.build_parser(build_registry())
+   return parser.parse_args(["get-journey-times", "--city", "portvale", *extra_argv]).signatures
+
+
+def test_one_json_signature_stays_one_item_through_argv():
+   assert parse_signatures("--signatures", JOURNEY_SIGNATURE) == [JOURNEY_SIGNATURE]
+
+
+def test_signatures_can_be_repeated_or_given_as_a_json_array():
+   other_signature = JOURNEY_SIGNATURE.replace("a", "b", 1)
+   as_array = json.dumps([JOURNEY_SIGNATURE, other_signature])
+
+   assert parse_signatures("--signatures", JOURNEY_SIGNATURE, "--signatures", other_signature) == [JOURNEY_SIGNATURE, other_signature]
+   assert parse_signatures("--signatures", as_array) == [JOURNEY_SIGNATURE, other_signature]
+
+
+def test_line_ids_still_split_on_commas():
+   parser = cli.build_parser(build_registry())
+
+   arguments = parser.parse_args(["get-lines", "--city", "portvale", "--lines", "1,2, A"])
+
+   assert arguments.lines == ["1", "2", "A"]
+
+
+@pytest.mark.parametrize("bad_limit", ["0", "-1", "abc"])
+def test_a_limit_below_one_exits_2_with_a_json_error(capsys, bad_limit):
+   with pytest.raises(SystemExit) as caught:
+      cli.main(["search-places", "--city", "portvale", "--query", "Harbour", "--limit", bad_limit])
+
+   error = json.loads(capsys.readouterr().err)
+   assert caught.value.code == 2
+   assert error["class"] == "UsageError"
+   assert "--limit" in error["message"]
+
+
+def run_whoami_that_raises(monkeypatch, make_context, error):
+   context, _ = make_context()
+   context.session.cookies["sessionid"] = "secret-cookie-value"
+   monkeypatch.setattr(Context, "build", classmethod(lambda cls, **options: context))
+
+   def failing_function(context, values):
+      raise error
+
+   registry = build_registry()
+   registry["whoami"] = dataclasses.replace(registry["whoami"], function=failing_function)
+   monkeypatch.setattr(cli, "build_registry", lambda: registry)
+
+   return cli.main(["whoami"])
+
+
+def test_exit_14_names_the_command_and_the_failing_message(capsys, make_context, monkeypatch):
+   exit_code = run_whoami_that_raises(monkeypatch, make_context, KeyError("missing_field"))
+
+   detail = json.loads(capsys.readouterr().err)["detail"]
+   assert exit_code == 14
+   assert detail["command"] == "whoami"
+   assert detail["error"] == "KeyError"
+   assert "missing_field" in detail["message"]
+
+
+def test_exit_14_message_hides_session_cookie_values(capsys, make_context, monkeypatch):
+   exit_code = run_whoami_that_raises(monkeypatch, make_context, ValueError("bad header secret-cookie-value"))
+
+   error_text = capsys.readouterr().err
+   assert exit_code == 14
+   assert "secret-cookie-value" not in error_text
+   assert "[redacted]" in error_text
+
+
+def test_an_unreadable_env_file_is_a_usage_error_naming_the_file(capsys, tmp_path):
+   env_file = tmp_path / "broken.env"
+   env_file.write_bytes(b"\xff\xfe\x00bad")
+
+   exit_code = cli.main(["--env-file", str(env_file), "help"])
+
+   error = json.loads(capsys.readouterr().err)
+   assert exit_code == 2
+   assert error["class"] == "UsageError"
+   assert error["detail"]["file"] == str(env_file)
+
+
+def test_a_non_numeric_status_level_names_the_field():
+   with pytest.raises(ContractBroken) as caught:
+      Status.from_api({"level": None, "summary": "x"})
+
+   assert caught.value.detail["field"] == "level"
+
+
+SCRIPTS_DIR = Path(__file__).resolve().parents[1] / "scripts"
+FOREIGN_VENV = "/somewhere/else/.venv"
+
+
+def stub_cryptography(monkeypatch):
+   primitives = types.ModuleType("cryptography.hazmat.primitives")
+   ciphers = types.ModuleType("cryptography.hazmat.primitives.ciphers")
+   primitives.padding = object()
+   ciphers.Cipher = ciphers.algorithms = ciphers.modes = object()
+
+   for name, module in {"cryptography": types.ModuleType("cryptography"), "cryptography.hazmat": types.ModuleType("cryptography.hazmat"), "cryptography.hazmat.primitives": primitives, "cryptography.hazmat.primitives.ciphers": ciphers}.items():
+      monkeypatch.setitem(sys.modules, name, module)
+
+
+def load_script(monkeypatch, file_name):
+   stub_cryptography(monkeypatch)
+   monkeypatch.syspath_prepend(str(SCRIPTS_DIR))
+   spec = importlib.util.spec_from_file_location(file_name + "_under_test", SCRIPTS_DIR / (file_name + ".py"))
+   module = importlib.util.module_from_spec(spec)
+   spec.loader.exec_module(module)
+   return module
+
+
+def capture_subprocess_run(monkeypatch):
+   seen = {}
+
+   def fake_run(command, **options):
+      seen["command"] = command
+      seen["env"] = options.get("env")
+      return subprocess.CompletedProcess(args=command, returncode=0, stdout="{}", stderr="")
+
+   monkeypatch.setattr(subprocess, "run", fake_run)
+   monkeypatch.setenv("UV_PROJECT_ENVIRONMENT", FOREIGN_VENV)
+   return seen
+
+
+@pytest.mark.parametrize("file_name, call", [
+   ("live_check", lambda module: module.run_cli(["help"])),
+   ("auto_adopt_session", lambda module: module.run_citymapper("/tmp/unused.env", ["help"])),
+])
+def test_scripts_pin_the_program_venv_before_calling_uv(monkeypatch, file_name, call):
+   module = load_script(monkeypatch, file_name)
+   seen = capture_subprocess_run(monkeypatch)
+
+   call(module)
+
+   assert seen["env"]["UV_PROJECT_ENVIRONMENT"] == str(module.PROGRAM_DIR / ".venv")
+   assert "--frozen" in seen["command"]
+
+
+def test_pending_approvals_pins_the_program_venv_before_calling_uv(monkeypatch):
+   module = load_script(monkeypatch, "../../tools/engineer/pending_approvals")
+   seen = capture_subprocess_run(monkeypatch)
+
+   module.dry_run("sign-out", [])
+
+   assert seen["env"]["UV_PROJECT_ENVIRONMENT"] == str(module.PROGRAM / ".venv")
+   assert "--frozen" in seen["command"]
+
+
+def test_journey_times_live_check_fails_on_a_count_mismatch_or_an_entry_error(monkeypatch):
+   live_check = load_script(monkeypatch, "live_check")
+   clean = {"times": [{"signature_index": 0, "time": "t", "error": None}]}
+   errored = {"times": [{"signature_index": 0, "time": None, "error": "no time"}]}
+   fragments = {"times": [{"signature_index": index, "time": "t", "error": None} for index in range(3)]}
+
+   assert live_check.one_clean_time_per_signature(clean) == []
+   assert live_check.one_clean_time_per_signature(errored) == ["signature 0: no time"]
+   assert live_check.one_clean_time_per_signature(fragments) == ["sent 1 signature, got 3 times"]

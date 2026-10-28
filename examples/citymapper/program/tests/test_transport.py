@@ -8,7 +8,7 @@ import httpx
 import pytest
 
 from citymapper_client import cli, endpoints
-from citymapper_client.errors import ChallengeRequired, ContractBroken, NotFound, RateLimited, TransportError
+from citymapper_client.errors import ChallengeRequired, ContractBroken, NotFound, RateLimited, SessionExpired, TransportError
 from citymapper_client.pacing import Pacer
 from citymapper_client.session import Session
 from citymapper_client.transport import Request, Transport
@@ -168,6 +168,106 @@ def test_post_is_not_retried(tmp_path):
 
    assert len(handler.requests) == 1
    assert sleeps == []
+
+
+def test_a_write_that_times_out_warns_it_may_have_landed(tmp_path):
+   handler = RecordingHandler(raise_every_time(httpx.ReadTimeout))
+   transport, _ = build_transport(tmp_path, handler)
+
+   with pytest.raises(TransportError) as caught:
+      transport.send(Request(endpoints.SEARCH, form_json={"query": "x"}))
+
+   assert "may have reached Citymapper" in caught.value.message
+   assert caught.value.detail["write_may_have_landed"] is True
+
+
+def test_a_write_that_never_connected_keeps_the_plain_network_error(tmp_path):
+   handler = RecordingHandler(raise_every_time(httpx.ConnectTimeout))
+   transport, _ = build_transport(tmp_path, handler)
+
+   with pytest.raises(TransportError) as caught:
+      transport.send(Request(endpoints.SEARCH, form_json={"query": "x"}))
+
+   assert caught.value.message.startswith("Network error")
+   assert "write_may_have_landed" not in caught.value.detail
+
+
+def test_a_read_that_times_out_keeps_the_plain_network_error(tmp_path):
+   handler = RecordingHandler(raise_every_time(httpx.ReadTimeout))
+   transport, _ = build_transport(tmp_path, handler)
+
+   with pytest.raises(TransportError) as caught:
+      transport.send(Request(endpoints.TRAVEL_TIME))
+
+   assert caught.value.message.startswith("Network error")
+   assert "write_may_have_landed" not in caught.value.detail
+
+
+def test_the_default_client_fails_a_dead_connection_fast(tmp_path):
+   transport = Transport(Session(), Pacer(tmp_path / "pacer.json"), tmp_path / "logs")
+
+   timeout = transport.client.timeout
+
+   assert timeout.connect == 8.0
+   assert timeout.read == 20.0
+
+
+def test_a_login_page_on_a_signed_in_read_is_session_expired(tmp_path):
+   login_page = lambda request: httpx.Response(200, headers={"content-type": "text/html"}, content=b"<form action='/login'></form>")
+   transport, _ = build_transport(tmp_path, RecordingHandler(login_page), session=Session(cookies=dict(SIGNED_IN_COOKIES)))
+
+   with pytest.raises(SessionExpired):
+      transport.send(Request(endpoints.USER_DATA))
+
+
+def test_a_bot_check_on_a_200_halts_the_pacer(tmp_path):
+   bot_check = lambda request: httpx.Response(200, headers={"content-type": "text/html"}, content=b"<html><title>px-captcha</title></html>")
+   handler = RecordingHandler(bot_check)
+   transport, pacer = build_transport(tmp_path, handler)
+
+   with pytest.raises(ChallengeRequired):
+      transport.send(Request(endpoints.TRAVEL_TIME))
+
+   assert pacer.status()["halt_reason"] == "challenge"
+
+   with pytest.raises(ChallengeRequired):
+      transport.send(Request(endpoints.TRAVEL_TIME))
+
+   assert len(handler.requests) == 1
+
+
+@pytest.mark.parametrize("location", ["/login?next=/api/1/identity/user_data", "/accounts/sign-in"])
+def test_a_redirect_to_a_login_path_on_a_signed_in_read_is_session_expired(tmp_path, location):
+   handler = RecordingHandler(redirect_first_request_to(location))
+   transport, _ = build_transport(tmp_path, handler, session=Session(cookies=dict(SIGNED_IN_COOKIES)))
+
+   with pytest.raises(SessionExpired):
+      transport.send(Request(endpoints.USER_DATA))
+
+   assert len(handler.requests) == 1
+
+
+def test_an_unwritable_log_directory_does_not_fail_a_sent_request(tmp_path):
+   blocked_logs = tmp_path / "logs"
+   blocked_logs.write_text("a file where the logs directory should be")
+   transport, _ = build_transport(tmp_path, RecordingHandler(json_reply({"ok": 1})))
+
+   body = transport.send(Request(endpoints.SEARCH, form_json={"query": "x"}))
+
+   assert body == {"ok": 1}
+
+
+def test_the_cli_reports_a_local_file_failure_as_json(tmp_path, monkeypatch, capsys):
+   monkeypatch.setenv("CITYMAPPER_ROOT", str(tmp_path / "cli-root"))
+   monkeypatch.setattr(cli, "run_command", lambda command, context, values: (_ for _ in ()).throw(PermissionError(13, "Permission denied")))
+
+   exit_code = cli.main(["reverse-geocode", "--lat", "51.5", "--lng", "-0.12"])
+
+   error = json.loads(capsys.readouterr().err)
+   assert exit_code == 18
+   assert error["class"] == "LocalFileError"
+   assert "may already have been sent" in error["message"]
+   assert error["detail"]["error"] == "PermissionError"
 
 
 @pytest.mark.parametrize("endpoint", [endpoints.CREATE_TRIP_URL, endpoints.CREATE_SHORT_URL])

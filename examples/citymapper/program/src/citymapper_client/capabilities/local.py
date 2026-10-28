@@ -24,6 +24,8 @@ def adopt_session(context, arguments):
    else:
       raise UsageError("Pass --stdin and pipe the Cookie header in, or pass --from-file with a file that holds it.")
 
+   text = text.strip()
+
    if text.lower().startswith("cookie:"):
       text = text.split(":", 1)[1]
 

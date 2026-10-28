@@ -14,6 +14,7 @@ from .transport import Request, Transport
 
 NON_PLACE_RESULT_TYPES = ("heading", "attribution")
 PAST_CLOCK_TIME_GRACE = timedelta(minutes=15)
+SEARCH_CACHE_MAX_AGE_SECONDS = 10 * 60
 
 
 @dataclass
@@ -50,6 +51,12 @@ class Context:
 
    def place_cache(self, region):
       return self.region_cache("places", region, PLACE_CACHE_MAX_AGE_SECONDS)
+
+   def search_cache(self, region):
+      return self.region_cache("searches", region, SEARCH_CACHE_MAX_AGE_SECONDS)
+
+   def resolved_place_cache(self, region):
+      return self.region_cache("placeids", region, PLACE_CACHE_MAX_AGE_SECONDS)
 
    def cached_value(self, file_name, max_age_seconds):
       return CachedValue(self.paths.cache_dir / file_name, max_age_seconds)
@@ -115,13 +122,13 @@ class Context:
       if not text:
          return None
 
-      zone = self.timezone_for(region)
-      local_now = (now or datetime.now(timezone.utc)).astimezone(zone)
       cleaned = text.strip()
       is_clock_time = len(cleaned) <= 5 and ":" in cleaned
 
       try:
          if is_clock_time:
+            zone = self.timezone_for(region)
+            local_now = (now or datetime.now(timezone.utc)).astimezone(zone)
             hour, minute = (int(part) for part in cleaned.split(":"))
             local = local_now.replace(hour=hour, minute=minute, second=0, microsecond=0)
 
@@ -131,7 +138,7 @@ class Context:
          else:
             local = datetime.fromisoformat(cleaned.replace("Z", "+00:00"))
             if local.tzinfo is None:
-               local = local.replace(tzinfo=zone)
+               local = local.replace(tzinfo=self.timezone_for(region))
       except ValueError as error:
          raise UsageError("Times are HH:MM in the city's timezone (today, or tomorrow once that time is more than 15 minutes past) or ISO 8601 for any other day, got '{0}'.".format(text)) from error
 
@@ -164,7 +171,30 @@ def place_from_cache(cached):
    return place if place.coords else None
 
 
+def search_cache_key(query, near):
+   near_part = "{0},{1}".format(near[0], near[1]) if near else ""
+   return "{0}|{1}".format(place_query_key(query), near_part)
+
+
+def places_from_cache(cached):
+   is_usable_list = isinstance(cached, list) and len(cached) > 0
+   if not is_usable_list:
+      return None
+
+   try:
+      return [Place.from_search(item) for item in cached]
+   except (ContractBroken, TypeError, ValueError, AttributeError):
+      return None
+
+
 def search(context, region, query, near=None):
+   search_cache = context.search_cache(region) if context.cache_text_places else None
+   cache_key = search_cache_key(query, near)
+   cached_places = places_from_cache(search_cache.get(cache_key)) if search_cache is not None else None
+
+   if cached_places is not None:
+      return cached_places
+
    body = {"query": query, "region_id": region["region_id"], "is_refinement": True, "refinement_data": {"is_chain": True}, "powersearch": False}
 
    if near:
@@ -173,10 +203,22 @@ def search(context, region, query, near=None):
    headers = {"Citymapper-Client": "Web Search", "Citymapper-Region": region["region_id"]}
    response = context.send(endpoints.SEARCH, form_json=body, headers=headers)
    items = [item for item in require_list(response, "results", "search response") if item.get("result_type") not in NON_PLACE_RESULT_TYPES]
-   return [Place.from_search(item) for item in items]
+   places = [Place.from_search(item) for item in items]
+
+   should_cache = search_cache is not None and len(places) > 0
+   if should_cache:
+      search_cache.put([cache_key], [place.as_dict() for place in places])
+
+   return places
 
 
 def resolve_place(context, region, place):
+   resolved_cache = context.resolved_place_cache(region) if context.cache_text_places and place.id else None
+   cached_place = place_from_cache(resolved_cache.get(place.id)) if resolved_cache is not None else None
+
+   if cached_place:
+      return cached_place
+
    response = context.send(endpoints.PLACE_RESOLVE, query={"id": place.id, "region_id": region["region_id"]})
    resolved = response.get("place_result") if isinstance(response, dict) else None
 
@@ -185,4 +227,9 @@ def resolve_place(context, region, place):
 
    merged = {**place.as_dict(), **{key: value for key, value in resolved.items() if value is not None}}
    merged.setdefault("name", place.name)
-   return Place.from_search(merged)
+   merged_place = Place.from_search(merged)
+
+   if resolved_cache is not None and merged_place.coords:
+      resolved_cache.put([place.id], merged_place.as_dict())
+
+   return merged_place

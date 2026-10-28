@@ -44,8 +44,12 @@ def read_cache_file(cache_file):
 
 
 def write_cache_file(cache_file, data):
-   cache_file.parent.mkdir(parents=True, exist_ok=True)
-   cache_file.write_text(json.dumps(data))
+   try:
+      cache_file.parent.mkdir(parents=True, exist_ok=True)
+      cache_file.write_text(json.dumps(data))
+   except OSError:
+      # A cache that cannot be written only costs a refetch next time.
+      pass
 
 
 def is_fresh(stamped, max_age_seconds, now):

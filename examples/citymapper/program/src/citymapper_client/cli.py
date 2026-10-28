@@ -4,14 +4,14 @@ import os
 import re
 import sys
 import uuid
+from pathlib import Path
 
 from .config import site_paths
 from .context import Context
-from .errors import CitymapperError, ContractBroken, UsageError
+from .errors import CitymapperError, ContractBroken, LocalFileError, UsageError
 from .pacing import Pacer
 from .registry import build_registry, load_readiness, readiness_of
 
-PYTHON_KEYWORDS = {"from"}
 TABLE_KEY = {
    "plan-journey": "journeys",
    "plan-walk": "journeys",
@@ -24,6 +24,15 @@ TABLE_KEY = {
 JOURNEY_COLUMNS = ["index", "duration_seconds", "departure_time", "arrival_time", "legs", "price", "signature"]
 RUN_ID_VARIABLE = "CITYMAPPER_RUN_ID"
 RUN_ID_PATTERN = re.compile(r"[A-Za-z0-9_-]{1,32}")
+JSON_ARRAY_OPTIONS = {"signatures"}
+ERROR_MESSAGE_LIMIT = 300
+
+
+class JsonArgumentParser(argparse.ArgumentParser):
+   def error(self, message):
+      usage_error = UsageError(message, {"command": self.prog})
+      sys.stderr.write(json.dumps(usage_error.as_dict(), ensure_ascii=False) + "\n")
+      raise SystemExit(usage_error.exit_code)
 
 
 def current_run_id():
@@ -39,6 +48,54 @@ def option_name(property_name):
    return "--" + property_name.replace("_", "-")
 
 
+def comma_separated(text):
+   return [item.strip() for item in text.split(",") if item.strip()]
+
+
+def json_aware_list(text):
+   stripped = text.strip()
+
+   if stripped.startswith("["):
+      try:
+         items = json.loads(stripped)
+      except json.JSONDecodeError:
+         raise argparse.ArgumentTypeError("a value starting with [ must be a JSON array of strings")
+
+      holds_only_text = isinstance(items, list) and all(isinstance(item, str) for item in items)
+
+      if not holds_only_text:
+         raise argparse.ArgumentTypeError("a value starting with [ must be a JSON array of strings")
+
+      return [item for item in items if item.strip()]
+
+   if stripped.startswith("{"):
+      try:
+         json.loads(stripped)
+      except json.JSONDecodeError:
+         raise argparse.ArgumentTypeError("a value starting with { must be one complete JSON object")
+
+      return [stripped]
+
+   return comma_separated(text)
+
+
+def integer_at_least(minimum):
+   def parse(text):
+      try:
+         number = int(text)
+      except ValueError:
+         raise argparse.ArgumentTypeError("invalid int value: {0!r}".format(text))
+
+      is_below_minimum = minimum is not None and number < minimum
+
+      if is_below_minimum:
+         raise argparse.ArgumentTypeError("must be at least {0}, got {1}".format(minimum, number))
+
+      return number
+
+   return parse
+
+
 def add_property(parser, property_name, schema, required):
    kind = schema.get("type")
    description = schema.get("description", "")
@@ -49,12 +106,17 @@ def add_property(parser, property_name, schema, required):
       return
 
    if kind == "integer":
-      options["type"] = int
+      options["type"] = integer_at_least(schema.get("minimum"))
    elif kind == "number":
       options["type"] = float
    elif kind == "array":
-      options["type"] = lambda text: [item.strip() for item in text.split(",") if item.strip()]
-      options["help"] = (description + " (comma separated)").strip()
+      if property_name in JSON_ARRAY_OPTIONS:
+         options["type"] = json_aware_list
+         options["action"] = "extend"
+         options["help"] = (description + " (one journey signature or a JSON array of them; repeatable)").strip()
+      else:
+         options["type"] = comma_separated
+         options["help"] = (description + " (comma separated)").strip()
 
    if schema.get("enum"):
       options["choices"] = schema["enum"]
@@ -63,7 +125,7 @@ def add_property(parser, property_name, schema, required):
 
 
 def build_parser(registry):
-   parser = argparse.ArgumentParser(prog="citymapper", description="Citymapper web API client. Every command prints JSON.")
+   parser = JsonArgumentParser(prog="citymapper", description="Citymapper web API client. Every command prints JSON.")
    parser.add_argument("--env-file", help="path to the .env holding your Citymapper cookies (default: the site root .env)")
    parser.add_argument("--format", choices=["json", "table"], default="json")
    subparsers = parser.add_subparsers(dest="command")
@@ -172,15 +234,39 @@ def run_command(command, context, values):
    return output
 
 
+def redact(text, session):
+   if session is None:
+      return text
+
+   for value in session.cookies.values():
+      is_worth_hiding = bool(value) and len(value) >= 4
+
+      if is_worth_hiding:
+         text = text.replace(value, "[redacted]")
+
+   return text
+
+
+def build_context(arguments, paths, run_id):
+   env_path = Path(arguments.env_file).expanduser() if arguments.env_file else paths.env_file
+
+   try:
+      return Context.build(env_file=arguments.env_file, paths=paths, run_id=run_id, command=arguments.command or "help")
+   except (OSError, UnicodeDecodeError) as error:
+      failing_file = getattr(error, "filename", None) or env_path
+      raise UsageError("Cannot read {0}: {1}.".format(failing_file, type(error).__name__), {"file": str(failing_file)})
+
+
 def main(argv=None):
    registry = build_registry()
    parser = build_parser(registry)
    arguments = parser.parse_args(argv)
    paths = site_paths()
    run_id = current_run_id()
+   context = None
 
    try:
-      context = Context.build(env_file=arguments.env_file, paths=paths, run_id=run_id, command=arguments.command or "help")
+      context = build_context(arguments, paths, run_id)
 
       if arguments.command in (None, "help"):
          output = help_output(registry, paths, context)
@@ -196,8 +282,16 @@ def main(argv=None):
       error.detail.setdefault("run", run_id)
       sys.stderr.write(json.dumps(error.as_dict(), ensure_ascii=False) + "\n")
       return error.exit_code
+   except OSError as error:
+      message = redact(str(error), context.session if context else None)[:ERROR_MESSAGE_LIMIT]
+      detail = {"command": arguments.command or "help", "error": type(error).__name__, "message": message, "run": run_id}
+      local_failure = LocalFileError("A local file could not be read or written. The request may already have been sent, so re-read before sending it again.", detail)
+      sys.stderr.write(json.dumps(local_failure.as_dict(), ensure_ascii=False) + "\n")
+      return local_failure.exit_code
    except (KeyError, TypeError, AttributeError, ValueError) as error:
-      broken = ContractBroken("Citymapper's response or a cached file has an unexpected shape.", {"error": type(error).__name__, "run": run_id})
+      message = redact(str(error), context.session if context else None)[:ERROR_MESSAGE_LIMIT]
+      detail = {"command": arguments.command or "help", "error": type(error).__name__, "message": message, "run": run_id}
+      broken = ContractBroken("Citymapper's response or a cached file has an unexpected shape.", detail)
       sys.stderr.write(json.dumps(broken.as_dict(), ensure_ascii=False) + "\n")
       return broken.exit_code
 

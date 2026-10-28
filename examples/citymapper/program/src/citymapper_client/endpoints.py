@@ -1,8 +1,25 @@
 """Every URL and path the program sends. Each literal cites the knowledge base finding it comes from."""
 from dataclasses import dataclass
+from urllib.parse import quote
+
+from .errors import UsageError
 
 
 ORIGIN = "https://citymapper.com"  # finding: journeys
+
+
+DOT_SEGMENTS = (".", "..")
+
+
+def quote_path_value(name, value):
+   text = str(value)
+   is_blank = not text.strip()
+   is_dot_segment = text in DOT_SEGMENTS
+
+   if is_blank or is_dot_segment:
+      raise UsageError("'{0}' is not a valid {1}.".format(text, name.replace("_", " ")))
+
+   return quote(text, safe="")
 
 
 @dataclass(frozen=True)
@@ -19,7 +36,8 @@ class Endpoint:
    writes: bool = False
 
    def url(self, **path_values):
-      return self.host + self.path.format(**path_values)
+      quoted_values = {name: quote_path_value(name, value) for name, value in path_values.items()}
+      return self.host + self.path.format(**quoted_values)
 
 
 @dataclass(frozen=True)

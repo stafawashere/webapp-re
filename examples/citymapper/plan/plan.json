@@ -6004,7 +6004,7 @@
             "NotFound",
             "NotPermitted"
          ],
-         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-place with the returned id.",
+         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: remove-place with the returned id.",
          "open_steps": [
             {
                "step": "observe identity-places-create live for the first time: body shape and returned place_id",
@@ -6115,7 +6115,7 @@
             "NotFound",
             "NotPermitted"
          ],
-         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: update-place with the values read before.",
+         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: update-place with the values read before.",
          "open_steps": [
             {
                "step": "observe identity-places-update live for the first time: PUT body",
@@ -6215,7 +6215,7 @@
             "NotFound",
             "NotPermitted"
          ],
-         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: save-place with the fields read before (the id changes).",
+         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: save-place with the fields read before (the id changes).",
          "open_steps": [
             {
                "step": "observe identity-places-delete live for the first time: status of a DELETE",
@@ -6325,7 +6325,7 @@
             "NotFound",
             "NotPermitted"
          ],
-         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-favourite with the returned id.",
+         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: remove-favourite with the returned id.",
          "open_steps": [
             {
                "step": "observe identity-favorites-create live for the first time: body {target_type, target_id, region_id}",
@@ -6426,7 +6426,7 @@
             "NotFound",
             "NotPermitted"
          ],
-         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: add-favourite with the same target.",
+         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: add-favourite with the same target.",
          "open_steps": [
             {
                "step": "observe identity-favorites-delete live for the first time: status of a DELETE",
@@ -6528,7 +6528,7 @@
             "NotFound",
             "NotPermitted"
          ],
-         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: remove-saved-journey with the returned document_id (no list endpoint, so the id must come from the save response).",
+         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: remove-saved-journey with the returned document_id (no list endpoint, so the id must come from the save response).",
          "open_steps": [
             {
                "step": "observe identity-save-journey live for the first time: document_data shape and returned document_id",
@@ -6622,7 +6622,7 @@
             "NotFound",
             "NotPermitted"
          ],
-         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Only for a document this program saved; otherwise a delete without inverse needs approval.",
+         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Only for a document this program saved; otherwise a delete without inverse needs approval.",
          "open_steps": [
             {
                "step": "observe identity-delete-journey live for the first time: status of a DELETE",
@@ -6728,7 +6728,7 @@
             "NotFound",
             "NotPermitted"
          ],
-         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs live only under the standing overnight grant; otherwise ask in chat for the exact call, then --yes --confirm <digest from the dry run>. Inverse: update-profile with the values read from whoami.",
+         "confirmation": "Round-trip write: read state, write, read back, run the exact inverse, read back to the starting state. Runs only after you approve the exact call in chat, then --yes --confirm <digest from the dry run>. Inverse: update-profile with the values read from whoami.",
          "open_steps": [
             {
                "step": "observe identity-update-user live for the first time: fields echoed back",
