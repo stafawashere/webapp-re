@@ -33,8 +33,7 @@ dependency states are current: `python3 tools/plan/build_plan.py`, then
 | `research/bundle/api-methods.txt` | First rough extraction of call-site contexts |
 | `research/bundle/api-inventory.json`, `.md` | Subagent's inventory: 68 entries with evidence, router, auth, region handling |
 | `research/regions.json` | 115 regions and 252 cities from the page HTML |
-| `research/region-us-nyc.json`, `research/region-uk-london.json` | Full region config objects |
-| `research/cap-directions-nyc.txt`, `research/cap-batch1-a.txt` | Capture summaries |
+| `research/cap-directions-nyc.txt` | Capture summary |
 | `research/captures-batch1.txt` to `captures-batch3.txt` | URL lists for the capture batches |
 
 ## Captures

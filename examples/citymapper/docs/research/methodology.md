@@ -43,15 +43,14 @@ How stage 1 gathered its facts, and how far each source can be trusted.
 ## Page HTML
 
 The city, stop, line and cities pages embed region data as `window.citymapper.<name> = <json>` lines.
-Parsed from the captured HTML into `research/regions.json` (115 regions, 252 cities),
-`research/region-us-nyc.json` and `research/region-uk-london.json`.
+Parsed from the captured HTML into `research/regions.json` (115 regions, 252 cities). The full
+region config objects for New York and London were parsed too but are not kept here.
 
 ## Summaries
 
 `tools/scope/summarize_capture.py` prints each captured API call as method, status, path, query,
 header names, request body, interesting response headers and the response shape (key paths, types,
-counts, one short example). Saved outputs: `research/cap-directions-nyc.txt`,
-`research/cap-batch1-a.txt`.
+counts, one short example). Saved output: `research/cap-directions-nyc.txt`.
 
 ## What was deliberately not done
 
