@@ -4,6 +4,25 @@ The version in `plugin/.claude-plugin/plugin.json` and `.claude-plugin/marketpla
 with each release, which is how `claude plugin update webapp-re` knows there's something new. The
 first release used a date as its version. From 2.0.0 on it's semantic versioning.
 
+## 2.2.0 (2026-10-27)
+
+### Update alert
+
+When a newer webapp-re is tagged on GitHub, the first session you start says so in one line,
+along with the command to update. A `SessionStart` hook runs `update_check.py check`, which reads
+the installed version from `plugin.json` and compares it with the highest `vX.Y.Z` tag of the
+repository. It asks api.github.com at most once a day and caches the answer in the plugin's data
+folder. The request gives up after 2 seconds, and when it fails (offline, rate limited, a reply it
+can't read) the hook prints nothing and doesn't try again until the next day. A local build that's ahead of the latest tag stays quiet too. Set
+`WEBAPP_RE_NO_UPDATE_CHECK=1` to turn the check off. `update_check.py status` shows the installed
+and latest versions, how old the cached answer is and whether the check is off.
+
+### Other changes
+
+- `plugin.json` has a `repository` field, and the check reads its tags from there, so a fork
+  checks its own releases.
+- The `plugin.json` description now lists all seven stages. It had left out `upgrade`.
+
 ## 2.1.0 (2026-10-27)
 
 ### New `upgrade` stage

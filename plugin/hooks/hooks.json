@@ -1,0 +1,16 @@
+{
+   "hooks": {
+      "SessionStart": [
+         {
+            "matcher": "startup",
+            "hooks": [
+               {
+                  "type": "command",
+                  "command": "uv run --quiet --script \"${CLAUDE_PLUGIN_ROOT}/scripts/update_check.py\" check",
+                  "timeout": 10
+               }
+            ]
+         }
+      ]
+   }
+}

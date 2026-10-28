@@ -33,6 +33,24 @@ Inside a session the same thing is `/plugin marketplace add stafawashere/webapp-
 `/plugin install webapp-re@webapp-re`. Start a new session afterwards and `/webapp-re:` lists
 every stage.
 
+## Updates
+
+When a newer version is tagged here, the first session you start shows one line, such as
+"webapp-re 2.2.0 is out (you have 2.1.0)". To update:
+
+```bash
+claude plugin marketplace update webapp-re
+claude plugin update webapp-re
+```
+
+Then start a new session. To skip this, turn on auto-update for the `webapp-re` marketplace in
+`/plugin`, under Marketplaces, and Claude Code keeps it current for you.
+
+The check asks api.github.com for this repository's tags at most once a day, gives up after
+2 seconds, and stays quiet when it can't reach it. Set `WEBAPP_RE_NO_UPDATE_CHECK=1` in your
+environment to turn it off. `uv run --script plugin/scripts/update_check.py status` shows what it
+last saw.
+
 ## Using it
 
 Each stage is its own skill and reads what the stage before it wrote from a fixed path, so you
@@ -119,7 +137,8 @@ skills, `js-reverse` and `web-api-reverse-engineering`, both MIT and listed with
 commits in [docs/third-party-skills.md](docs/third-party-skills.md). `scripts/` has `kb.py` (the
 per-site knowledge base), `site_plugin.py` (the site plugin generator), `cdp_capture.py`,
 `shape.py`, `walk_summary.py` and `scope_query.py` for the scope, `replay.py` for checking a
-request outside the browser, the scope and plan checkers, `optimize_run.py`, and `upgrade_check.py` for upgrades. `assets/` has the
+request outside the browser, the scope and plan checkers, `optimize_run.py`, `upgrade_check.py` for upgrades, and
+`update_check.py` for the update alert, which `hooks/` runs when a session starts. `assets/` has the
 small scripts the stages run inside the page, so the browser does the repetitive work and only a
 short summary comes back. `references/` has the method and format docs the skills load, and
 `menu/` the site menu builder.

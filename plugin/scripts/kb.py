@@ -219,14 +219,20 @@ def documents(directory):
    return [(name[:-3],) + read_document(os.path.join(directory, name)) for name in names]
 
 
-def installed_version():
+def plugin_manifest():
    manifest_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".claude-plugin", "plugin.json")
 
    try:
       with open(manifest_path, encoding="utf-8") as handle:
-         return json.load(handle).get("version", "")
+         manifest = json.load(handle)
    except (OSError, ValueError):
-      return ""
+      return {}
+
+   return manifest if isinstance(manifest, dict) else {}
+
+
+def installed_version():
+   return plugin_manifest().get("version", "")
 
 
 def command_init(args):

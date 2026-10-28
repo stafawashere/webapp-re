@@ -14,6 +14,7 @@ purpose, and the example site is `app.example.test`.
 | `fixtures/optimize-check/applied/` | `optimize_run.py validate` | 2 findings (2 confirmed), one marked fixed whose anchor is gone, 0 problems, exit 0 |
 | `fixtures/capture-site/` | `cdp_capture.py`, `capture-hook.js` | A page that fires a POST with a fake CSRF header and form token, both of which must come out redacted |
 | `fixtures/menu-site/` | `menu/build_menu.py`, through `test_build_menu.py` | A site with a command added after its hints (`brand-new`), hints for a removed command and a removed field, a `--yes` input, an unbuilt write, and a purpose holding `</script>`; 22 tests, `OK`. The cache, sync, determinism, contract, output and server tests copy it to a temporary directory first |
+| none, stubs the GitHub fetch | `scripts/update_check.py`, through `test_update_check.py` | A newer tag printing the alert; an equal or older one printing nothing; `v2.10.0` beating `v2.9.0`; non-semver tags ignored; a fresh cache skipping the fetch and a stale one refetching; a failed fetch printing nothing, exiting 0 and recording its time; `WEBAPP_RE_NO_UPDATE_CHECK=1` skipping everything. 8 tests, `OK`. Each was broken on purpose and went red. The tests point `CLAUDE_PLUGIN_DATA` at a temp folder and never touch the network |
 
 ## Running them
 
@@ -24,6 +25,7 @@ also needs a Chromium.
 ```bash
 uv run --script tests/test_build_menu.py
 uv run --script tests/test_upgrade_check.py
+uv run --script tests/test_update_check.py
 uv run --script plugin/scripts/check_scope.py tests/fixtures/scope-check/scope-good.json
 uv run --script plugin/scripts/check_scope.py tests/fixtures/scope-check/scope-bad.json
 uv run --script plugin/scripts/check_plan.py tests/fixtures/plan-check

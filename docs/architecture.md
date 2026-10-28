@@ -188,11 +188,24 @@ a login wall or challenge.
 | `check_plan.py` | plugin/scripts | Validates a plan against its scope: kebab-case names, schemas, confirmation rule on writes, dependencies exist, build order covers every command once | stdlib |
 | `optimize_run.py` | plugin/scripts | Optimize runs: `new-run`, `latest`, `snapshot`, `compare`, `measure`, `validate`, `report`, `revalidate`, `partition`, `backup`, `result` | stdlib |
 | `upgrade_check.py` | plugin/scripts | Upgrade audit of one site or all (`audit`), the mechanical fixes (`fix`: `browser_path`, `site_plugin.py scaffold`), and the version stamp (`stamp`, refused while a check fails). Runs each program with its own `.venv` so a shell-wide `UV_PROJECT_ENVIRONMENT` is never touched | stdlib |
+| `update_check.py` | plugin/scripts | The update alert. `check` is the plugin's `SessionStart` hook: it reads the installed version and the `repository` field from `plugin.json`, asks the GitHub tags API at most once a day, and prints one line when a higher `vX.Y.Z` tag exists. `status` prints the installed and latest versions, the cache age and whether the check is off | stdlib |
 | `site_plugin.py` | plugin/scripts | Site plugins: `scaffold` writes `<root>/plugin/` (manifest, launcher, `help` and `menu` entries, normalized main skill) and the marketplace entry, `check` validates one site or all, `marketplace [--check]` writes or compares the manifest, `status` lists sites. `kb.py init` calls `scaffold` for a new site | stdlib |
 | `optimize-audit.js`, `optimize-apply.js` | plugin/assets | The audit and apply scripts the optimize stage hands to Claude Code's Workflow tool, which runs several subagents from one script | none |
 
 All run with `uv run --script <path>`. The fixtures they are checked against are described in
 [../tests/README.md](../tests/README.md).
+
+## Update alert
+
+`plugin/hooks/hooks.json` runs `update_check.py check` when a session starts (the `startup`
+matcher, so not on resume, clear or compact). Both the installed version and the GitHub repository
+come from `plugin/.claude-plugin/plugin.json`, so a fork checks its own tags. The latest version is
+the highest `vX.Y.Z` tag from `api.github.com/repos/<owner>/<repo>/tags`, because releases are tags
+and not GitHub Releases. The answer is cached for 24 hours in `${CLAUDE_PLUGIN_DATA}`, or in
+`~/.cache/webapp-re/` when the script runs outside Claude Code. A failed request is cached the same
+way, so an offline machine doesn't retry every session. The request gives up after 2 seconds, and
+any failure prints nothing and exits 0. When a newer version exists the hook prints a
+`systemMessage`, which Claude Code shows to the user. `WEBAPP_RE_NO_UPDATE_CHECK=1` turns it off.
 
 ## Slugs
 

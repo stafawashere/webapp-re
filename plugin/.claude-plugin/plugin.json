@@ -1,9 +1,10 @@
 {
    "name": "webapp-re",
-   "version": "2.1.0",
-   "description": "Reverse engineer a web app's private HTTP API from the signed-in browser and turn it into an automation program and a site plugin: reverse, scope, plan, engineer, optimize and integrate-menu stages",
+   "version": "2.2.0",
+   "description": "Reverse engineer a web app's private HTTP API from the signed-in browser and turn it into an automation program and a site plugin: reverse, scope, plan, engineer, optimize, integrate-menu and upgrade stages",
    "author": {
       "name": "stafawashere"
    },
+   "repository": "https://github.com/stafawashere/webapp-re",
    "keywords": ["reverse-engineering", "automation", "http-api"]
 }
