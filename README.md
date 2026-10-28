@@ -47,6 +47,7 @@ never pass files between them.
                                              audit, then apply the findings you accept
 /webapp-re:optimize <site> --apply [run-id]  apply the findings of an earlier audit
 /webapp-re:integrate-menu <site>             give /<site>:menu a self-syncing menu
+/webapp-re:upgrade <site or all> [--dry-run]  bring a site built by an older webapp-re up to date
 /webapp-re:webapp-re help                    list the commands and each site's progress
 ```
 
@@ -57,7 +58,8 @@ site's knowledge base. `scope` runs the same method across the whole site, read-
 `plan` turns its inventory into commands without sending any requests. Once a plan exists,
 `engineer` builds the program and the site plugin and checks every command against the live
 site. `optimize` audits a built site's plugin and program, and changes nothing until you've accepted
-its findings.
+its findings. `upgrade` is for a site built by an older webapp-re: it checks the site against the
+installed version, reruns only the stages that are out of date, and records the new version.
 
 `/webapp-re <stage> ...` works too. It goes through the `webapp-re` skill, which hands off to the
 stage you name.
@@ -117,7 +119,7 @@ skills, `js-reverse` and `web-api-reverse-engineering`, both MIT and listed with
 commits in [docs/third-party-skills.md](docs/third-party-skills.md). `scripts/` has `kb.py` (the
 per-site knowledge base), `site_plugin.py` (the site plugin generator), `cdp_capture.py`,
 `shape.py`, `walk_summary.py` and `scope_query.py` for the scope, `replay.py` for checking a
-request outside the browser, the scope and plan checkers and `optimize_run.py`. `assets/` has the
+request outside the browser, the scope and plan checkers, `optimize_run.py`, and `upgrade_check.py` for upgrades. `assets/` has the
 small scripts the stages run inside the page, so the browser does the repetitive work and only a
 short summary comes back. `references/` has the method and format docs the skills load, and
 `menu/` the site menu builder.

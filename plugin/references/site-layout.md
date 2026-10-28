@@ -26,7 +26,7 @@ creating anything.
 
 | Path | Holds | Written by |
 |---|---|---|
-| `site.json` | slug, origins, created date, browser path in use | `kb.py init`, then by hand |
+| `site.json` | slug, origins, created date, browser path in use, `webapp_re_version` (the webapp-re the site was last built or upgraded with) and `upgraded` | `kb.py init`, `upgrade_check.py fix` and `stamp`, then by hand |
 | `scope/scope.md` | Human-readable inventory of the app | `/webapp-re:scope` |
 | `scope/scope.json` | The same inventory, machine-readable, schema in the scope skill | `/webapp-re:scope` |
 | `plan/plan.md` | Commands, schemas, dependencies, open work, build order | `/webapp-re:plan` |
@@ -46,6 +46,7 @@ creating anything.
 | `var/runs/<run-id>/` | Run notes | `kb.py new-run` |
 | `var/captures/` | Capture JSONL, bodies kept, credential values redacted at the writer; per run `<run-id>/` with the scope probe files, `walk.json` and `draft-scope.json`; reverse exports for `replay.py`, which hold live values until `--consume` deletes them | capture tools, `scope-probe.js`, `walk_summary.py`, `reverse-export.js` |
 | `var/logs/` | JSONL event log | `kb.py` |
+| `var/upgrade/` | `audit-before.json` and `audit-after.json` of the last upgrade run | `/webapp-re:upgrade` |
 | `.env` | Cookie material copied by the user from their browser. Mode 600. | the user |
 
 The site's plugin is inside this tree, next to the program it calls, and gitignored like other

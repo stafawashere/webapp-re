@@ -7,7 +7,7 @@ your workspaces.
 
 | Skill or plugin | Path | Role | Loaded by |
 |---|---|---|---|
-| `webapp-re` plugin | [../plugin/](../plugin/skills/webapp-re/SKILL.md) | The router skill plus one skill per stage (six). `reverse` is the method (capture, identify, ablate, record, replay, verify, close) and every other stage uses it. Owns `kb.py`, `site_plugin.py`, the site and plugin layouts, the checkers and `optimize_run.py` | You, as `/webapp-re:<stage> <site>` or `/webapp-re <stage> <site>`; site-specific skills that delegate their method to it; any request to find one endpoint, which routes to `reverse` |
+| `webapp-re` plugin | [../plugin/](../plugin/skills/webapp-re/SKILL.md) | The router skill plus one skill per stage (seven). `reverse` is the method (capture, identify, ablate, record, replay, verify, close) and every other stage uses it. Owns `kb.py`, `site_plugin.py`, the site and plugin layouts, the checkers, `optimize_run.py` and `upgrade_check.py` | You, as `/webapp-re:<stage> <site>` or `/webapp-re <stage> <site>`; site-specific skills that delegate their method to it; any request to find one endpoint, which routes to `reverse` |
 | `web-api-reverse-engineering` | [../plugin/skills/web-api-reverse-engineering/](../plugin/skills/web-api-reverse-engineering/SKILL.md) | Third-party. Discovery-notes vocabulary (auth, required headers, anti-bot, session, quirks) and OpenAPI 3.1 output | `scope` for vocabulary, `engineer` for the spec |
 | `js-reverse` | [../plugin/skills/js-reverse/](../plugin/skills/js-reverse/SKILL.md) | Third-party, Chinese text. The Observe, Capture, Rebuild, Patch, DeepDive loop for values computed by client code | `reverse` step 4 and `engineer` step 2, only when a signature, nonce or encrypted field is found |
 
@@ -156,6 +156,21 @@ one group at a time, and has a reviewer diff every change against a backup. Then
 check, asks before any live write, and records the before and after numbers. The formats are in
 [optimize-format.md](../plugin/references/optimize-format.md).
 
+### Upgrade
+
+[skills/upgrade/SKILL.md](../plugin/skills/upgrade/SKILL.md).
+It brings a site built
+by an older webapp-re up to the installed one. `upgrade_check.py audit` runs the current checkers
+against the site (scope, plan, provenance gate, program tests, `site_plugin.py check`,
+`claude plugin validate --strict`, the central skill template, Claude in Chrome tool names left in
+the plugin, the menu, `kb.py scan-secrets`) and maps each failure to the stage that fixes it, so
+only those stages run. A site whose `site.json` names the installed version and passes every check
+costs one script call. Anything that ran, or a version gap, also runs optimize with `--auto`, which
+is where method changes no script checks get found. `upgrade_check.py stamp` writes
+`webapp_re_version` into `site.json` and refuses while any other check fails. The stage never asks:
+it takes each stage's documented default, sends no live write, and stops the live part of a site at
+a login wall or challenge.
+
 ## Scripts
 
 | Script | Where | Does | Dependencies |
@@ -172,6 +187,7 @@ check, asks before any live write, and records the before and after numbers. The
 | `check_scope.py` | plugin/scripts | Validates `scope.json`: structure, unique ids, cross-references, secret-looking values | stdlib |
 | `check_plan.py` | plugin/scripts | Validates a plan against its scope: kebab-case names, schemas, confirmation rule on writes, dependencies exist, build order covers every command once | stdlib |
 | `optimize_run.py` | plugin/scripts | Optimize runs: `new-run`, `latest`, `snapshot`, `compare`, `measure`, `validate`, `report`, `revalidate`, `partition`, `backup`, `result` | stdlib |
+| `upgrade_check.py` | plugin/scripts | Upgrade audit of one site or all (`audit`), the mechanical fixes (`fix`: `browser_path`, `site_plugin.py scaffold`), and the version stamp (`stamp`, refused while a check fails). Runs each program with its own `.venv` so a shell-wide `UV_PROJECT_ENVIRONMENT` is never touched | stdlib |
 | `site_plugin.py` | plugin/scripts | Site plugins: `scaffold` writes `<root>/plugin/` (manifest, launcher, `help` and `menu` entries, normalized main skill) and the marketplace entry, `check` validates one site or all, `marketplace [--check]` writes or compares the manifest, `status` lists sites. `kb.py init` calls `scaffold` for a new site | stdlib |
 | `optimize-audit.js`, `optimize-apply.js` | plugin/assets | The audit and apply scripts the optimize stage hands to Claude Code's Workflow tool, which runs several subagents from one script | none |
 

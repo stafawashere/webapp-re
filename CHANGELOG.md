@@ -4,6 +4,26 @@ The version in `plugin/.claude-plugin/plugin.json` and `.claude-plugin/marketpla
 with each release, which is how `claude plugin update webapp-re` knows there's something new. The
 first release used a date as its version. From 2.0.0 on it's semantic versioning.
 
+## 2.1.0 (2026-10-27)
+
+### New `upgrade` stage
+
+`/webapp-re:upgrade <site or all>` brings a site built by an older webapp-re up to the installed
+version without asking anything along the way. `upgrade_check.py audit` runs the current checkers
+against the site and maps each failure to the stage that fixes it, so only those stages run. A site
+that already names the installed version and passes every check costs one script call. When
+anything did run, or the version moved, it also runs `optimize --auto` to catch method changes no
+script checks for. `upgrade_check.py stamp` then writes the version into `site.json`, and it refuses
+while any check still fails. No live writes are sent, and a login wall or challenge stops the live
+part of that site. `--dry-run` prints the audit and stops.
+
+### Other changes
+
+- `kb.py init` records `webapp_re_version` in a new site's `site.json`, so a later upgrade knows
+  where it started.
+- The site layout documents `var/upgrade/`, which keeps the audit from before and after the last
+  upgrade run.
+
 ## 2.0.0 (2026-10-27)
 
 This is a major version because the default browser changed. If you used the plugin with Claude

@@ -219,6 +219,16 @@ def documents(directory):
    return [(name[:-3],) + read_document(os.path.join(directory, name)) for name in names]
 
 
+def installed_version():
+   manifest_path = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".claude-plugin", "plugin.json")
+
+   try:
+      with open(manifest_path, encoding="utf-8") as handle:
+         return json.load(handle).get("version", "")
+   except (OSError, ValueError):
+      return ""
+
+
 def command_init(args):
    root = resolve_root(args)
    paths = Paths(root)
@@ -230,7 +240,7 @@ def command_init(args):
    site_file = os.path.join(root, "site.json")
    if not os.path.exists(site_file):
       origin = args.site if args.site and "." in args.site else ""
-      site = {"slug": os.path.basename(root), "origins": [origin] if origin else [], "created": today(), "browser_path": ""}
+      site = {"slug": os.path.basename(root), "origins": [origin] if origin else [], "created": today(), "browser_path": "", "webapp_re_version": installed_version()}
       write_text(site_file, json.dumps(site, indent=3) + "\n")
 
    gitignore = os.path.join(root, ".gitignore")

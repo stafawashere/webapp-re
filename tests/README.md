@@ -23,6 +23,7 @@ also needs a Chromium.
 
 ```bash
 uv run --script tests/test_build_menu.py
+uv run --script tests/test_upgrade_check.py
 uv run --script plugin/scripts/check_scope.py tests/fixtures/scope-check/scope-good.json
 uv run --script plugin/scripts/check_scope.py tests/fixtures/scope-check/scope-bad.json
 uv run --script plugin/scripts/check_plan.py tests/fixtures/plan-check
