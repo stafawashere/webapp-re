@@ -18,6 +18,12 @@ jobs:
          - name: Menu tests
            run: uv run --script tests/test_build_menu.py
 
+         - name: Upgrade check tests
+           run: uv run --script tests/test_upgrade_check.py
+
+         - name: Update check tests
+           run: uv run --script tests/test_update_check.py
+
          - name: Scope checker
            run: |
               uv run --script plugin/scripts/check_scope.py tests/fixtures/scope-check/scope-good.json
